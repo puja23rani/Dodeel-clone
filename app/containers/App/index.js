@@ -1,18 +1,24 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Corporate from '../Templates/Corporate';
-import Outer from '../Templates/Outer';
-import Application from './Application';
-import ThemeWrapper from './ThemeWrapper';
+import React from "react";
+import { PropTypes } from "prop-types";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Corporate from "../Templates/Corporate";
+import Outer from "../Templates/Outer";
+import Application from "./Application";
+import ThemeWrapper from "./ThemeWrapper";
 import {
-  HomePage, Login, Register,
-  LoginFullstack, RegisterFullstack,
-  ResetPassword, ResetPasswordFullstack,
-  LockScreen, ComingSoon,
-  Maintenance, TermsConditions,
-  NotFoundDedicated
-} from '../pageListAsync';
+  HomePage,
+  Login,
+  Register,
+  LoginFullstack,
+  RegisterFullstack,
+  ResetPassword,
+  ResetPasswordFullstack,
+  LockScreen,
+  ComingSoon,
+  Maintenance,
+  TermsConditions,
+  NotFoundDedicated,
+} from "../pageListAsync";
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
@@ -22,8 +28,8 @@ function App(props) {
     <ThemeWrapper>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Corporate />}>
-            <Route index element={<HomePage />} />
+          <Route path="/" element={<Outer />}>
+            <Route index element={<LoginFullstack />} />
           </Route>
           <Route path="app/*" element={<Application history={history} />} />
           <Route element={<Outer />}>
@@ -46,7 +52,7 @@ function App(props) {
 }
 
 App.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
 };
 
 export default App;
