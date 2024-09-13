@@ -12,7 +12,7 @@ module.exports = [
       {
         key: "Lead_Status",
         name: "Lead Status",
-        link: "/",
+        link: "/app/lead/lead-status",
         icon: "business",
         badge: "Hot",
       },
