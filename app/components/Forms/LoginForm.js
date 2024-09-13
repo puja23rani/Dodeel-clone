@@ -1,63 +1,71 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
-import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import ArrowForward from '@mui/icons-material/ArrowForward';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Checkbox from '@mui/material/Checkbox';
-import Icon from '@mui/material/Icon';
-import CircularProgress from '@mui/material/CircularProgress';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import brand from 'enl-api/dummy/brand';
-import logo from 'enl-images/logo.svg';
-import MessagesForm from './MessagesForm';
-import messages from './messages';
-import useStyles from './user-jss';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import Icon from "@mui/material/Icon";
+import CircularProgress from "@mui/material/CircularProgress";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import brand from "enl-api/dummy/brand";
+import logo from "enl-images/logo.svg";
+import MessagesForm from "./MessagesForm";
+import messages from "./messages";
+import useStyles from "./user-jss";
 
 // validation functions
 const validationSchema = yup.object({
   email: yup
-    .string('Enter your email')
-    .email('Enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string('Enter your password')
-    .required('Password is required'),
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup.string("Enter your password").required("Password is required"),
 });
 
-const LinkBtn = React.forwardRef(function LinkBtn(props, ref) { // eslint-disable-line
+const LinkBtn = React.forwardRef(function LinkBtn(props, ref) {
+  // eslint-disable-line
   return <NavLink to={props.to} {...props} />; // eslint-disable-line
 });
 
 function LoginForm(props) {
   const { classes, cx } = useStyles();
-  const mdUp = useMediaQuery(theme => theme.breakpoints.up('md'));
+  const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
   const {
-    link, intl, messagesAuth,
-    closeMsg, loading, submitForm,
-    googleAuth, twitterAuth, githubAuth
+    link,
+    intl,
+    messagesAuth,
+    closeMsg,
+    loading,
+    submitForm,
+    googleAuth,
+    twitterAuth,
+    githubAuth,
   } = props;
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const sleep = (ms) => new Promise((r) => { setTimeout(r, ms); });
+  const sleep = (ms) =>
+    new Promise((r) => {
+      setTimeout(r, ms);
+    });
 
   const formik = useFormik({
     initialValues: {
-      email: 'john.doe@mail.com',
-      password: '12345678',
+      email: "john.doe@mail.com",
+      password: "12345678",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -67,10 +75,10 @@ function LoginForm(props) {
   });
 
   const handleClickShowPassword = () => {
-    setShowPassword(show => !show);
+    setShowPassword((show) => !show);
   };
 
-  const handleMouseDownPassword = event => {
+  const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
@@ -88,23 +96,28 @@ function LoginForm(props) {
         <Typography variant="h4" className={classes.title}>
           <FormattedMessage {...messages.login} />
         </Typography>
-        <Button size="small" className={classes.buttonLink} component={LinkBtn} to={link}>
-          <Icon className={cx(classes.icon, classes.signArrow)}>arrow_forward</Icon>
+        <Button
+          size="small"
+          className={classes.buttonLink}
+          component={LinkBtn}
+          to={link}
+        >
+          <Icon className={cx(classes.icon, classes.signArrow)}>
+            arrow_forward
+          </Icon>
           <FormattedMessage {...messages.createNewAccount} />
         </Button>
       </div>
-      {
-        messagesAuth !== null || ''
-          ? (
-            <MessagesForm
-              variant="error"
-              className={classes.msgUser}
-              message={messagesAuth}
-              onClose={closeMsg}
-            />
-          )
-          : ''
-      }
+      {messagesAuth !== null || "" ? (
+        <MessagesForm
+          variant="error"
+          className={classes.msgUser}
+          message={messagesAuth}
+          onClose={closeMsg}
+        />
+      ) : (
+        ""
+      )}
       <section className={classes.pageFormSideWrap}>
         <form onSubmit={formik.handleSubmit}>
           <div>
@@ -128,11 +141,13 @@ function LoginForm(props) {
                 id="password"
                 name="password"
                 label={intl.formatMessage(messages.loginFieldPassword)}
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 variant="standard"
                 value={formik.values.password}
                 onChange={formik.handleChange}
-                error={formik.touched.password && Boolean(formik.errors.password)}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
                 helperText={formik.touched.password && formik.errors.password}
                 className={classes.field}
                 InputProps={{
@@ -142,11 +157,12 @@ function LoginForm(props) {
                         aria-label="Toggle password visibility"
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
-                        size="large">
+                        size="large"
+                      >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             </FormControl>
@@ -157,15 +173,40 @@ function LoginForm(props) {
               control={<Checkbox name="checkbox" />}
               label={intl.formatMessage(messages.loginRemember)}
             />
-            <Button size="small" component={LinkBtn} to="/reset-password" className={classes.buttonLink}>
+            <Button
+              size="small"
+              component={LinkBtn}
+              to="/reset-password"
+              className={classes.buttonLink}
+            >
               <FormattedMessage {...messages.loginForgotPassword} />
             </Button>
           </div>
           <div className={classes.btnArea}>
-            <Button variant="contained" disabled={loading} fullWidth color="primary" size="large" type="submit">
-              {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+            <Button
+              variant="contained"
+              disabled={loading}
+              fullWidth
+              color="primary"
+              size="large"
+              type="submit"
+            >
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
               <FormattedMessage {...messages.loginButtonContinue} />
-              {!loading && <ArrowForward className={cx(classes.rightIcon, classes.iconSmall, classes.signArrow)} />}
+              {!loading && (
+                <ArrowForward
+                  className={cx(
+                    classes.rightIcon,
+                    classes.iconSmall,
+                    classes.signArrow
+                  )}
+                />
+              )}
             </Button>
           </div>
         </form>
@@ -229,7 +270,7 @@ LoginForm.defaultProps = {
   closeMsg: () => {},
   googleAuth: () => {},
   twitterAuth: () => {},
-  link: '#'
+  link: "#",
 };
 
 export default injectIntl(LoginForm);
