@@ -85,7 +85,17 @@ function Lead_Status() {
               description: item.description,
               actions: (
                 <>
-                  <IconButton aria-label="Edit">
+                  <IconButton
+                    aria-label="Edit"
+                    onClick={(e) => {
+                      setItemToDelete(item._id);
+                      setState({
+                        Status_Name: item.statusName,
+                        Description: item.description,
+                        isUpdate: true,
+                      });
+                    }}
+                  >
                     <EditIcon />
                   </IconButton>
                   <IconButton
@@ -184,7 +194,63 @@ function Lead_Status() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
+  const handleUpdateLeadStatus = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
 
+      // Assuming you have an authorization token stored in localStorage
+      const token = localStorage.getItem("token");
+      if (token) {
+        loginHeaders.append("Authorization", `Bearer ${token}`);
+      }
+      const data = {
+        id: itemToDelete,
+        statusName: state.Status_Name,
+        description: state.Description,
+      };
+
+      if (state.Status_Name == "" || state.Description == "") {
+        toast.error("Fill all the information", {
+          position: "top-center",
+        });
+      } else {
+        const requestOptions = {
+          method: "PUT",
+          headers: loginHeaders,
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadStatus`,
+          requestOptions
+        );
+
+        const actualData = await res.json();
+        console.log(actualData.holidays);
+        // setVisaList(actualData.Country);
+        if (actualData.status == 200) {
+          fetchLeadStatus();
+          setState({
+            Status_Name: "",
+            Description: "",
+            id: "",
+            searchText: "",
+            isUpdate: false,
+          });
+          toast.success("Updated successfully!", {
+            position: "top-center",
+          });
+
+          // Navigate("/Department");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      // toast.error("Failed to save. Please try again.", {
+      //   position: "top-center",
+      // });
+    }
+  };
   return (
     <>
       <PapperBlock title="Lead Status" icon="library_books">
@@ -225,15 +291,31 @@ function Lead_Status() {
                   />
                 </Grid>
               </Grid>
-              <Grid container justifyContent="flex-end">
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={handleCreateLeadStatus}
-                >
-                  Submit
-                </Button>
-              </Grid>
+              {state.isUpdate ? (
+                <>
+                  <Grid container justifyContent="flex-end">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={handleUpdateLeadStatus}
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+                </>
+              ) : (
+                <>
+                  <Grid container justifyContent="flex-end">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={handleCreateLeadStatus}
+                    >
+                      Create
+                    </Button>
+                  </Grid>
+                </>
+              )}
             </div>
           </Grid>
         </Grid>
