@@ -20,13 +20,16 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
 import DoneIcon from "@mui/icons-material/Done";
-import AdvFilter from "../../containers/Tables/demos/AdvFilter";
+
 import { Chip, LinearProgress } from "@mui/material";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
+
 import { Description } from "@mui/icons-material";
 import axios from "axios";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
+import TablePlayground from "../../../Tables/TablePlayground";
+import AlertDialog from "../../../UiElements/demos/DialogModal/AlertDialog";
+
+
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -57,7 +60,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Lead_Status() {
+function Custom_Question() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -386,4 +389,4 @@ function Lead_Status() {
   );
 }
 
-export default Lead_Status;
+export default Custom_Question;

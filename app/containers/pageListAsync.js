@@ -368,3 +368,15 @@ export const LeadStatus = loadable(
     fallback: <Loading />,
   }
 );
+  
+  // ---------------------------------------------------------------
+  //            TRUPTI DEV CODE
+  // ---------------------------------------------------------------
+  
+  export const Custom_Question = loadable(
+    () => import("../containers/Pages/Recruitments/Custom_Question/Custom_Question"),
+    {
+      fallback: <Loading />,
+    }
+  );
+  // ---------------------------------------------------------------
