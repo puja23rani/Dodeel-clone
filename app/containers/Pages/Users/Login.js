@@ -20,12 +20,10 @@ function Login() {
   const description = brand.desc;
 
   const submitForm = (values) => {
-    console.log('You submitted:' + JSON.stringify(values, null, 2));
-    window.location.href = '/app';
-  };
+    console.log(process.env.REACT_APP_API_URL);
 
-  const showToastMessage = (message, options = {}) => {
-    toast(message, options);
+    console.log('You submitted:' + JSON.stringify(values, null, 2));
+    // window.location.href = '/app';
   };
 
   return (
@@ -69,8 +67,7 @@ function Login() {
           </div>
         )}
         <div className={classes.sideFormWrap}>
-          <ToastContainer />
-          <LoginForm link="/register" />
+          <LoginForm link="/register" submitForm={(values) => submitForm(values)} />
         </div>
       </div>
     </div>

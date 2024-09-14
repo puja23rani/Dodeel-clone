@@ -57,63 +57,44 @@ function LoginForm(props) {
     event.preventDefault();
   };
 
-  // ----------------------------------------------------------------
-  //                YOUR PART
-  // ----------------------------------------------------------------
-
-  // console.log(process.env.REACT_APP_BACKEND_URL)
-
+  // -------------------------------------------------------------
+  //            MY CODE
+  // -------------------------------------------------------------
   const navigate = useNavigate();
-
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     email: "",
     password: "",
   });
 
   const handleLogin = async () => {
-    if (state.email === "" || state.password === "") {
-      toast("Provide email and password", {
-        type: "error",
-        position: "top-center",
-      });
-    } else {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
+        const loginHeaders = new Headers();
+        loginHeaders.append("Content-Type", "application/json");
 
-      const data = {
-        email: state.email,
-        password: state.password,
-      };
-      const requestOptions = {
-        method: "POST",
-        headers: loginHeaders,
-        body: JSON.stringify(data),
-      };
-      try {
-        const res = await fetch(`http://13.127.208.230:3001/api/auth/Adminlogin`, requestOptions);
+        const data = {
+          email: state.email,
+          password: state.password,
+        };
+        const requestOptions = {
+          method: "POST",
+          headers: loginHeaders,
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/auth/Adminlogin`,
+          requestOptions
+        );
         const actualData = await res.json();
         if (actualData.token) {
           localStorage.setItem("token", actualData.token);
           localStorage.setItem("role", actualData.role);
-          if (actualData.role === "ADMIN") {
-            toast("Login successful!", { type: "success", position: "top-center" });
+          if (actualData.role == "ADMIN") {
             navigate("/app");
           }
-        } else {
-          toast("Invalid Email and password", {
-            type: "error",
-            position: "top-center",
-          });
-        }
-      } catch (error) {
-        toast("An error occurred during login", {
-          type: "error",
-          position: "top-center",
-        });
-      }
+        } 
     }
-  };
-  // ----------------------------------------------------------------
+
+  // console.log(process.env.REACT_APP_API_URL);
+
 
   return (
       <Paper className={classes.sideWrap}>
@@ -141,77 +122,94 @@ function LoginForm(props) {
             <FormattedMessage {...messages.createNewAccount} />
           </Button>
         </div>
-        {messagesAuth !== null || "" ? (
-          <MessagesForm
-            variant="error"
-            className={classes.msgUser}
-            message={messagesAuth}
-            onClose={closeMsg}
-          />
-        ) : (
-          ""
-        )}
-        <section className={classes.pageFormSideWrap}>
+      )}
+      <div className={classes.topBar}>
+        <Typography variant="h4" className={classes.title}>
+          <FormattedMessage {...messages.login} />
+        </Typography>
+        <Button
+          size="small"
+          className={classes.buttonLink}
+          component={LinkBtn}
+          to={link}
+        >
+          <Icon className={cx(classes.icon, classes.signArrow)}>
+            arrow_forward
+          </Icon>
+          <FormattedMessage {...messages.createNewAccount} />
+        </Button>
+      </div>
+      {messagesAuth !== null || "" ? (
+        <MessagesForm
+          variant="error"
+          className={classes.msgUser}
+          message={messagesAuth}
+          onClose={closeMsg}
+        />
+      ) : (
+        ""
+      )}
+      <section className={classes.pageFormSideWrap}>
+        <div>
           <div>
-            <div>
-              <FormControl variant="standard" className={classes.formControl}>
-                <TextField
-                  id="email"
-                  name="email"
-                  label={intl.formatMessage(messages.loginFieldEmail)}
-                  variant="standard"
-                  value={state.email}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setState({
-                      ...state,
-                      email: value,
-                    });
-                  }}
-                  className={classes.field}
-                />
-              </FormControl>
-            </div>
-            <div>
-              <FormControl variant="standard" className={classes.formControl}>
-                <TextField
-                  id="password"
-                  name="password"
-                  label={intl.formatMessage(messages.loginFieldPassword)}
-                  type={showPassword ? "text" : "password"}
-                  variant="standard"
-                  value={state.password}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setState({
-                      ...state,
-                      password: value,
-                    });
-                  }}
-                  className={classes.field}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="Toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          size="large"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </FormControl>
-            </div>
-            {/* <div className={classes.optArea}>
-            <FormControlLabel
+            <FormControl variant="standard" className={classes.formControl}>
+              <TextField
+                id="email"
+                name="email"
+                label={intl.formatMessage(messages.loginFieldEmail)}
+                variant="standard"
+                value={state.email}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setState({
+                    ...state,
+                    email: value,
+                  });
+                }}
+                className={classes.field}
+              />
+            </FormControl>
+          </div>
+          <div>
+            <FormControl variant="standard" className={classes.formControl}>
+              <TextField
+                id="password"
+                name="password"
+                label={intl.formatMessage(messages.loginFieldPassword)}
+                type={showPassword ? "text" : "password"}
+                variant="standard"
+                value={state.password}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setState({
+                    ...state,
+                    password: value,
+                  });
+                }}
+                className={classes.field}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        size="large"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className={classes.optArea}>
+            {/* <FormControlLabel
               className={classes.label}
               control={<Checkbox name="checkbox" />}
               label={intl.formatMessage(messages.loginRemember)}
-            />
+            /> */}
             <Button
               size="small"
               component={LinkBtn}
@@ -250,45 +248,74 @@ function LoginForm(props) {
               </Button>
             </div>
           </div>
-        </section>
-        <h5 className={classes.divider}>
-          <span>
-            <FormattedMessage {...messages.loginOr} />
-          </span>
-        </h5>
-        <section className={classes.socmedSideLogin}>
-          <Button
-            variant="contained"
-            className={classes.redBtn}
-            type="button"
-            size="large"
-            onClick={googleAuth}
-          >
-            <i className="ion-logo-google" />
-            Google
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.cyanBtn}
-            type="button"
-            size="large"
-            onClick={twitterAuth}
-          >
-            <i className="ion-logo-twitter" />
-            Twitter
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.greyBtn}
-            type="button"
-            size="large"
-            onClick={githubAuth}
-          >
-            <i className="ion-logo-github" />
-            Github
-          </Button>
-        </section>
-      </Paper>
+          <div className={classes.btnArea}>
+            <Button
+              variant="contained"
+              disabled={loading}
+              fullWidth
+              color="primary"
+              size="large"
+              type="submit"
+              onClick={handleLogin}
+            >
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
+              <FormattedMessage {...messages.loginButtonContinue} />
+              {!loading && (
+                <ArrowForward
+                  className={cx(
+                    classes.rightIcon,
+                    classes.iconSmall,
+                    classes.signArrow
+                  )}
+                />
+              )}
+            </Button>
+          </div>
+        </div>
+      </section>
+      <h5 className={classes.divider}>
+        <span>
+          <FormattedMessage {...messages.loginOr} />
+        </span>
+      </h5>
+      <section className={classes.socmedSideLogin}>
+        <Button
+          variant="contained"
+          className={classes.redBtn}
+          type="button"
+          size="large"
+          onClick={googleAuth}
+        >
+          <i className="ion-logo-google" />
+          Google
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.cyanBtn}
+          type="button"
+          size="large"
+          onClick={twitterAuth}
+        >
+          <i className="ion-logo-twitter" />
+          Twitter
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.greyBtn}
+          type="button"
+          size="large"
+          onClick={githubAuth}
+        >
+          <i className="ion-logo-github" />
+          Github
+        </Button>
+      </section>
+    </Paper>
   );
 }
 

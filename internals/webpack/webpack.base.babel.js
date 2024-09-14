@@ -1,10 +1,12 @@
 /**
  * COMMON WEBPACK CONFIGURATION
  */
-
 const path = require('path');
 const webpack = require('webpack');
 // const ESLintPlugin = require('eslint-webpack-plugin');
+
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = options => ({
   mode: options.mode,
@@ -196,7 +198,10 @@ module.exports = options => ({
         // point to the locale data folder relative to moment's src/lib/locale
         request: '../../locale'
       });
-    })
+    }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL),
+    }),
   ]),
   resolve: {
     modules: ['browser', 'domain', 'node_modules', 'app'],
