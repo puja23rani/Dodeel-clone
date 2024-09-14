@@ -10,6 +10,7 @@ import ArrowBack from '@mui/icons-material/ArrowBack';
 import useStyles from 'enl-components/Forms/user-jss';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import { toast, ToastContainer } from 'react-toastify';
 
 function Login() {
   const { classes } = useStyles();
@@ -21,6 +22,10 @@ function Login() {
   const submitForm = (values) => {
     console.log('You submitted:' + JSON.stringify(values, null, 2));
     window.location.href = '/app';
+  };
+
+  const showToastMessage = (message, options = {}) => {
+    toast(message, options);
   };
 
   return (
@@ -64,7 +69,8 @@ function Login() {
           </div>
         )}
         <div className={classes.sideFormWrap}>
-          <LoginForm link="/register" submitForm={(values) => submitForm(values)} />
+          <ToastContainer />
+          <LoginForm link="/register" />
         </div>
       </div>
     </div>
