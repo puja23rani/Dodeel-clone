@@ -135,6 +135,7 @@
     "cross-env": "^5.2.1",
     "dandelion-animated-slider": "^1.0.0",
     "date-fns": "2.29.3",
+    "dotenv": "^16.4.5",
     "downshift": "^1.31.12",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",

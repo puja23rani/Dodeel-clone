@@ -19,9 +19,13 @@ function Login() {
   const description = brand.desc;
 
   const submitForm = (values) => {
+    console.log(process.env.REACT_APP_API_URL);
+
     console.log('You submitted:' + JSON.stringify(values, null, 2));
-    window.location.href = '/app';
+    // window.location.href = '/app';
   };
+
+  console.log(process.env.REACT_APP_API_URL);
 
   return (
     <div className={classes.rootFull}>
@@ -64,7 +68,7 @@ function Login() {
           </div>
         )}
         <div className={classes.sideFormWrap}>
-          <LoginForm link="/register" submitForm={(values) => submitForm(values)} />
+          <LoginForm link="/register" />
         </div>
       </div>
     </div>

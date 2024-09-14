@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -82,6 +82,45 @@ function LoginForm(props) {
     event.preventDefault();
   };
 
+  // -------------------------------------------------------------
+  //            MY CODE
+  // -------------------------------------------------------------
+  const navigate = useNavigate();
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleLogin = async () => {
+        const loginHeaders = new Headers();
+        loginHeaders.append("Content-Type", "application/json");
+
+        const data = {
+          email: state.email,
+          password: state.password,
+        };
+        const requestOptions = {
+          method: "POST",
+          headers: loginHeaders,
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/auth/Adminlogin`,
+          requestOptions
+        );
+        const actualData = await res.json();
+        if (actualData.token) {
+          localStorage.setItem("token", actualData.token);
+          localStorage.setItem("role", actualData.role);
+          if (actualData.role == "ADMIN") {
+            navigate("/app");
+          }
+        } 
+    }
+
+  // console.log(process.env.REACT_APP_API_URL);
+
+
   return (
     <Paper className={classes.sideWrap}>
       {!mdUp && (
@@ -119,7 +158,7 @@ function LoginForm(props) {
         ""
       )}
       <section className={classes.pageFormSideWrap}>
-        <form onSubmit={formik.handleSubmit}>
+        <div>
           <div>
             <FormControl variant="standard" className={classes.formControl}>
               <TextField
@@ -127,10 +166,14 @@ function LoginForm(props) {
                 name="email"
                 label={intl.formatMessage(messages.loginFieldEmail)}
                 variant="standard"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
+                value={state.email}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setState({
+                    ...state,
+                    email: value,
+                  });
+                }}
                 className={classes.field}
               />
             </FormControl>
@@ -143,12 +186,14 @@ function LoginForm(props) {
                 label={intl.formatMessage(messages.loginFieldPassword)}
                 type={showPassword ? "text" : "password"}
                 variant="standard"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.password && Boolean(formik.errors.password)
-                }
-                helperText={formik.touched.password && formik.errors.password}
+                value={state.password}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setState({
+                    ...state,
+                    password: value,
+                  });
+                }}
                 className={classes.field}
                 InputProps={{
                   endAdornment: (
@@ -168,11 +213,11 @@ function LoginForm(props) {
             </FormControl>
           </div>
           <div className={classes.optArea}>
-            <FormControlLabel
+            {/* <FormControlLabel
               className={classes.label}
               control={<Checkbox name="checkbox" />}
               label={intl.formatMessage(messages.loginRemember)}
-            />
+            /> */}
             <Button
               size="small"
               component={LinkBtn}
@@ -190,6 +235,7 @@ function LoginForm(props) {
               color="primary"
               size="large"
               type="submit"
+              onClick={handleLogin}
             >
               {loading && (
                 <CircularProgress
@@ -209,7 +255,7 @@ function LoginForm(props) {
               )}
             </Button>
           </div>
-        </form>
+        </div>
       </section>
       <h5 className={classes.divider}>
         <span>

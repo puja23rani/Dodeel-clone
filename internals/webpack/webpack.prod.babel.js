@@ -6,6 +6,9 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = require('./webpack.base.babel')({
   mode: 'production',
 
@@ -122,6 +125,9 @@ module.exports = require('./webpack.base.babel')({
           ios: true,
         },
       ],
+    }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL),
     }),
   ],
 

@@ -14,6 +14,9 @@ const webpack = require('webpack');
 const pkg = require(join(process.cwd(), 'package.json')); // eslint-disable-line
 const { dllPlugin } = require('../config');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 if (!pkg.dllPlugin) {
   process.exit(0);
 }
@@ -40,6 +43,9 @@ module.exports = require('./webpack.base.babel')({
     new webpack.DllPlugin({
       name: '[name]',
       path: join(outputPath, '[name].json'),
+    }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL),
     }),
   ],
   performance: {
