@@ -122,7 +122,7 @@ function LoginForm(props) {
             <FormattedMessage {...messages.createNewAccount} />
           </Button>
         </div>
-      )}
+      
       <div className={classes.topBar}>
         <Typography variant="h4" className={classes.title}>
           <FormattedMessage {...messages.login} />
@@ -218,7 +218,7 @@ function LoginForm(props) {
             >
               <FormattedMessage {...messages.loginForgotPassword} />
             </Button>
-          </div> */}
+          </div>
             <div className={classes.btnArea}>
               <Button
                 variant="contained"
@@ -276,7 +276,6 @@ function LoginForm(props) {
               )}
             </Button>
           </div>
-        </div>
       </section>
       <h5 className={classes.divider}>
         <span>
