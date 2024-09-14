@@ -16,19 +16,17 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/BorderColor";
+import DoneIcon from "@mui/icons-material/Done";
 import AdvFilter from "../../containers/Tables/demos/AdvFilter";
 import { Chip, LinearProgress } from "@mui/material";
 import { PapperBlock } from "enl-components";
 import TablePlayground from "../../containers/Tables/TablePlayground";
 import { Description } from "@mui/icons-material";
-
-const validationSchema = yup.object({
-  Status: yup.string("Enter your Status").required("Status is required"),
-  Description: yup
-    .string("Enter your Description")
-    .required("Description is required"),
-});
+import axios from "axios";
+import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -62,85 +60,243 @@ const useStyles = makeStyles()((theme) => ({
 function Lead_Status() {
   const { classes } = useStyles();
 
-  const sleep = (ms) =>
-    new Promise((r) => {
-      setTimeout(r, ms);
-    });
+  const token = localStorage.getItem("token");
   const defaultData = {
     Status: "",
     Description: "",
   };
-  const [sampleData, setSampleData] = useState(defaultData);
-
-  const initData = () => {
-    setSampleData({
-      name: "John Doe",
-      email: "john.doe@mail.com",
-      password: "12345678",
-      select: "option 2",
-      option: "option 3",
-      switch: true,
-      check: true,
-      group: ["option 1", "option 3"],
-      textarea:
-        "Just register to join with us. A platform with efficient integration of many features and so much more. Just register to join with us. A platform with efficient integration of many features and so much more. Just register to join with us. A platform with efficient integration of many features and so much more",
-    });
-  };
-
-  const formik = useFormik({
-    initialValues: sampleData,
-    enableReinitialize: true,
-    validationSchema,
-    onSubmit: async (values) => {
-      await sleep(500);
-      alert(JSON.stringify(values, null, 2));
-    },
+  const [state, setState] = React.useState({
+    Status_Name: "",
+    Description: "",
+    searchText: "",
+    isUpdate: false,
   });
+  const [sampleData, setSampleData] = useState(defaultData);
+  const [leadStatusList, setLeadStatusList] = React.useState([]);
+  const [rowdata, setRowdata] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [id, setId] = useState(0);
 
-  const clearData = () => {
-    formik.resetForm({
-      values: defaultData,
-    });
-  };
   const columnData = [
     {
-      id: "name",
+      id: "statusName",
       numeric: false,
       disablePadding: false,
-      label: "Dessert (100g serving)",
+      label: "Status Name",
     },
-    { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-    { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-    { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
     {
-      id: "protein",
-      numeric: true,
+      id: "description",
+      numeric: false,
       disablePadding: false,
-      label: "Protein (g)",
+      label: "Description",
     },
+    { id: "actions", label: "Action" },
   ];
 
-  const data = [
-    {
-      id: 1,
-      name: "Cupcake",
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-    },
-    { id: 2, name: "Donut", calories: 452, fat: 25.0, carbs: 51, protein: 4.9 },
-    {
-      id: 3,
-      name: "Eclair",
-      calories: 262,
-      fat: 16.0,
-      carbs: 24,
-      protein: 6.0,
-    },
-    // Add more data as needed
-  ];
-  console.log(formik.values);
+  const handlePageChange = (event, newPage) => setPage(newPage);
+  const handleRowsPerPageChange = (event) =>
+    setRowsPerPage(parseInt(event.target.value, 10));
+  function table() {
+    axios
+      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        // Handle the response
+        if (response.data.data) {
+          // setLeadStatusList(response.data.data);
+          setRowdata(
+            response.data.data.map((item) => ({
+              id: item._id, // Use _id from API as the row ID
+              statusName: item.statusName, // Map statusName from API
+              description: item.description, // Map description from API
+              actions: (
+                <>
+                  <IconButton aria-label="Edit">
+                    <EditIcon />
+                  </IconButton>
+
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={() => {
+                      setId(item._id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              ),
+            }))
+          );
+        }
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error fetching data:", error);
+      });
+  }
+  React.useEffect(() => {
+    table();
+  }, []);
+  const handleCreateLeadStatus = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const token = localStorage.getItem("token");
+      if (token) {
+        loginHeaders.append("Authorization", `Bearer ${token}`);
+      }
+      const data = {
+        statusName: state.Status_Name,
+        description: state.Description,
+      };
+
+      if (state.Status_Name == "" || state.Description == "") {
+        toast.error("Fill all the information", {
+          position: "top-center",
+        });
+      } else {
+        const requestOptions = {
+          method: "POST",
+          headers: loginHeaders,
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadStatus`,
+          requestOptions
+        );
+
+        const actualData = await res.json();
+        console.log(actualData);
+        // setVisaList(actualData.Country);
+        if (actualData.status == 200) {
+          table();
+          setState({
+            Status_Name: "",
+            Description: "",
+            id: "",
+            searchText: "",
+            isUpdate: false,
+          });
+
+          toast.success("Created successfully!", {
+            position: "top-center",
+          });
+
+          localStorage.removeItem("fee_icon");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to save. Please try again.", {
+        position: "top-center",
+      });
+    }
+  };
+  const handleLeadStatusDelete = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const Token = localStorage.getItem("token");
+      if (Token) {
+        loginHeaders.append("Authorization", `Bearer ${Token}`);
+      }
+      const data = { id: id };
+      const requestOptions = {
+        method: "DELETE",
+        headers: loginHeaders,
+        body: JSON.stringify(data),
+      };
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadStatus`,
+        requestOptions
+      );
+      const actualData = await res.json();
+      console.log(actualData);
+      // setVisaList(actualData.Country);
+      if (actualData.status == 200) {
+        handleCloseDialog();
+        table();
+        toast.success("Deleted successfully!", {
+          position: "top-center",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("An error occurred. Please try again.", {
+        position: "top-center",
+      });
+    }
+  };
+  const handleUpdateLeadStatus = async (idx) => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const token = localStorage.getItem("token");
+      if (token) {
+        loginHeaders.append("Authorization", `Bearer ${token}`);
+      }
+      const data = {
+        id: idx,
+        statusName: state.Status_Name,
+        description: state.Description,
+      };
+
+      if (state.Status_Name == "" || state.Description == "" || idx == "") {
+        toast.error("Fill all the information", {
+          position: "top-center",
+        });
+      } else {
+        const requestOptions = {
+          method: "PUT",
+          headers: loginHeaders,
+          body: JSON.stringify(data),
+        };
+        const res = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/auth/updateLeadStatus`,
+          requestOptions
+        );
+
+        const actualData = await res.json();
+        console.log(actualData.holidays);
+        // setVisaList(actualData.Country);
+        if (actualData.status == 200) {
+          table();
+          setState({
+            Status_Name: "",
+            Description: "",
+            id: "",
+            searchText: "",
+            isUpdate: false,
+          });
+          toast.success("Updated successfully!", {
+            position: "top-center",
+          });
+
+          localStorage.removeItem("updateId");
+          localStorage.removeItem("fee_icon");
+          // Navigate("/Department");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      // toast.error("Failed to save. Please try again.", {
+      //   position: "top-center",
+      // });
+    }
+
+    console.log(idx);
+  };
   return (
     <>
       <PapperBlock title="Lead Status" icon="library_books">
@@ -157,7 +313,7 @@ function Lead_Status() {
                 Load Sample Data
               </Button>
               <Button onClick={clearData}>Clear Data</Button> */}
-              <form className={classes.form} onSubmit={formik.handleSubmit}>
+              <div className={classes.form}>
                 <Grid container spacing={2}>
                   {/* Align Name and Email fields side by side */}
                   <Grid item xs={6}>
@@ -167,12 +323,14 @@ function Lead_Status() {
                       id="Status"
                       name="Status"
                       label="Status"
-                      value={formik.values.Status}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.Status && Boolean(formik.errors.Status)
-                      }
-                      helperText={formik.touched.Status && formik.errors.Status}
+                      value={state.Status_Name}
+                      onChange={(e) => {
+                        setState({ ...state, Status_Name: e.target.value });
+                      }}
+                      // error={
+                      //   formik.touched.Status && Boolean(formik.errors.Status)
+                      // }
+                      // helperText={formik.touched.Status && formik.errors.Status}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -182,15 +340,17 @@ function Lead_Status() {
                       id="Description"
                       name="Description"
                       label="Description"
-                      value={formik.values.Description}
-                      onChange={formik.handleChange}
-                      error={
-                        formik.touched.Description &&
-                        Boolean(formik.errors.Description)
-                      }
-                      helperText={
-                        formik.touched.Description && formik.errors.Description
-                      }
+                      value={state.Description}
+                      onChange={(e) => {
+                        setState({ ...state, Description: e.target.value });
+                      }}
+                      // error={
+                      //   formik.touched.Description &&
+                      //   Boolean(formik.errors.Description)
+                      // }
+                      // helperText={
+                      //   formik.touched.Description && formik.errors.Description
+                      // }
                     />
                   </Grid>
                 </Grid>
@@ -346,29 +506,33 @@ function Lead_Status() {
                 /> */}
 
                 <Grid container justifyContent="flex-end">
-                  <Button color="primary" variant="contained" type="submit">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    type="submit"
+                    onClick={handleCreateLeadStatus}
+                  >
                     Submit
                   </Button>
                 </Grid>
-              </form>
+                {/* </orm> */}
+              </div>
             </Grid>
           </Grid>
         </div>
       </PapperBlock>
 
-      <TablePlayground
-        size="small"
-        styles={{
-          bordered: true,
-          stripped: true,
-          hovered: true,
-        }}
-        toolbarOptions={{
-          enabled: true,
-
-          pagination: false,
-        }}
-      />
+      {rowdata && (
+        <TablePlayground
+          columnData={columnData}
+          rowData={rowdata}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+        />
+      )}
+      {id && <AlertDialog onDelete={handleLeadStatusDelete} />}
     </>
   );
 }
