@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Tooltip from '@mui/material/Tooltip';
+import React from "react";
+import PropTypes from "prop-types";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Tooltip from "@mui/material/Tooltip";
 
 function TableHeader(props) {
   const {
@@ -16,7 +16,7 @@ function TableHeader(props) {
     rowCount,
     columnData,
     checkcell,
-    onRequestSort
+    onRequestSort,
   } = props;
 
   const createSortHandler = (event, property) => {
@@ -35,16 +35,16 @@ function TableHeader(props) {
             />
           </TableCell>
         )}
-        {columnData.map(column => (
+        {columnData.map((column) => (
           <TableCell
             padding="normal"
             key={column.id}
-            align={column.numeric ? 'right' : 'left'}
+            align="center"
             sortDirection={orderBy === column.id ? order : false}
           >
             <Tooltip
               title="Sort"
-              placement={column.numeric ? 'bottom-end' : 'bottom-start'}
+              placement={column.numeric ? "bottom-end" : "bottom-start"}
               enterDelay={300}
             >
               <TableSortLabel
@@ -75,7 +75,7 @@ TableHeader.propTypes = {
 
 TableHeader.defaultProps = {
   onSelectAllClick: () => {},
-  checkcell: false
+  checkcell: false,
 };
 
 export default TableHeader;

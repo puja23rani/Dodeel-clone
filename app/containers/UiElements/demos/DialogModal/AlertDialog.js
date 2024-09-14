@@ -1,12 +1,13 @@
-import React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import PropTypes from "prop-types";
 
-export default function AlertDialog() {
+export default function AlertDialog({ onDelete }) {
   const [open, setOpen] = React.useState(false);
 
   function handleClickOpen() {
@@ -15,6 +16,11 @@ export default function AlertDialog() {
 
   function handleClose() {
     setOpen(false);
+  }
+
+  function handleAgree() {
+    onDelete(); // Call the delete function passed from parent
+    handleClose(); // Close the dialog
   }
 
   return (
@@ -28,20 +34,18 @@ export default function AlertDialog() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Use Google\'s location service?'}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Delete Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+            Are you sure you want to delete this item? This action cannot be
+            undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Disagree
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={handleAgree} color="primary" autoFocus>
             Agree
           </Button>
         </DialogActions>
@@ -49,3 +53,7 @@ export default function AlertDialog() {
     </div>
   );
 }
+
+AlertDialog.propTypes = {
+  onDelete: PropTypes.func.isRequired, // The delete function passed from parent
+};
