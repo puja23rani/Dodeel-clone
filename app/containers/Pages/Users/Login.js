@@ -1,28 +1,28 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import brand from 'enl-api/dummy/brand';
-import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { NavLink } from 'react-router-dom';
-import { SelectLanguage, LoginForm } from 'enl-components';
-import logo from 'enl-images/logo.svg';
-import ArrowBack from '@mui/icons-material/ArrowBack';
-import useStyles from 'enl-components/Forms/user-jss';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-import { toast, ToastContainer } from 'react-toastify';
+import React from "react";
+import { Helmet } from "react-helmet";
+import brand from "enl-api/dummy/brand";
+import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { NavLink } from "react-router-dom";
+import { SelectLanguage, LoginForm } from "enl-components";
+import logo from "enl-images/logo.svg";
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import useStyles from "enl-components/Forms/user-jss";
+import { FormattedMessage } from "react-intl";
+import messages from "./messages";
+import { toast, ToastContainer } from "react-toastify";
 
 function Login() {
   const { classes } = useStyles();
-  const mdDown = useMediaQuery(theme => theme.breakpoints.down('md'));
+  const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
-  const title = brand.name + ' - Login';
+  const title = brand.name + " - Login";
   const description = brand.desc;
 
   const submitForm = (values) => {
-    console.log(process.env.REACT_APP_API_URL);
+    console.log(process.env.REACT_APP_BASE_URL);
 
-    console.log('You submitted:' + JSON.stringify(values, null, 2));
+    console.log("You submitted:" + JSON.stringify(values, null, 2));
     // window.location.href = '/app';
   };
 
@@ -51,7 +51,11 @@ function Login() {
                 &nbsp;
                 {brand.name}
               </Typography>
-              <Typography variant="h6" component="p" className={classes.subpening}>
+              <Typography
+                variant="h6"
+                component="p"
+                className={classes.subpening}
+              >
                 <FormattedMessage {...messages.welcomeSubtitle} />
               </Typography>
             </div>
@@ -67,7 +71,10 @@ function Login() {
           </div>
         )}
         <div className={classes.sideFormWrap}>
-          <LoginForm link="/register" submitForm={(values) => submitForm(values)} />
+          <LoginForm
+            link="/register"
+            submitForm={(values) => submitForm(values)}
+          />
         </div>
       </div>
     </div>

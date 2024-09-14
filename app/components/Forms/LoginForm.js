@@ -67,34 +67,33 @@ function LoginForm(props) {
   });
 
   const handleLogin = async () => {
-        const loginHeaders = new Headers();
-        loginHeaders.append("Content-Type", "application/json");
+    const loginHeaders = new Headers();
+    loginHeaders.append("Content-Type", "application/json");
 
-        const data = {
-          email: state.email,
-          password: state.password,
-        };
-        const requestOptions = {
-          method: "POST",
-          headers: loginHeaders,
-          body: JSON.stringify(data),
-        };
-        const res = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/auth/Adminlogin`,
-          requestOptions
-        );
-        const actualData = await res.json();
-        if (actualData.token) {
-          localStorage.setItem("token", actualData.token);
-          localStorage.setItem("role", actualData.role);
-          if (actualData.role == "ADMIN") {
-            navigate("/app");
-          }
-        } 
+    const data = {
+      email: state.email,
+      password: state.password,
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: loginHeaders,
+      body: JSON.stringify(data),
+    };
+    const res = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/api/auth/Adminlogin`,
+      requestOptions
+    );
+    const actualData = await res.json();
+    if (actualData.token) {
+      localStorage.setItem("token", actualData.token);
+      localStorage.setItem("role", actualData.role);
+      if (actualData.role == "ADMIN") {
+        navigate("/app");
+      }
     }
+  };
 
-  // console.log(process.env.REACT_APP_API_URL);
-
+  // console.log(process.env.REACT_APP_BASE_URL);
 
   return (
       <Paper className={classes.sideWrap}>
@@ -219,63 +218,32 @@ function LoginForm(props) {
               <FormattedMessage {...messages.loginForgotPassword} />
             </Button>
           </div>
-            {/* <div className={classes.btnArea}>
-              <Button
-                variant="contained"
-                disabled={loading}
-                fullWidth
-                color="primary"
-                size="large"
-                type="submit"
-                onClick={handleLogin}
-              >
-                {loading && (
-                  <CircularProgress
-                    size={24}
-                    className={classes.buttonProgress}
-                  />
+        </div>
+        <div className={classes.btnArea}>
+          <Button
+            variant="contained"
+            disabled={loading}
+            fullWidth
+            color="primary"
+            size="large"
+            type="submit"
+            onClick={handleLogin}
+          >
+            {loading && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+            <FormattedMessage {...messages.loginButtonContinue} />
+            {!loading && (
+              <ArrowForward
+                className={cx(
+                  classes.rightIcon,
+                  classes.iconSmall,
+                  classes.signArrow
                 )}
-                <FormattedMessage {...messages.loginButtonContinue} />
-                {!loading && (
-                  <ArrowForward
-                    className={cx(
-                      classes.rightIcon,
-                      classes.iconSmall,
-                      classes.signArrow
-                    )}
-                  />
-                )}
-              </Button>
-            </div> */}
-          </div>
-          <div className={classes.btnArea}>
-            <Button
-              variant="contained"
-              disabled={loading}
-              fullWidth
-              color="primary"
-              size="large"
-              type="submit"
-              onClick={handleLogin}
-            >
-              {loading && (
-                <CircularProgress
-                  size={24}
-                  className={classes.buttonProgress}
-                />
-              )}
-              <FormattedMessage {...messages.loginButtonContinue} />
-              {!loading && (
-                <ArrowForward
-                  className={cx(
-                    classes.rightIcon,
-                    classes.iconSmall,
-                    classes.signArrow
-                  )}
-                />
-              )}
-            </Button>
-          </div>
+              />
+            )}
+          </Button>
+        </div>
       </section>
       <h5 className={classes.divider}>
         <span>
@@ -333,9 +301,9 @@ LoginForm.propTypes = {
 LoginForm.defaultProps = {
   messagesAuth: null,
   loading: false,
-  closeMsg: () => { },
-  googleAuth: () => { },
-  twitterAuth: () => { },
+  closeMsg: () => {},
+  googleAuth: () => {},
+  twitterAuth: () => {},
   link: "#",
 };
 
