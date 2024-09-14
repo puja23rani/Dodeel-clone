@@ -117,7 +117,7 @@ function Login() {
               <Typography variant="h3" component="h1" gutterBottom>
                 <FormattedMessage {...messages.welcomeTitle} />
                 &nbsp;
-                {brand.name}
+               Dodeel
               </Typography>
               <Typography variant="h6" component="p" className={classes.subpening}>
                 <FormattedMessage {...messages.welcomeSubtitle} />

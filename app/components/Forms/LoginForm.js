@@ -106,7 +106,7 @@ function LoginForm(props) {
             </NavLink>
           </div>
         )}
-        <div className={classes.topBar}>
+        {/* <div className={classes.topBar}>
           <Typography variant="h4" className={classes.title}>
             <FormattedMessage {...messages.login} />
           </Typography>
@@ -121,7 +121,7 @@ function LoginForm(props) {
             </Icon>
             <FormattedMessage {...messages.createNewAccount} />
           </Button>
-        </div>
+        </div> */}
       
       <div className={classes.topBar}>
         <Typography variant="h4" className={classes.title}>
@@ -219,7 +219,7 @@ function LoginForm(props) {
               <FormattedMessage {...messages.loginForgotPassword} />
             </Button>
           </div>
-            <div className={classes.btnArea}>
+            {/* <div className={classes.btnArea}>
               <Button
                 variant="contained"
                 disabled={loading}
@@ -246,7 +246,7 @@ function LoginForm(props) {
                   />
                 )}
               </Button>
-            </div>
+            </div> */}
           </div>
           <div className={classes.btnArea}>
             <Button

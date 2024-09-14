@@ -130,4 +130,26 @@ module.exports = [
       // },
     ],
   },
+  {
+    key: "Recruitments",
+    name: "Recruitments",
+    icon: "home",
+    child: [
+      {
+        key: "Custom_Question",
+        name: "Custom Question",
+        link: "/app/Custom_Question",
+        icon: "business",
+        badge: "Hot",
+      },
+      // {
+      //   key: "Log_Notes",
+      //   name: "Log Notes",
+      //   link: "/",
+      //   icon: "business",
+      //   badge: "Hot",
+      // },
+      
+    ],
+  },
 ];
