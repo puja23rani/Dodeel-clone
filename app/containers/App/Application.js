@@ -85,6 +85,7 @@ import {
   StreetViewMap,
   NotFound,
   LeadStatus,
+  LogNotes,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -202,6 +203,7 @@ function Application(props) {
         {/* Lead Pages */}
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
+        <Route path="lead/log-notes" element={<LogNotes />} />
       </Routes>
     </Dashboard>
   );

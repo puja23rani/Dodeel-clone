@@ -19,7 +19,7 @@ module.exports = [
       {
         key: "Log_Notes",
         name: "Log Notes",
-        link: "/",
+        link: "/app/lead/log-notes",
         icon: "business",
         badge: "Hot",
       },
