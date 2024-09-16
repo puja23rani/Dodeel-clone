@@ -67,7 +67,11 @@ function TablePlayground(props) {
 
   const renderCell = (dataArray, keyArray) =>
     keyArray.map((itemCell, index) => (
-      <TableCell align="center" key={index.toString()}>
+      <TableCell
+        align="left"
+        key={index.toString()}
+        style={{ paddingLeft: "20px" }}
+      >
         {dataArray[itemCell.id]}
       </TableCell>
     ));
@@ -110,7 +114,7 @@ function TablePlayground(props) {
                           onClick={(event) => handleClick(event, n.id)}
                         >
                           {toolbarOptions.checkcell && (
-                            <TableCell padding="checkbox">
+                            <TableCell padding="checkbox" align="left">
                               <Checkbox checked={isSelected} />
                             </TableCell>
                           )}

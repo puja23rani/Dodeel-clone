@@ -39,8 +39,9 @@ function TableHeader(props) {
           <TableCell
             padding="normal"
             key={column.id}
-            align="center"
+            align={column.label == "Action" ? "center" : "left"}
             sortDirection={orderBy === column.id ? order : false}
+            style={{ paddingLeft: "20px" }}
           >
             <Tooltip
               title="Sort"

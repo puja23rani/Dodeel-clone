@@ -86,6 +86,7 @@ import {
   NotFound,
   LeadStatus,
   LogNotes,
+  Channel,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -204,6 +205,7 @@ function Application(props) {
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
+        <Route path="lead/Channel" element={<Channel />} />
       </Routes>
     </Dashboard>
   );

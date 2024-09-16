@@ -26,7 +26,7 @@ module.exports = [
       {
         key: "Channel",
         name: "Channel",
-        link: "/",
+        link: "/app/lead/Channel",
         icon: "business",
         badge: "Hot",
       },

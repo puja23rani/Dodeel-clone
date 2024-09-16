@@ -374,3 +374,10 @@ export const LogNotes = loadable(
     fallback: <Loading />,
   }
 );
+
+export const Channel = loadable(
+  () => import("../api/Lead_Management/Channel"),
+  {
+    fallback: <Loading />,
+  }
+);
