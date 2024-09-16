@@ -265,7 +265,7 @@ function Channel() {
           body: JSON.stringify(data),
         };
         const res = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadStatus`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateChannel`,
           requestOptions
         );
 

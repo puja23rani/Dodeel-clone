@@ -39,7 +39,7 @@ module.exports = [
         key: "Campaign",
         name: "Campaign",
         icon: "settings_brightness",
-        link: "/app",
+        link: "/app/lead/Campaign",
       },
       {
         key: "NewLead",
