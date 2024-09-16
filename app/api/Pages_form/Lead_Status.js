@@ -39,15 +39,13 @@ function Lead_Status() {
     Status: "",
     Description: "",
   };
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     Status_Name: "",
     Description: "",
     searchText: "",
     isUpdate: false,
   });
-  const [sampleData, setSampleData] = useState(defaultData);
-  const [leadStatusList, setLeadStatusList] = React.useState([]);
-  const [rowdata, setRowdata] = React.useState([]);
+  const [rowdata, setRowdata] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -256,226 +254,71 @@ function Lead_Status() {
   return (
     <>
       <PapperBlock title="Lead Status" icon="library_books">
-        <div>
-          <Grid
-            container
-            spacing={3}
-            alignItems="flex-start"
-            direction="row"
-            justifyContent="stretch"
-          >
-            <Grid item xs={12}>
-              {/* <Button color="primary" onClick={initData}>
-                Load Sample Data
-              </Button>
-              <Button onClick={clearData}>Clear Data</Button> */}
-              <div className={classes.form}>
-                <Grid container spacing={2}>
-                  {/* Align Name and Email fields side by side */}
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      id="Status"
-                      name="Status"
-                      label="Status"
-                      value={state.Status_Name}
-                      onChange={(e) => {
-                        setState({ ...state, Status_Name: e.target.value });
-                      }}
-                      // error={
-                      //   formik.touched.Status && Boolean(formik.errors.Status)
-                      // }
-                      // helperText={formik.touched.Status && formik.errors.Status}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      fullWidth
-                      variant="standard"
-                      id="Description"
-                      name="Description"
-                      label="Description"
-                      value={state.Description}
-                      onChange={(e) => {
-                        setState({ ...state, Description: e.target.value });
-                      }}
-                      // error={
-                      //   formik.touched.Description &&
-                      //   Boolean(formik.errors.Description)
-                      // }
-                      // helperText={
-                      //   formik.touched.Description && formik.errors.Description
-                      // }
-                    />
-                  </Grid>
-                </Grid>
-
-                {/* Password field takes up the full row */}
-                {/* <Grid item xs={12}>
+        <Grid
+          container
+          spacing={3}
+          alignItems="flex-start"
+          direction="row"
+          justifyContent="stretch"
+        >
+          <Grid item xs={12}>
+            <div className={classes.form}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
-                    id="password"
-                    name="password"
-                    label="Password"
-                    type="password"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.password && Boolean(formik.errors.password)
-                    }
-                    helperText={
-                      formik.touched.password && formik.errors.password
+                    id="Status"
+                    name="Status"
+                    label="Status"
+                    value={state.Status_Name}
+                    onChange={(e) =>
+                      setState({ ...state, Status_Name: e.target.value })
                     }
                   />
                 </Grid>
-
-                <FormControl fullWidth>
-                  <InputLabel variant="standard" id="demo-simple-select-label">
-                    Select
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="select"
-                    name="select"
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
                     variant="standard"
-                    label="Select Option"
-                    value={formik.values.select}
-                    onChange={formik.handleChange}
-                  >
-                    <MenuItem value="option 1">Option 1</MenuItem>
-                    <MenuItem value="option 2">Option 2</MenuItem>
-                    <MenuItem value="option 3">Option 3</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormGroup row>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        id="check"
-                        name="check"
-                        checked={formik.values.check}
-                        onChange={formik.handleChange}
-                      />
+                    id="Description"
+                    name="Description"
+                    label="Description"
+                    value={state.Description}
+                    onChange={(e) =>
+                      setState({ ...state, Description: e.target.value })
                     }
-                    label="Check"
                   />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        id="switch"
-                        name="switch"
-                        checked={formik.values.switch}
-                        onChange={formik.handleChange}
-                      />
-                    }
-                    label="Switch ON/OFF"
-                  />
-                </FormGroup> */}
-
-                {/* Rest of your fields */}
-                {/* <FormControl>
-                  <FormLabel id="demo-radio-buttons-group-label">
-                    Options
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    value={formik.values.option}
-                    onChange={formik.handleChange}
-                    id="option"
-                    name="option"
-                  >
-                    <FormControlLabel
-                      value="option 1"
-                      control={<Radio />}
-                      label="Option 1"
-                    />
-                    <FormControlLabel
-                      value="option 2"
-                      control={<Radio />}
-                      label="Option 2"
-                    />
-                    <FormControlLabel
-                      value="option 3"
-                      control={<Radio />}
-                      label="Option 3"
-                    />
-                    <FormControlLabel
-                      value="option 4"
-                      control={<Radio />}
-                      label="Option 4"
-                    />
-                  </RadioGroup>
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel id="demo-check--group-label">Options</FormLabel>
-                  <FormGroup row aria-labelledby="demo-check--group-label">
-                    <FormControlLabel
-                      value="option 1"
-                      checked={formik.values.group.indexOf("option 1") > -1}
-                      name="group"
-                      onChange={formik.handleChange}
-                      control={<Checkbox />}
-                      label="Option 1"
-                    />
-                    <FormControlLabel
-                      value="option 2"
-                      checked={formik.values.group.indexOf("option 2") > -1}
-                      name="group"
-                      onChange={formik.handleChange}
-                      control={<Checkbox />}
-                      label="Option 2"
-                    />
-                    <FormControlLabel
-                      value="option 3"
-                      checked={formik.values.group.indexOf("option 3") > -1}
-                      name="group"
-                      onChange={formik.handleChange}
-                      control={<Checkbox />}
-                      label="Option 3"
-                    />
-                    <FormControlLabel
-                      value="option 4"
-                      checked={formik.values.group.indexOf("option 4") > -1}
-                      name="group"
-                      onChange={formik.handleChange}
-                      control={<Checkbox />}
-                      label="Option 4"
-                    />
-                  </FormGroup>
-                </FormControl> */}
-
-                {/* <TextField
-                  fullWidth
-                  multiline
-                  variant="standard"
-                  rows={4}
-                  id="textarea"
-                  name="textarea"
-                  label="Textarea"
-                  value={formik.values.textarea}
-                  onChange={formik.handleChange}
-                /> */}
-
-                <Grid container justifyContent="flex-end">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    type="submit"
-                    onClick={handleCreateLeadStatus}
-                  >
-                    Submit
-                  </Button>
                 </Grid>
-                {/* </orm> */}
-              </div>
-            </Grid>
+              </Grid>
+              {state.isUpdate ? (
+                <>
+                  <Grid container justifyContent="flex-end">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={handleUpdateLeadStatus}
+                    >
+                      Update
+                    </Button>
+                  </Grid>
+                </>
+              ) : (
+                <>
+                  <Grid container justifyContent="flex-end">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={handleCreateLeadStatus}
+                    >
+                      Create
+                    </Button>
+                  </Grid>
+                </>
+              )}
+            </div>
           </Grid>
-        </div>
+        </Grid>
       </PapperBlock>
 
       {rowdata && (
