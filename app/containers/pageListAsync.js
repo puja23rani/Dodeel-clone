@@ -363,7 +363,20 @@ export const TermsConditions = loadable(
 );
 // pagess
 export const LeadStatus = loadable(
-  () => import("../api/Pages_form/Lead_Status"),
+  () => import("../api/Lead_Management/Lead_Status"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const LogNotes = loadable(
+  () => import("../api/Lead_Management/Log_Notes"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const Channel = loadable(
+  () => import("../api/Lead_Management/Channel"),
   {
     fallback: <Loading />,
   }

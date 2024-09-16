@@ -11,6 +11,7 @@ import axios from "axios";
 import { PapperBlock } from "enl-components";
 import TablePlayground from "../../containers/Tables/TablePlayground";
 import { toast } from "react-toastify";
+import Popup from "../../components/Popup/Popup";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -35,22 +36,43 @@ function Lead_Status() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
-  const defaultData = {
-    Status: "",
-    Description: "",
-  };
+
   const [state, setState] = useState({
     Status_Name: "",
     Description: "",
     searchText: "",
     isUpdate: false,
   });
+  const [errors, setErrors] = useState({
+    Status_Name: "",
+    Description: "",
+  });
+
+  const validate = () => {
+    let isValid = true;
+    let errors = {};
+
+    if (!state.Status_Name.trim()) {
+      errors.Status_Name = "Status Name is required";
+      isValid = false;
+    }
+
+    if (!state.Description.trim()) {
+      errors.Description = "Description is required";
+      isValid = false;
+    }
+
+    setErrors(errors);
+    return isValid;
+  };
   const [rowdata, setRowdata] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
   const columnData = [
     {
       id: "statusName",
@@ -88,6 +110,10 @@ function Lead_Status() {
                   <IconButton
                     aria-label="Edit"
                     onClick={(e) => {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+                      });
                       setItemToDelete(item._id);
                       setState({
                         Status_Name: item.statusName,
@@ -119,6 +145,12 @@ function Lead_Status() {
   };
 
   const handleCreateLeadStatus = async () => {
+    if (!validate()) {
+      setMessage("Please fill all required fields");
+      setOpen(true);
+      setSeverity("warning");
+      return;
+    }
     try {
       const data = {
         statusName: state.Status_Name,
@@ -145,6 +177,10 @@ function Lead_Status() {
       const result = await response.json();
       if (result.status === 200) {
         fetchLeadStatus();
+        window.scrollTo({
+          top: 400,
+          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+        });
         setState({
           Status_Name: "",
           Description: "",
@@ -152,13 +188,19 @@ function Lead_Status() {
           searchText: "",
           isUpdate: false,
         });
-        toast.success("Created successfully!", { position: "top-center" });
+        setMessage("Saved successfully!");
+        setOpen(true);
+        setSeverity("success");
+      } else {
+        setMessage(result.message);
+        setOpen(true);
+        setSeverity("error");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Failed to save. Please try again.", {
-        position: "top-center",
-      });
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
     }
   };
 
@@ -181,13 +223,19 @@ function Lead_Status() {
       if (result.status === 200) {
         setDeleteDialogOpen(false);
         fetchLeadStatus();
-        toast.success("Deleted successfully!", { position: "top-center" });
+        setMessage("Deleted successfully!");
+        setOpen(true);
+        setSeverity("success");
+      } else {
+        setMessage(actualData.message);
+        setOpen(true);
+        setSeverity("error");
       }
     } catch (err) {
       console.log(err);
-      toast.error("An error occurred. Please try again.", {
-        position: "top-center",
-      });
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
     }
   };
 
@@ -211,9 +259,10 @@ function Lead_Status() {
       };
 
       if (state.Status_Name == "" || state.Description == "") {
-        toast.error("Fill all the information", {
-          position: "top-center",
-        });
+        setMessage("Please fill all required fields");
+        setOpen(true);
+        setSeverity("warning");
+        return;
       } else {
         const requestOptions = {
           method: "PUT",
@@ -230,6 +279,10 @@ function Lead_Status() {
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchLeadStatus();
+          window.scrollTo({
+            top: 400,
+            behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+          });
           setState({
             Status_Name: "",
             Description: "",
@@ -237,11 +290,14 @@ function Lead_Status() {
             searchText: "",
             isUpdate: false,
           });
-          toast.success("Updated successfully!", {
-            position: "top-center",
-          });
-
+          setMessage("Updated successfully!");
+          setOpen(true);
+          setSeverity("success");
           // Navigate("/Department");
+        } else {
+          setMessage(actualData.message);
+          setOpen(true);
+          setSeverity("error");
         }
       }
     } catch (err) {
@@ -249,7 +305,13 @@ function Lead_Status() {
       // toast.error("Failed to save. Please try again.", {
       //   position: "top-center",
       // });
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
     }
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
   return (
     <>
@@ -272,9 +334,14 @@ function Lead_Status() {
                     name="Status"
                     label="Status"
                     value={state.Status_Name}
-                    onChange={(e) =>
-                      setState({ ...state, Status_Name: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
+                      if (regex.test(e.target.value)) {
+                        setState({ ...state, Status_Name: e.target.value });
+                      }
+                    }}
+                    error={!!errors.Status_Name}
+                    helperText={errors.Status_Name}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -288,6 +355,8 @@ function Lead_Status() {
                     onChange={(e) =>
                       setState({ ...state, Description: e.target.value })
                     }
+                    error={!!errors.Description}
+                    helperText={errors.Description}
                   />
                 </Grid>
               </Grid>
@@ -323,6 +392,7 @@ function Lead_Status() {
 
       {rowdata && (
         <TablePlayground
+          title="Lead Status List"
           columnData={columnData}
           rowData={rowdata}
           page={page}
@@ -336,6 +406,12 @@ function Lead_Status() {
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
         onDelete={handleLeadStatusDelete}
+      />
+      <Popup
+        open={open}
+        message={message}
+        onClose={handleClose}
+        severity={severity} // You can change this to "error", "warning", etc.
       />
     </>
   );

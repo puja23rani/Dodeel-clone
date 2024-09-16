@@ -85,7 +85,9 @@ import {
   StreetViewMap,
   NotFound,
   LeadStatus,
-  Custom_Question
+  Custom_Question,
+  LogNotes,
+  Channel,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -204,6 +206,8 @@ function Application(props) {
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
+        <Route path="lead/log-notes" element={<LogNotes />} />
+        <Route path="lead/Channel" element={<Channel />} />
       </Routes>
     </Dashboard>
   );
