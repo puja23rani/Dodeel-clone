@@ -211,7 +211,7 @@ function Channel() {
         setSeverity("error");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -248,7 +248,7 @@ function Channel() {
         setItemToDelete(null);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -291,7 +291,7 @@ function Channel() {
         );
 
         const actualData = await res.json();
-        console.log(actualData.holidays);
+        //console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchLeadStatus();
@@ -318,7 +318,7 @@ function Channel() {
         }
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       // toast.error("Failed to save. Please try again.", {
       //   position: "top-center",
       // });
