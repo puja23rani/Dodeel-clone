@@ -21,14 +21,6 @@ import {
 import messages from './messages';
 
 function Login() {
-  const auth = getAuth();
-  const googleProvider = new GoogleAuthProvider();
-  const twitterProvider = new TwitterAuthProvider();
-  const githubProvider = new GithubAuthProvider();
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const messageAuth = useSelector((state) => state.auth.message);
   const loading = useSelector((state) => state.auth.loading);
 
   const { classes } = useStyles();
@@ -36,63 +28,6 @@ function Login() {
 
   const title = brand.name + ' - Login';
   const description = brand.desc;
-
-  const loginEmail = (values) => {
-    const { email, password } = values;
-    dispatch(requestAuth());
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const { user } = userCredential;
-        if (user) {
-          dispatch(loginUser(user));
-          navigate('/app');
-        }
-      })
-      .catch((error) => {
-        dispatch(setMessage(error.message));
-      });
-  };
-
-  const loginGoogle = () => {
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // The signed-in user info.
-        const { user } = result;
-        dispatch(loginUser(user));
-        navigate('/app');
-      }).catch((error) => {
-        // Handle Errors here.
-        dispatch(setMessage(error.message));
-      });
-  };
-
-  const loginTwitter = () => {
-    signInWithPopup(auth, twitterProvider)
-      .then((result) => {
-        // The signed-in user info.
-        const { user } = result;
-        dispatch(loginUser(user));
-        navigate('/app');
-      }).catch((error) => {
-        // Handle Errors here.
-        dispatch(setMessage(error.message));
-      });
-  };
-
-  const loginGithub = () => {
-    signInWithPopup(auth, githubProvider)
-      .then((result) => {
-        // The signed-in user info.
-        const { user } = result;
-        dispatch(loginUser(user));
-        navigate('/app');
-      }).catch((error) => {
-        // Handle Errors here.
-        dispatch(setMessage(error.message));
-      });
-  };
 
   return (
     <div className={classes.rootFull}>
@@ -123,27 +58,11 @@ function Login() {
                 <FormattedMessage {...messages.welcomeSubtitle} />
               </Typography>
             </div>
-            <div className={classes.openingFooter}>
-              <NavLink to="/" className={classes.back}>
-                <ArrowBack />
-                &nbsp;back to site
-              </NavLink>
-              <div className={classes.lang}>
-                <SelectLanguage />
-              </div>
-            </div>
           </div>
         )}
         <div className={classes.sideFormWrap}>
           <LoginForm
-            submitForm={(values) => loginEmail(values)}
-            googleAuth={loginGoogle}
-            twitterAuth={loginTwitter}
-            githubAuth={loginGithub}
             loading={loading}
-            messagesAuth={messageAuth}
-            closeMsg={() => dispatch(hideMessage())}
-            link="/register-firebase"
           />
         </div>
       </div>

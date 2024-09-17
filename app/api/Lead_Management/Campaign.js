@@ -522,14 +522,20 @@ function Campaign() {
         >
           <DialogTitle>
             Campaign
-            <IconButton
+          </DialogTitle>
+          <IconButton
               aria-label="close"
               className={classes.closeButton}
               onClick={() => setOpenDialog(false)}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
               <CloseIcon />
             </IconButton>
-          </DialogTitle>
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
@@ -613,9 +619,9 @@ function Campaign() {
                     )}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <Autocomplete
+                    multiple
                     id="highlights-demo"
                     options={[
                       { title: "Active" },
@@ -623,7 +629,7 @@ function Campaign() {
                       { title: "Completed" },
                     ]}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.campaignStatus} // Ensure value is an object or null
+                    value={state.channelName} // Ensure value is an object or null
                     onChange={(e, v) => {
                       setState({
                         ...state,
@@ -634,8 +640,8 @@ function Campaign() {
                       <TextField
                         {...params}
                         label="Campaign Status"
-                        margin="normal"
                         variant="standard"
+                        placeholder="Favorites"
                         error={!!errors.campaignStatus} // Show error if it exists
                         helperText={errors.campaignStatus} // Display error message
                       />
@@ -646,11 +652,12 @@ function Campaign() {
                 {state.fieldset.map((el, idx) => (
                   <Grid
                     container
-                    spacing={1}
+                    spacing={2}
                     key={idx}
-                    sx={{ display: "flex", alignItems: "center" }}
+                    style={{ display: "flex", alignItems: "center", marginLeft: 0 }}
+                    xs={12}
                   >
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         variant="standard"
@@ -685,10 +692,10 @@ function Campaign() {
                       />
                     </Grid>
                     {idx > 0 && (
-                      <Grid item xs={2}>
+                      <Grid item xs={1}>
                         <DeleteIcon
                           onClick={() => handleDeleteSection(idx)}
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: "pointer", color: "red", width: 24, height: 24, marginTop: 8 }}
                         />
                       </Grid>
                     )}
