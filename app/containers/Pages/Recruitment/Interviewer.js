@@ -15,6 +15,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
+// import { ModalDemo } from './demos';
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -36,7 +37,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Custom_Question() {
+function Interviewer() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -44,22 +45,18 @@ function Custom_Question() {
   //   Status: "",
   //   Description: "",
   // };
+
   const [errors, setErrors] = useState({
-    Custom_Question: "",
-    Required_or_Not: "",
+    interviewerName: "",
+
   });
 
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Custom_Question.trim()) {
-      errors.Custom_Question = "Custom Question is required";
-      isValid = false;
-    }
-
-    if (!state.Required_or_Not.trim()) {
-      errors.Required_or_Not = "Requirements is required";
+    if (!state.interviewerName.trim()) {
+      errors.interviewerName = "Tnterviewer Name is required";
       isValid = false;
     }
 
@@ -68,9 +65,8 @@ function Custom_Question() {
   };
 
   const [state, setState] = useState({
-    CustomQuestion: "",
-    Custom_Question: "",
-    Required_or_Not: "",
+    interviewerName: "",
+    id: "",
     searchText: "",
     isUpdate: false,
   });
@@ -82,39 +78,34 @@ function Custom_Question() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [open1, setOpen1] = useState(false);
 
   const columnData = [
     {
-      id: "Custom_Question",
+      id: "interviewerName",
       numeric: false,
       disablePadding: false,
-      label: "Custom Question",
+      label: "Interviewer Name",
     },
-    {
-      id: "Required_or_Not",
-      numeric: false,
-      disablePadding: false,
-      label: "Requirement",
-    },
+
     { id: "actions", label: "Action" },
   ];
 
   useEffect(() => {
-    fetchCustomQuestion();
+    fetchInterviewer();
   }, []);
 
-  const fetchCustomQuestion = () => {
+  const fetchInterviewer = () => {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getRecruitments`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllInterviewers`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        if (response.data.recruitments) {
+        if (response.data.interviewers) {
           setRowdata(
-            response.data.recruitments.map((item) => ({
+            response.data.interviewers.map((item) => ({
               id: item._id,
-              Custom_Question: item.customQuestion,
-              Required_or_Not: item.requirement,
+              interviewerName: item.interviewerName,
               actions: (
                 <>
                   <IconButton
@@ -126,10 +117,7 @@ function Custom_Question() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        Custom_Question: item.customQuestion,
-                        Required_or_Not: {
-                          title: item.requirement
-                        },
+                        interviewerName: item.interviewerName,
                         isUpdate: true,
                       });
                     }}
@@ -155,15 +143,14 @@ function Custom_Question() {
         console.error("Error fetching data:", error);
       });
   };
-  const handleSaveCustomQuestion = () => {
+  const handleSaveInterviewer = () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
       return;
     }
-    if (state.Custom_Question == "" ||
-      state.Required_or_Not == ""
+    if (state.interviewerName == ""
     ) {
       toast.error("Fill all the information", {
         position: "top-center",
@@ -171,11 +158,10 @@ function Custom_Question() {
     } else {
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/createRecruitment`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/createInterviewer`,
           {
 
-            customQuestion: state.Custom_Question,
-            requirement: state.Required_or_Not.title,
+            interviewerName: state.interviewerName,
           },
           {
             headers: {
@@ -188,24 +174,24 @@ function Custom_Question() {
         .then((response) => {
           if (response.status == 200) {
             // Assuming table() refreshes or updates the UI
-            fetchCustomQuestion();
+            fetchInterviewer();
             window.scrollTo({
               top: 400,
               behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
             });
             setState({
-              Custom_Question: "",
-              Required_or_Not: "",
+              interviewerName: "",
               isUpdate: false,
             });
             setMessage("Saved successfully!");
-        setOpen(true);
-        setSeverity("success");
-      } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-      }})
+            setOpen(true);
+            setSeverity("success");
+          } else {
+            setMessage(result.message);
+            setOpen(true);
+            setSeverity("error");
+          }
+        })
         .catch((error) => {
           setMessage(err.message);
           setOpen(true);
@@ -214,11 +200,12 @@ function Custom_Question() {
     }
   };
 
-  const handleCustomQuestionDelete = async () => {
+
+  const handleInterviewerDelete = async () => {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteRecruitment`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteInterviewer`,
         {
           method: "DELETE",
           headers: {
@@ -232,7 +219,7 @@ function Custom_Question() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchCustomQuestion();
+        fetchInterviewer();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -248,7 +235,6 @@ function Custom_Question() {
       setSeverity("error");
     }
   };
-
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
@@ -256,181 +242,145 @@ function Custom_Question() {
     setOpen(false);
   };
 
-  const handleUpdateCustomQuestion = () => {
-    console.log("hii from handleUpdateCustomQuestion")
+
+  const handleUpdateInterviewer = () => {
     const requestData = {
       id: itemToDelete,
-      customQuestion: state.Custom_Question,
-      requirement: state.Required_or_Not.title,
-
-    }
-    console.log(requestData)
-
-    if (state.Custom_Question == "" ||
-      state.Required_or_Not == ""
-    ) {
+      interviewerName: state.interviewerName,
+    };
+  
+    console.log(requestData);
+  
+    if (state.interviewerName === "") {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
     } else {
       axios
         .put(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateRecruitment`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateInterviewer`,
           requestData,
           {
             headers: {
-              /* Your headers here */
-              "Content-Type": "application/json", // Example header
-              Authorization: `Bearer ${token}`, // Example authorization header
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
           }
         )
         .then((response) => {
-          if (response.status == 200) {
-            // Assuming table() refreshes or updates the UI
-            fetchCustomQuestion();
+          if (response.status === 200) {
+            // Refresh the list of interviewers
+            fetchInterviewer();
+  
+            // Scroll smoothly to the top
             window.scrollTo({
               top: 400,
-              behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+              behavior: "smooth",
             });
+  
+            // Clear the form fields and reset isUpdate to false
             setState({
-              Custom_Question: "",
-              Required_or_Not: "",
-              id: "",
-              isUpdate: false,
+              ...state,
+              interviewerName: "", // Clear the interviewer name
+              id: "", // Reset the id
+              isUpdate: false, // Set isUpdate to false
             });
-
+  
+            // Set success message and show notification
             setMessage("Updated successfully!");
             setOpen(true);
             setSeverity("success");
-            // Navigate("/Department");
           } else {
-            setMessage(actualData.message);
+            setMessage(response.data.message);
             setOpen(true);
             setSeverity("error");
           }
-        
         })
         .catch((error) => {
-          setMessage(err.message);
+          setMessage(error.message);
           setOpen(true);
           setSeverity("error");
         });
     }
   };
+  
   console.log(state)
-
+  
+  const handleOpenDialog1 = () => {
+    setOpen1(true);
+  };
+  const handleCloseDialog1 = () => {
+    setState({
+      ...state,
+      interviewerName: "",
+     
+    })
+    setOpen1(false);
+    setisUpdate(true);
+  };
   return (
     <>
-      <PapperBlock title="Custom Question" icon="library_books">
+    <Grid container justifyContent="flex-end">
+  <Button  variant="contained" color="primary" className={classes.button}  onClick={handleOpenDialog1}>
+    Add Interviewer
+  </Button>
+</Grid>
+
+
+      <PapperBlock title="Interviwers Details" icon="library_books">
         <Grid
           container
           spacing={3}
-          alignItems="flex-start"
+          alignItems="center"
           direction="row"
           justifyContent="stretch"
         >
           <Grid item xs={12}>
             <div className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={8}>
                   <TextField
                     fullWidth
                     variant="standard"
-                    id="Custom_Question"
-                    name="Custom_Question"
-                    label="Custom Question"
-                    value={state.Custom_Question}
+                    id="interviewerName"
+                    name="interviewerName"
+                    label="Interviewer Name"
+                    value={state.interviewerName}
                     onChange={(e) =>
-                      setState({ ...state, Custom_Question: e.target.value })
+                      setState({ ...state, interviewerName: e.target.value })
                     }
                   />
                 </Grid>
 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    id="highlights-demo"
-                    options={[
-                      { title: "Required" },
-                      { title: "Not Required" }
-                    ]}
-                    value={state.Required_or_Not}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Required_or_Not: null, // Set it to null when cleared
-                        });
-                      } else {
-                        setState({
-                          ...state,
-                          Required_or_Not: v, // Set the selected object
-                        });
-                      }
-                    }}
-                    getOptionLabel={(option) => option.title || ""} // Safely handle undefined option
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Requirement"
-                        // margin="normal"
-                        variant="standard"
-                      />
-                    )}
-                    renderOption={(props, option, { inputValue }) => {
-                      const matches = match(option.title, inputValue, { insideWords: true });
-                      const parts = parse(option.title, matches);
-
-                      return (
-                        <li {...props}>
-                          <div>
-                            {parts.map((part, index) => (
-                              <span
-                                key={index}
-                                style={{
-                                  fontWeight: part.highlight ? 700 : 400,
-                                }}
-                              >
-                                {part.text}
-                              </span>
-                            ))}
-                          </div>
-                        </li>
-                      );
-                    }}
-                  />
-                </Grid>
-
-              </Grid>
-              {state.isUpdate ? (
-                <>
-                  <Grid container justifyContent="flex-end">
+                <Grid item xs={4} container justifyContent="flex-end">
+                  {state.isUpdate ? (
                     <Button
                       color="primary"
                       variant="contained"
-                      onClick={handleUpdateCustomQuestion}
+                      onClick={handleUpdateInterviewer}
                     >
                       Update
                     </Button>
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <Grid container justifyContent="flex-end">
+                  ) : (
                     <Button
                       color="primary"
                       variant="contained"
-                      onClick={handleSaveCustomQuestion}
+                      onClick={handleSaveInterviewer}
                     >
                       Create
                     </Button>
-                  </Grid>
-                </>
-              )}
+                  )}
+                </Grid>
+              </Grid>
             </div>
           </Grid>
         </Grid>
+        {/* <div>
+          <ModalDemo />
+         
+        </div> */}
       </PapperBlock>
+
 
       {rowdata && (
         <TablePlayground
@@ -446,7 +396,7 @@ function Custom_Question() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCustomQuestionDelete}
+        onDelete={handleInterviewerDelete}
       />
       <Popup
         open={open}
@@ -458,4 +408,4 @@ function Custom_Question() {
   );
 }
 
-export default Custom_Question;
+export default Interviewer;
