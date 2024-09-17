@@ -15,6 +15,13 @@ import Autocomplete from '@mui/material/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
+import { Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import { Editor } from 'react-draft-wysiwyg';
+import { convertFromRaw, EditorState } from "draft-js";
+
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -46,7 +53,16 @@ function Job_Application() {
   // };
 
   const [errors, setErrors] = useState({
-    interviewerName: "",
+    // jobTitle: "",
+    // jobCategory: "",
+    // jobDescription: EditorState.createEmpty(),
+    // createStatus: "",
+    // startDate: "",
+    // endDate: "",
+    // skills: [],
+    // resume: "",
+    // customQuestionID: [],
+    // customQuestion: [],
 
   });
 
@@ -54,8 +70,40 @@ function Job_Application() {
     let isValid = true;
     let errors = {};
 
-    if (!state.interviewerName.trim()) {
-      errors.interviewerName = "Tnterviewer Name is required";
+    if (!state.jobTitle.trim()) {
+      errors.jobTitle = "Job Title is required";
+      isValid = false;
+    }
+    if (!state.jobCategory.trim()) {
+      errors.jobCategory = "Job Category is required";
+      isValid = false;
+    }
+    if (!state.jobDescription.trim()) {
+      errors.jobDescription = "Job Description is required";
+      isValid = false;
+    }
+    if (!state.createStatus.trim()) {
+      errors.createStatus = "Create Status is required";
+      isValid = false;
+    }
+    if (!state.startDate.trim()) {
+      errors.startDate = "Start Date is required";
+      isValid = false;
+    }
+    if (!state.endDate.trim()) {
+      errors.endDate = "End Date is required";
+      isValid = false;
+    }
+    if (!state.skills.trim()) {
+      errors.skills = "Skills is required";
+      isValid = false;
+    }
+    if (!state.resume.trim()) {
+      errors.resume = "Resume is required";
+      isValid = false;
+    }
+    if (!state.customQuestion.trim()) {
+      errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
 
@@ -67,11 +115,11 @@ function Job_Application() {
     jobTitle: "",
     jobCategory: "",
     jobDescription: EditorState.createEmpty(),
-    createStatus: "",
+    createStatus: null,
     startDate: "",
     endDate: "",
     skills: [],
-    resume: "",
+    resume: null,
     customQuestionID: [],
     customQuestion: [],
     searchText: "",
@@ -85,8 +133,18 @@ function Job_Application() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
-  const [cusList, setCusList] = React.useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
+  
+    
+   
+    const [dataEditorState, setEditorState] = useState();
+  
+    const onEditorStateChange = editorStateParam => {
+      setEditorState(editorStateParam);
+    };
+  
+  
 
   const columnData = [
     {
@@ -96,10 +154,40 @@ function Job_Application() {
       label: "Sl No",
     },
     {
-      id: "interviewerName",
+      id: "jobTitle",
       numeric: false,
       disablePadding: false,
-      label: "Interviewer Name",
+      label: "Job Title",
+    },
+    {
+      id: "jobCategory",
+      numeric: false,
+      disablePadding: false,
+      label: "Job Category",
+    },
+    {
+      id: "createStatus",
+      numeric: false,
+      disablePadding: false,
+      label: "Status",
+    },
+    {
+      id: "startDate",
+      numeric: false,
+      disablePadding: false,
+      label: "Start Date",
+    },
+    {
+      id: "endDate",
+      numeric: false,
+      disablePadding: false,
+      label: "End Date",
+    },
+    {
+      id: "resume",
+      numeric: false,
+      disablePadding: false,
+      label: "Resume",
     },
 
     { id: "actions", label: "Action" },
@@ -107,7 +195,41 @@ function Job_Application() {
 
   useEffect(() => {
     fetchJobCreate();
+    table1();
   }, []);
+
+  const [customQuestionList, setCustomQuestionList] = React.useState([]);
+  const table1 = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      const requestOptions = {
+        method: "GET",
+        headers: loginHeaders,
+      };
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getRecruitments`,
+        requestOptions
+      );
+      const actualData = await res.json();
+      if (Array.isArray(actualData.recruitments)) {
+        const newobj = actualData.recruitments.map((item) => ({
+          title: item.customQuestion, // Set the title from channelName
+          id: item._id, // Set the id from _id
+        }));
+        setCustomQuestionList(newobj);
+      }
+    } catch (err) {
+      //console.log(err);
+    }
+  };
 
   const fetchJobCreate = () => {
     axios
@@ -124,11 +246,11 @@ function Job_Application() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus,
+              createStatus: { title: item.createStatus },
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume,
+              resume: { title: item.resume },
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -194,7 +316,7 @@ function Job_Application() {
       state.skills == "" ||
       state.resume == "" ||
       state.customQuestionID == "" ||
-      state.customQuestion == "" 
+      state.customQuestion == ""
 
     ) {
       toast.error("Fill all the information", {
@@ -212,12 +334,12 @@ function Job_Application() {
             jobDescription: JSON.stringify(
               convertToRaw(state.jobDescription.getCurrentContent())
             ),
-            createStatus: state.createStatus,
+            createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
             endDate: state.endDate,
             skills: state.skills,
-            resume: state.resume,
+            resume: state.resume.title,
             customQuestionID: state.customQuestionID,
             customQuestion: state.customQuestion,
 
@@ -321,19 +443,28 @@ function Job_Application() {
       jobDescription: JSON.stringify(
         convertToRaw(state.jobDescription.getCurrentContent())
       ),
-      createStatus: state.createStatus,
+      createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
       endDate: state.endDate,
       skills: state.skills.join(","),
-      resume: state.resume,
+      resume: state.resume.title,
       customQuestionID: state.customQuestionID,
       customQuestion: state.customQuestion,
     };
 
     console.log(requestData);
 
-    if (state.interviewerName === "") {
+    if (state.jobTitle == "" ||
+      state.jobCategory == "" ||
+      state.jobDescription == "" ||
+      state.createStatus == "" ||
+      state.startDate == "" ||
+      state.endDate == "" ||
+      state.skills == "" ||
+      state.resume == "" ||
+      state.customQuestionID == "" ||
+      state.customQuestion == "") {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
@@ -402,112 +533,196 @@ function Job_Application() {
 
   console.log(state)
 
+  const handleInputChange = (e) => {
+    setState({
+        ...state,
+        inputSkill: e.target.value,
+    });
+};
+const handleKeyDown = (e) => {
+    if (e.key === "Enter" && state.inputSkill.trim()) {
+        setState({
+            ...state,
+            skills: [...state.skills, state.inputSkill.trim()],
+            inputSkill: "",
+        });
+    } else if (e.key === "Backspace" && !state.inputSkill) {
+        setState({
+            ...state,
+            skills: state.skills.slice(0, -1),
+        });
+    }
+};
+const handleSkillDelete = (skillToDelete) => () => {
+    setState((prevState) => ({
+        ...prevState,
+        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+    }));
+};
+
+
   return (
     <>
-      <PapperBlock title="Job Create Details" icon="library_books">
-        <Grid container spacing={3} alignItems="center" direction="row" justifyContent="stretch">
-          <Grid item xs={12}>
+
+      <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Job
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>
+            Job Details
+          </DialogTitle>
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={() => setOpenDialog(false)}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
-              <Grid container spacing={2} alignItems="center">
+              <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
+                    id="jobTitle"
+                    name="jobTitle"
                     label="Job Title"
                     value={state.jobTitle}
+                    // onChange={(e) => {
+                    //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
+                    //   if (regex.test(e.target.value)) {
+                    //     setState({ ...state, campaignName: e.target.value });
+                    //   }
+                    // }}
                     onChange={(e) =>
                       setState({
                         ...state,
                         jobTitle: e.target.value,
                       })
                     }
+                    error={!!errors.jobTitle} // Show error if it exists
+                    helperText={errors.jobTitle} // Display error message
                   />
-                  {validationErrors.jobTitle && (
-                    <Typography color="error">
-                      {validationErrors.jobTitle}
-                    </Typography>
-                  )}
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
+                    id="jobCategory"
+                    name="jobCategory"
                     label="Job Category"
                     value={state.jobCategory}
+                    // onChange={(e) => {
+                    //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
+                    //   if (regex.test(e.target.value)) {
+                    //     setState({ ...state, campaignName: e.target.value });
+                    //   }
+                    // }}
                     onChange={(e) =>
                       setState({
                         ...state,
                         jobCategory: e.target.value,
                       })
                     }
+                    error={!!errors.jobCategory} // Show error if it exists
+                    helperText={errors.jobCategory} // Display error message
                   />
-                  {validationErrors.jobCategory && (
-                    <Typography color="error">
-                      {validationErrors.jobCategory}
-                    </Typography>
-                  )}
                 </Grid>
 
                 <Grid item xs={6}>
-                  <TextField
-                    select
-                    fullWidth
-                    variant="standard"
-                    label="Create Status"
-                    value={state.createStatus}
-                    onChange={(e) =>
+                  <Autocomplete
+                    sx={{
+                      marginTop: "-16px"
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Active" },
+                      { title: "Inactive" },
+
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.createStatus} // Ensure value is an object or null
+                    onChange={(e, v) => {
                       setState({
                         ...state,
-                        createStatus: e.target.value,
-                      })
-                    }
-                    SelectProps={{
-                      native: true,
+                        createStatus: v ? v : null, // Set campaignStatus to the selected object or null
+                      });
                     }}
-                  >
-                    <option value={"Active"}>Active</option>
-                    <option value={"Inactive"}>Inactive</option>
-                  </TextField>
-                  {validationErrors.createStatus && (
-                    <Typography color="error">
-                      {validationErrors.createStatus}
-                    </Typography>
-                  )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Create Status"
+                        margin="normal"
+                        variant="standard"
+                        error={!!errors.createStatus} // Show error if it exists
+                        helperText={errors.createStatus} // Display error message
+                      />
+                    )}
+                  />
                 </Grid>
-
                 <Grid item xs={6}>
-                  <TextField
-                    select
-                    fullWidth
-                    variant="standard"
-                    label="Resume"
-                    value={state.resume}
-                    onChange={(e) =>
+                  <Autocomplete
+                    sx={{
+                      marginTop: "-16px"
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Required" },
+                      { title: "Not required" },
+
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.resume} // Ensure value is an object or null
+                    onChange={(e, v) => {
                       setState({
                         ...state,
-                        resume: e.target.value,
-                      })
-                    }
-                    SelectProps={{
-                      native: true,
+                        resume: v ? v : null, // Set campaignStatus to the selected object or null
+                      });
                     }}
-                  >
-                    <option value={"Required"}>Required</option>
-                    <option value={"Not required"}>Not required</option>
-                  </TextField>
-                  {validationErrors.resume && (
-                    <Typography color="error">
-                      {validationErrors.resume}
-                    </Typography>
-                  )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Resume"
+                        margin="normal"
+                        variant="standard"
+                        error={!!errors.resume} // Show error if it exists
+                        helperText={errors.resume} // Display error message
+                      />
+                    )}
+                  />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
-                    label="Type a skill and press Enter"
+                    id="skills"
+                    name="skills"
+                    label="Skills"
                     value={state.inputSkill}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
@@ -519,148 +734,163 @@ function Job_Application() {
                         label={skill}
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
+
+                        error={!!errors.resume} // Show error if it exists
+                        helperText={errors.resume}
                       />
                     ))}
-                    {validationErrors.skills && (
-                      <Typography color="error">
-                        {validationErrors.skills}
-                      </Typography>
-                    )}
                   </div>
                 </Grid>
 
                 <Grid item xs={6}>
-                  <TextField
-                    select
-                    fullWidth
-                    variant="standard"
-                    label="Custom Question"
+                  <Autocomplete
+                    multiple
+                    id="tags-standard"
+                    options={customQuestionList}
                     value={state.customQuestion}
-                    onChange={(e) => {
-                      const selectedDept = cusList.find(
-                        (item) => item.customQuestion === e.target.value
-                      );
-                      if (!state.customQuestionID.includes(selectedDept._id)) {
-                        setState({
-                          ...state,
-                          customQuestion: [...state.customQuestion, e.target.value],
-                          customQuestionID: [
-                            ...state.customQuestionID,
-                            selectedDept._id ? selectedDept._id : null,
-                          ],
-                        });
-                      }
+                    // isOptionEqualToValue={(option, value) =>
+                    //   option.id === value.id
+                    // }
+                    onChange={(e, v) => {
+                      const selectedCustomquestionIds = v.map((item) => item.id);
+                      setState({
+                        ...state,
+                        customQuestion: v, // Store selected objects
+                        customQuestionID: selectedCustomquestionIds, // Store IDs
+                      });
                     }}
-                    SelectProps={{
-                      native: true,
-                    }}
-                  >
-                    {cusList?.map((item) => (
-                      <option key={item._id} value={item.customQuestion}>
-                        {item.customQuestion}
-                      </option>
-                    ))}
-                  </TextField>
-                  {validationErrors.customQuestion && (
-                    <Typography color="error">
-                      {validationErrors.customQuestion}
-                    </Typography>
-                  )}
-                  <div style={{ marginTop: 10 }}>
-                    {state.customQuestion?.map((ques, index) => (
-                      <Chip
-                        key={index}
-                        label={ques}
-                        onDelete={handleQuestionDelete(ques)}
-                        style={{ marginRight: 10, marginBottom: 10 }}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label="Custom Question"
+                        
+                        error={!!errors.customQuestion} // Show error if it exists
+                        helperText={errors.customQuestion} // Display error message
                       />
-                    ))}
-                  </div>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    type="date"
-                    label="Job Application Start"
-                    value={state.startDate}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        startDate: e.target.value,
-                      })
-                    }
-                  />
-                  {validationErrors.startDate && (
-                    <Typography color="error">
-                      {validationErrors.startDate}
-                    </Typography>
-                  )}
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    type="date"
-                    label="Job Application End"
-                    value={state.endDate}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        endDate: e.target.value,
-                      })
-                    }
-                  />
-                  {validationErrors.endDate && (
-                    <Typography color="error">
-                      {validationErrors.endDate}
-                    </Typography>
-                  )}
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Typography>Job Description</Typography>
-                  <Editor
-                    editorState={state.jobDescription}
-                    onEditorStateChange={(e) =>
-                      setState({
-                        ...state,
-                        jobDescription: e,
-                      })
-                    }
-                  />
-                  {validationErrors.jobDescription && (
-                    <Typography color="error">
-                      {validationErrors.jobDescription}
-                    </Typography>
-                  )}
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Grid container justifyContent="flex-end">
-                    {state.isUpdate ? (
-                      <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => handleUpdateCRM(state.id)}
-                      >
-                        Update
-                      </Button>
-                    ) : (
-                      <Button variant="contained" onClick={handleCreateEMP}>
-                        Create
-                      </Button>
                     )}
-                  </Grid>
+                  />
                 </Grid>
+
+               
+                <Grid item xs={6} style={{}}>
+                  <Autocomplete
+                    options={[]} // Optional: Add predefined date options here if needed
+                    freeSolo // Allows users to input custom dates freely
+                    value={state.startDate}
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        startDate: v,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Start Date"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true, // Keeps the label visible even when a date is selected
+                        }}
+                        onChange={(e) =>
+                          setState({
+                            ...state,
+                            startDate: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6} >
+                  <Autocomplete
+                    options={[]} // Optional: Add predefined date options here if needed
+                    freeSolo // Allows users to input custom dates freely
+                    value={state.endDate}
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        endDate: v,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="End Date"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true, // Keeps the label visible even when a date is selected
+                        }}
+                        onChange={(e) =>
+                          setState({
+                            ...state,
+                            endDate: e.target.value,
+                          })
+                        }
+                      />
+                    )}
+                  />
+                </Grid> 
+                 <Grid item xs={12}>
+  <Typography variant="subtitle1" gutterBottom>
+    Job Description
+  </Typography>
+  
+  <Paper elevation={3} style={{ padding: '16px', marginTop: '8px' }}>
+    
+      <Editor
+            editorState={dataEditorState}
+            editorClassName={classes.textEditor}
+            toolbarClassName={classes.toolbarEditor}
+            
+            onEditorStateChange={(e) =>
+        setState({
+          ...state,
+          jobDescription: e,
+        })
+      }
+    />
+  </Paper>
+</Grid>
+
+
               </Grid>
             </div>
-          </Grid>
-        </Grid>
-      </PapperBlock>
+          </DialogContent>
+          <DialogActions>
+            {state.isUpdate ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpdateJobs}
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleSaveJobs}
+                >
+                  Create
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
+
+      
       {rowdata && (
         <TablePlayground
           columnData={columnData}
@@ -675,7 +905,7 @@ function Job_Application() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleInterviewerDelete}
+        onDelete={handleJobsDelete}
       />
       <Popup
         open={open}
@@ -685,6 +915,6 @@ function Job_Application() {
       />
     </>
   );
-}
+};
 
 export default Job_Application;

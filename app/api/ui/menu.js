@@ -78,7 +78,7 @@ module.exports = [
         key: "Job_Application",
         name: "Job Application",
         link: "/app/Job_Application",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
     ],
