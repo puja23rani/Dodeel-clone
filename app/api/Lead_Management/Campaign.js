@@ -175,7 +175,7 @@ function Campaign() {
         setEmpList(newobj);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 
@@ -206,7 +206,7 @@ function Campaign() {
       }
 
       const actualData = await res.json();
-      console.log(actualData, "ressss");
+      //console.log(actualData, "ressss");
       // Check if actualData.data is an array
       if (Array.isArray(actualData.data)) {
         // Map the data to an array of objects with 'title' and 'id'
@@ -214,7 +214,7 @@ function Campaign() {
           title: item.channelName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
-        console.log(newobj, "neee");
+        //console.log(newobj, "neee");
         // Update state with the new array of objects
         setChannelList(newobj);
         // setChannelList(actualData.data);
@@ -224,7 +224,7 @@ function Campaign() {
         throw new Error("Data format is incorrect");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 
@@ -363,7 +363,7 @@ function Campaign() {
         setSeverity("error");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -400,7 +400,7 @@ function Campaign() {
         setItemToDelete(null);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -449,7 +449,7 @@ function Campaign() {
         );
 
         const actualData = await res.json();
-        console.log(actualData);
+        //console.log(actualData);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchCampaign();
@@ -479,7 +479,7 @@ function Campaign() {
         }
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       // toast.error("Failed to save. Please try again.", {
       //   position: "top-center",
       // });
@@ -514,7 +514,7 @@ function Campaign() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  console.log(state, "sssssss");
+  //console.log(state, "sssssss");
   return (
     <>
       <div>

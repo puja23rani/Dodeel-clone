@@ -1,16 +1,16 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import brand from 'enl-api/dummy/brand';
-import { ResetForm } from 'enl-components';
-import useStyles from '../../../components/Forms/user-jss';
+import React from "react";
+import { Helmet } from "react-helmet";
+import brand from "enl-api/dummy/brand";
+import { ResetForm } from "enl-components";
+import useStyles from "../../../components/Forms/user-jss";
 
 function ResetPassword() {
   const { classes } = useStyles();
-  const title = brand.name + ' - Reset Password';
+  const title = brand.name + " - Reset Password";
   const description = brand.desc;
 
   const submitForm = (values) => {
-    console.log('You submitted:' + JSON.stringify(values, null, 2));
+    //console.log('You submitted:' + JSON.stringify(values, null, 2));
   };
 
   return (

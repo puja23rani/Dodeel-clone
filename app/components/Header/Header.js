@@ -139,8 +139,8 @@ function Header(props) {
           </span>
           {!mdDown && (
             <NavLink to="/app" className={cx(classes.brand, classes.brandBar)}>
-              <img src={logo} alt={brand.name} />
-              {brand.name}
+              <img src={logo} alt="Dodeel" />
+              Dodeel
             </NavLink>
           )}
         </div>
