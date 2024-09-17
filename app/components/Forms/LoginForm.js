@@ -122,22 +122,6 @@ function LoginForm(props) {
         </Button>
       </div>
 
-      <div className={classes.topBar}>
-        <Typography variant="h4" className={classes.title}>
-          <FormattedMessage {...messages.login} />
-        </Typography>
-        <Button
-          size="small"
-          className={classes.buttonLink}
-          component={LinkBtn}
-          to={link}
-        >
-          <Icon className={cx(classes.icon, classes.signArrow)}>
-            arrow_forward
-          </Icon>
-          <FormattedMessage {...messages.createNewAccount} />
-        </Button>
-      </div>
       {messagesAuth !== null || "" ? (
         <MessagesForm
           variant="error"

@@ -12,7 +12,18 @@ import { PapperBlock } from "enl-components";
 import TablePlayground from "../../containers/Tables/TablePlayground";
 import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 
+import AddIcon from "@mui/icons-material/Add";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -64,7 +75,14 @@ function Log_Notes() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
   const columnData = [
+    {
+      id: "slNo",
+      numeric: true,
+      disablePadding: false,
+      label: "Sl No",
+    },
     {
       id: "notes",
       numeric: false,
@@ -88,9 +106,9 @@ function Log_Notes() {
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
+              slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
               notes: item.noteDescription,
-
               actions: (
                 <>
                   <IconButton
@@ -100,6 +118,7 @@ function Log_Notes() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
+                      setOpenDialog(true);
                       setItemToDelete(item._id);
                       setState({
                         Notes: item.noteDescription,
@@ -170,6 +189,7 @@ function Log_Notes() {
         });
         setMessage("Saved successfully!");
         setOpen(true);
+        setOpenDialog(false);
         setSeverity("success");
       } else {
         setMessage(result.message);
@@ -241,6 +261,7 @@ function Log_Notes() {
         setMessage("Please fill all required fields");
         setOpen(true);
         setSeverity("warning");
+
         return;
       } else {
         const requestOptions = {
@@ -271,6 +292,7 @@ function Log_Notes() {
           setOpen(true);
           setSeverity("success");
           // Navigate("/Department");
+          setOpenDialog(false);
         } else {
           setMessage(actualData.message);
           setOpen(true);
@@ -292,62 +314,100 @@ function Log_Notes() {
   };
   return (
     <>
-      <PapperBlock title="Log Notes" icon="library_books">
-        <Grid
-          container
-          spacing={3}
-          alignItems="flex-start"
-          direction="row"
-          justifyContent="stretch"
+      <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Log Note
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
+
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="md"
         >
-          <Grid item xs={12}>
+          <DialogTitle>
+            Lead Status
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setOpenDialog(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="Notes"
-                    name="Notes"
-                    label="Notes"
-                    value={state.Notes}
-                    onChange={(e) =>
-                      setState({ ...state, Notes: e.target.value })
-                    }
-                    error={!!errors.Notes}
-                    helperText={errors.Notes}
-                  />
+              <Grid
+                container
+                spacing={3}
+                alignItems="flex-start"
+                direction="row"
+                justifyContent="stretch"
+              >
+                <Grid item xs={12}>
+                  <div className={classes.form}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="Notes"
+                          name="Notes"
+                          label="Notes"
+                          value={state.Notes}
+                          onChange={(e) =>
+                            setState({ ...state, Notes: e.target.value })
+                          }
+                          error={!!errors.Notes}
+                          helperText={errors.Notes}
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
                 </Grid>
               </Grid>
-              {state.isUpdate ? (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleUpdateLeadStatus}
-                    >
-                      Update
-                    </Button>
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleCreateLeadStatus}
-                    >
-                      Create
-                    </Button>
-                  </Grid>
-                </>
-              )}
             </div>
-          </Grid>
-        </Grid>
-      </PapperBlock>
+          </DialogContent>
+          <DialogActions>
+            {state.isUpdate ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpdateLeadStatus}
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleCreateLeadStatus}
+                >
+                  Create
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
       {rowdata && (
         <TablePlayground

@@ -23,6 +23,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
+
+import AddIcon from "@mui/icons-material/Add";
+
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -113,8 +119,13 @@ function Campaign() {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-
   const columnData = [
+    {
+      id: "slNo",
+      numeric: true,
+      disablePadding: false,
+      label: "Sl No",
+    },
     {
       id: "campaignName",
       numeric: false,
@@ -232,6 +243,7 @@ function Campaign() {
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
+              slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
               campaignName: item.campaignName,
               status: item.campaignStatus,
@@ -505,15 +517,22 @@ function Campaign() {
   console.log(state, "sssssss");
   return (
     <>
-      <PapperBlock title="Campaign" icon="library_books">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenDialog(true)}
-        >
-          Add a Campaign
-        </Button>
-
+      <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Campaign
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}
@@ -733,7 +752,7 @@ function Campaign() {
             </Button>
           </DialogActions>
         </Dialog>
-      </PapperBlock>
+      </div>
 
       {rowdata && (
         <TablePlayground
