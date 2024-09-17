@@ -91,6 +91,7 @@ import {
   Interviewer,
   Job_Create,
   Job_Application,
+  Campaign,
 } from "../pageListAsync";
 
 
@@ -220,6 +221,7 @@ function Application(props) {
         <Route path="/Job_Create" element={<Job_Create />} />
         <Route path="/Job_Application" element={<Job_Application />} />
         
+        <Route path="lead/Campaign" element={<Campaign />} />
       </Routes>
     </Dashboard>
   );

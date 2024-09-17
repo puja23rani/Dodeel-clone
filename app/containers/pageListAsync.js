@@ -411,3 +411,9 @@ export const Channel = loadable(
   );
   
   // ---------------------------------------------------------------
+export const Campaign = loadable(
+  () => import("../api/Lead_Management/Campaign"),
+  {
+    fallback: <Loading />,
+  }
+);
