@@ -28,6 +28,8 @@ function TablePlayground(props) {
     onPageChange, // Function from parent to handle page change
     onRowsPerPageChange, // Function from parent to handle rows per page change
     title,
+    pagination,
+    count,
   } = props;
 
   const [selected, setSelected] = useState([]);
@@ -102,31 +104,67 @@ function TablePlayground(props) {
                   checkcell={toolbarOptions.checkcell}
                 />
                 <TableBody>
-                  {rowData
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((n) => {
-                      const isSelected = thisIsSelected(n.id);
-                      return (
-                        <TableRow
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={n.id}
-                          onClick={(event) => handleClick(event, n.id)}
-                        >
-                          {toolbarOptions.checkcell && (
-                            <TableCell padding="checkbox" align="left">
-                              <Checkbox checked={isSelected} />
-                            </TableCell>
-                          )}
-                          {renderCell(
-                            n,
-                            columnData.filter((col) => col.id !== "actions")
-                          )}
-                          {/* Manually render the action buttons for the "Action" column */}
-                          <TableCell align="center">{n.actions}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                  {pagination ? (
+                    <>
+                      {" "}
+                      {rowData.map((n) => {
+                        const isSelected = thisIsSelected(n.id);
+                        return (
+                          <TableRow
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={n.id}
+                            onClick={(event) => handleClick(event, n.id)}
+                          >
+                            {toolbarOptions.checkcell && (
+                              <TableCell padding="checkbox" align="left">
+                                <Checkbox checked={isSelected} />
+                              </TableCell>
+                            )}
+                            {renderCell(
+                              n,
+                              columnData.filter((col) => col.id !== "actions")
+                            )}
+                            {/* Manually render the action buttons for the "Action" column */}
+                            <TableCell align="center">{n.actions}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      {rowData
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((n) => {
+                          const isSelected = thisIsSelected(n.id);
+                          return (
+                            <TableRow
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={n.id}
+                              onClick={(event) => handleClick(event, n.id)}
+                            >
+                              {toolbarOptions.checkcell && (
+                                <TableCell padding="checkbox" align="left">
+                                  <Checkbox checked={isSelected} />
+                                </TableCell>
+                              )}
+                              {renderCell(
+                                n,
+                                columnData.filter((col) => col.id !== "actions")
+                              )}
+                              {/* Manually render the action buttons for the "Action" column */}
+                              <TableCell align="center">{n.actions}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </>
+                  )}
+
                   {/* {emptyRows > 0 && (
                     <TableRow style={{ height: 49 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -135,15 +173,34 @@ function TablePlayground(props) {
                 </TableBody>
               </Table>
             </div>
-            {toolbarOptions.pagination && (
-              <TablePagination
-                component="div"
-                count={rowData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={onPageChange}
-                onRowsPerPageChange={onRowsPerPageChange}
-              />
+            {pagination ? (
+              <>
+                {" "}
+                {toolbarOptions.pagination && (
+                  <TablePagination
+                    component="div"
+                    count={count}
+                    rowsPerPage={rowsPerPage}
+                    page={page - 1}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                {" "}
+                {toolbarOptions.pagination && (
+                  <TablePagination
+                    component="div"
+                    count={rowData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                  />
+                )}
+              </>
             )}
           </Paper>
         </Grid>
@@ -170,8 +227,10 @@ TablePlayground.propTypes = {
   rowData: PropTypes.array.isRequired, // New Prop
   page: PropTypes.number.isRequired, // New Prop
   rowsPerPage: PropTypes.number.isRequired, // New Prop
+  count: PropTypes.number.isRequired, // New Prop
   onPageChange: PropTypes.func.isRequired, // New Prop
   onRowsPerPageChange: PropTypes.func.isRequired, // New Prop
+  pagination: PropTypes.bool,
 };
 
 TablePlayground.defaultProps = {

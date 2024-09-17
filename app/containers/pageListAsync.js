@@ -412,3 +412,15 @@ export const Campaign = loadable(
     fallback: <Loading />,
   }
 );
+export const NewLead = loadable(
+  () => import("../api/Lead_Management/New_lead"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const LeadMembers = loadable(
+  () => import("../api/Lead_Management/LeadMemebers"),
+  {
+    fallback: <Loading />,
+  }
+);

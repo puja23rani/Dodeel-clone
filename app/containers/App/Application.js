@@ -92,8 +92,9 @@ import {
   Job_Create,
   Job_Application,
   Campaign,
+  NewLead,
+  LeadMembers,
 } from "../pageListAsync";
-
 
 function Application(props) {
   const { history } = props;
@@ -212,15 +213,15 @@ function Application(props) {
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
-        <Route path="lead/Channel" element={<Channel />} />
-  
-       
+        <Route path="lead/channel" element={<Channel />} />
+        <Route path="lead/campaign" element={<Campaign />} />
+        <Route path="lead/new-lead" element={<NewLead />} />
+        <Route path="lead/lead-members" element={<LeadMembers />} />
+
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/Job_Application" element={<Job_Application />} />
-        
-        <Route path="lead/Campaign" element={<Campaign />} />
       </Routes>
     </Dashboard>
   );
