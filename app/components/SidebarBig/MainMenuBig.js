@@ -93,7 +93,8 @@ function MainMenuBig(props) { // eslint-disable-line
             )
           }
         >
-          <Icon className={classes.icon}>{item.icon}</Icon>
+          {/* <Icon className={classes.icon}>{item.icon}</Icon> */}
+          <img src={item.icon} alt='Menuicon' style={{width: 24, height: 24}}/>
           <span className={classes.text}>
             {
               messages[item.key] !== undefined
@@ -113,7 +114,9 @@ function MainMenuBig(props) { // eslint-disable-line
         to={item.linkParent}
         onClick={() => handleLoadSingleMenu(item.key)}
       >
-        <Icon className={classes.icon}>{item.icon}</Icon>
+        {/* <Icon className={classes.icon}>{item.icon}</Icon> */}
+        <img src={item.icon} alt='Menuicon' style={{width: 24, height: 24}}/>
+
         <span className={classes.text}>
           {
             messages[item.key] !== undefined
@@ -151,7 +154,9 @@ function MainMenuBig(props) { // eslint-disable-line
         onClick={() => handleLoadPage()}
       >
         <ListItemIcon>
-          <Icon className={classes.icon}>{item.icon}</Icon>
+          {/* <Icon className={classes.icon}>{item.icon}</Icon> */}
+          <img src={item.icon} alt='Menuicon' style={{width: 18, height: 18}}/>
+
         </ListItemIcon>
         <ListItemText
           className={classes.text}

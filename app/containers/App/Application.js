@@ -85,10 +85,15 @@ import {
   StreetViewMap,
   NotFound,
   LeadStatus,
+  Custom_Question,
   LogNotes,
   Channel,
+  Interviewer,
+  Job_Create,
+  Job_Application,
   Campaign,
 } from "../pageListAsync";
+
 
 function Application(props) {
   const { history } = props;
@@ -205,8 +210,17 @@ function Application(props) {
         {/* Lead Pages */}
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
+        <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
         <Route path="lead/Channel" element={<Channel />} />
+  
+       
+        {/* Recruitment Pages */}
+        <Route path="/Custom_Question" element={<Custom_Question />} />
+        <Route path="/Interviewer" element={<Interviewer />} />
+        <Route path="/Job_Create" element={<Job_Create />} />
+        <Route path="/Job_Application" element={<Job_Application />} />
+        
         <Route path="lead/Campaign" element={<Campaign />} />
       </Routes>
     </Dashboard>

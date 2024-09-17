@@ -1,8 +1,10 @@
+const { LogoIcon } = require("../../../Assets/Index");
+
 module.exports = [
   {
     key: "Lead",
     name: "Lead",
-    icon: "home",
+    icon: LogoIcon,
     child: [
       {
         key: "Lead_Settings",
@@ -13,21 +15,21 @@ module.exports = [
         key: "Lead_Status",
         name: "Lead Status",
         link: "/app/lead/lead-status",
-        icon: "business",
+        icon: LogoIcon,
         badge: "Hot",
       },
       {
         key: "Log_Notes",
         name: "Log Notes",
         link: "/app/lead/log-notes",
-        icon: "business",
+        icon: LogoIcon,
         badge: "Hot",
       },
       {
         key: "Channel",
         name: "Channel",
         link: "/app/lead/Channel",
-        icon: "business",
+        icon: LogoIcon,
         badge: "Hot",
       },
       {
@@ -38,19 +40,19 @@ module.exports = [
       {
         key: "Campaign",
         name: "Campaign",
-        icon: "settings_brightness",
-        link: "/app/lead/Campaign",
+        icon: LogoIcon,
+        link: "/app",
       },
       {
         key: "NewLead",
         name: "New Lead",
-        icon: "settings_system_daydream",
+        icon: LogoIcon,
         link: "/app/dashboard/marketing",
       },
       {
         key: "Lead_Members",
         name: "Lead Members",
-        icon: "local_atm",
+        icon: LogoIcon,
         link: "/app/dashboard/crypto",
       },
       // {
@@ -130,4 +132,41 @@ module.exports = [
       // },
     ],
   },
+  {
+    key: "Recruitments",
+    name: "Recruitments",
+    icon: LogoIcon,
+    child: [
+      {
+        key: "Custom_Question",
+        name: "Custom Question",
+        link: "/app/Custom_Question",
+        icon: LogoIcon,
+        badge: "Hot",
+      },
+      {
+        key: "Interviewer",
+        name: "Interviewer",
+        link: "/app/Interviewer",
+        icon: LogoIcon,
+        badge: "Hot",
+      },
+      {
+        key: "Job_Create",
+        name: "Job Create",
+        link: "/app/Job_Create",
+        icon: LogoIcon,
+        badge: "Hot",
+      },
+      // {
+      //   key: "Log_Notes",
+      //   name: "Log Notes",
+      //   link: "/",
+      //   icon: "business",
+      //   badge: "Hot",
+      // },
+      
+    ],
+  },
 ];
+
