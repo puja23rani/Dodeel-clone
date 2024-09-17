@@ -18,8 +18,6 @@ import Popup from "../../../components/Popup/Popup";
 import { convertFromRaw, EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { FormLabel, Typography } from "@mui/material";
-import ReactQuill from "react-quill";
-
 
 const useStyles = makeStyles()((theme) => ({
     root: {

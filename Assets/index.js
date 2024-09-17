@@ -1,1 +1,1 @@
-export {default as LogoIcon} from "./Images/LogoIcon.png"
+export {default as DoddleLogo} from "./Images/DoddleLogo.png";
