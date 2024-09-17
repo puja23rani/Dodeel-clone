@@ -1,7 +1,7 @@
 module.exports = {
-  name: 'Doddle',
-  desc: 'Doddle - For real-estate CRM dashboard',
-  prefix: 'doddle',
-  footerText: 'Doddle All Rights Reserved 2023',
-  logoText: 'Doddle',
+  name: 'Dodeel',
+  desc: 'Dodeel - For real-estate CRM dashboard',
+  prefix: 'dodeel',
+  footerText: 'Dodeel All Rights Reserved 2023',
+  logoText: 'Dodeel',
 };

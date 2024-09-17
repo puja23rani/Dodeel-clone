@@ -640,7 +640,9 @@ function Campaign() {
                 </Grid>
                 <Grid item xs={6}>
                   <Autocomplete
-                    multiple
+                    sx={{
+                      marginTop: "-16px"
+                    }}
                     id="highlights-demo"
                     options={[
                       { title: "Active" },
@@ -648,7 +650,7 @@ function Campaign() {
                       { title: "Completed" },
                     ]}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.channelName} // Ensure value is an object or null
+                    value={state.campaignStatus} // Ensure value is an object or null
                     onChange={(e, v) => {
                       setState({
                         ...state,
@@ -659,8 +661,8 @@ function Campaign() {
                       <TextField
                         {...params}
                         label="Campaign Status"
+                        margin="normal"
                         variant="standard"
-                        placeholder="Favorites"
                         error={!!errors.campaignStatus} // Show error if it exists
                         helperText={errors.campaignStatus} // Display error message
                       />
