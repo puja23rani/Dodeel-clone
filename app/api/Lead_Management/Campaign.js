@@ -372,9 +372,9 @@ function Campaign() {
 
   const handleCampaignDelete = async () => {
     try {
-      const data = { id: itemToDelete };
+      const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteChannel`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCampaign`,
         {
           method: "DELETE",
           headers: {
@@ -421,7 +421,7 @@ function Campaign() {
         loginHeaders.append("Authorization", `Bearer ${token}`);
       }
       const data = {
-        id: itemToDelete,
+        id: parseInt(itemToDelete), // id from itemToDelete,
         campaignName: state.campaignName, // campaignName from state
         membersID: state.membersID, // membersID from state
         fields: state.fieldset.map((field) => ({
