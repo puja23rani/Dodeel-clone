@@ -12,7 +12,18 @@ import { PapperBlock } from "enl-components";
 import TablePlayground from "../../containers/Tables/TablePlayground";
 import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 
+import AddIcon from "@mui/icons-material/Add";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -72,7 +83,14 @@ function Channel() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
   const columnData = [
+    {
+      id: "slNo",
+      numeric: true,
+      disablePadding: false,
+      label: "Sl No",
+    },
     {
       id: "channelName",
       numeric: false,
@@ -101,6 +119,7 @@ function Channel() {
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
+              slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
               channelName: item.channelName,
               approxBudget: item.approxBudget,
@@ -119,6 +138,7 @@ function Channel() {
                         ApproxBudget: item.approxBudget,
                         isUpdate: true,
                       });
+                      setOpenDialog(true);
                     }}
                   >
                     <EditIcon />
@@ -184,6 +204,7 @@ function Channel() {
         setMessage("Saved successfully!");
         setOpen(true);
         setSeverity("success");
+        setOpenDialog(false);
       } else {
         setMessage(result.message);
         setOpen(true);
@@ -288,6 +309,7 @@ function Channel() {
           setMessage("Updated successfully!");
           setOpen(true);
           setSeverity("success");
+          setOpenDialog(false);
           // Navigate("/Department");
         } else {
           setMessage(actualData.message);
@@ -319,83 +341,120 @@ function Channel() {
   };
   return (
     <>
-      <PapperBlock title="Channel" icon="library_books">
-        <Grid
-          container
-          spacing={3}
-          alignItems="flex-start"
-          direction="row"
-          justifyContent="stretch"
+      <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Channel
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="md"
         >
-          <Grid item xs={12}>
+          <DialogTitle>
+            Lead Status
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setOpenDialog(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="Channel"
-                    name="Channel"
-                    label="Channel"
-                    value={state.Channel}
-                    onChange={(e) => {
-                      const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
-                      if (regex.test(e.target.value)) {
-                        setState({ ...state, Channel: e.target.value });
-                      }
-                    }}
-                    error={!!errors.Channel}
-                    helperText={errors.Channel}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="ApproxBudget"
-                    name="ApproxBudget"
-                    label="Approx Budget"
-                    value={state.ApproxBudget}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Remove any non-digit characters
-                      const numericValue = value.replace(/[^0-9]/g, "");
-                      setState({ ...state, ApproxBudget: numericValue });
-                    }}
-                    error={!!errors.ApproxBudget}
-                    helperText={errors.ApproxBudget}
-                  />
+              <Grid
+                container
+                spacing={3}
+                alignItems="flex-start"
+                direction="row"
+                justifyContent="stretch"
+              >
+                <Grid item xs={12}>
+                  <div className={classes.form}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="Channel"
+                          name="Channel"
+                          label="Channel"
+                          value={state.Channel}
+                          onChange={(e) => {
+                            const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
+                            if (regex.test(e.target.value)) {
+                              setState({ ...state, Channel: e.target.value });
+                            }
+                          }}
+                          error={!!errors.Channel}
+                          helperText={errors.Channel}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="ApproxBudget"
+                          name="ApproxBudget"
+                          label="Approx Budget"
+                          value={state.ApproxBudget}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            // Remove any non-digit characters
+                            const numericValue = value.replace(/[^0-9]/g, "");
+                            setState({ ...state, ApproxBudget: numericValue });
+                          }}
+                          error={!!errors.ApproxBudget}
+                          helperText={errors.ApproxBudget}
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
                 </Grid>
               </Grid>
-              {state.isUpdate ? (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleUpdateLeadStatus}
-                    >
-                      Update
-                    </Button>
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleCreateLeadStatus}
-                    >
-                      Create
-                    </Button>
-                  </Grid>
-                </>
-              )}
             </div>
-          </Grid>
-        </Grid>
-      </PapperBlock>
+          </DialogContent>
+          <DialogActions>
+            {state.isUpdate ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpdateLeadStatus}
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleCreateLeadStatus}
+                >
+                  Create
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
       {rowdata && (
         <TablePlayground

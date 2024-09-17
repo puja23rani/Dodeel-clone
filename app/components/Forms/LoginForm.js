@@ -96,17 +96,15 @@ function LoginForm(props) {
   // console.log(process.env.REACT_APP_BASE_URL);
 
   return (
-      <Paper className={classes.sideWrap}>
-        {!mdUp && (
-          <div className={classes.headLogo}>
-            <NavLink to="/" className={classes.brand}>
-              <img src={logo} alt={brand.name} />
-              {brand.name}
-            </NavLink>
-          </div>
-        )}
-        
-      
+    <Paper className={classes.sideWrap}>
+      {!mdUp && (
+        <div className={classes.headLogo}>
+          <NavLink to="/" className={classes.brand}>
+            <img src={logo} alt={brand.name} />
+            {brand.name}
+          </NavLink>
+        </div>
+      )}
       <div className={classes.topBar}>
         <Typography variant="h4" className={classes.title}>
           <FormattedMessage {...messages.login} />
@@ -123,6 +121,7 @@ function LoginForm(props) {
           <FormattedMessage {...messages.createNewAccount} />
         </Button>
       </div>
+
       {messagesAuth !== null || "" ? (
         <MessagesForm
           variant="error"
