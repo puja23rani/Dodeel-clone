@@ -1,5 +1,137 @@
 module.exports = [
   {
+    key: "Dashboard",
+    name: "Dashboard",
+    link: "/app",
+    icon: "dashboard",
+    title: true
+  },
+  {
+    key: "HRM",
+    name: "HRM",
+    icon: "room_preferences",
+    child: [
+      {
+        key: "HRM_Settings",
+        name: "HRM Settings",
+        title: true,
+      },
+      {
+        key: "Department",
+        name: "Department",
+        link: "/app/hrm-setting/department",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Designation",
+        name: "Designation",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Leave",
+        name: "Leave",
+        link: "/app/hrm-setting/leave",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Allowance",
+        name: "Allowance",
+        link: "/app/hrm-setting/allowance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Performance",
+        name: "Performance",
+        link: "/app/hrm-setting/performance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Compentency Type",
+        name: "Compentency Type",
+        link: "/app/hrm-setting/compentency-type",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Competenies",
+        name: "Competenies",
+        link: "/app/hrm-setting/competenies",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Office Shift",
+        name: "Office Shift",
+        link: "/app/hrm-setting/office-shift",
+        icon: "settings_suggest",
+      },
+      {
+        key: "contact-details",
+        name: "contact-details",
+        link: "/app/hrm-setting/contact-details",
+        icon: "settings_suggest",
+      },
+      {
+        key: "HRM_Settings",
+        name: "HRM Settings",
+        title: true,
+      },
+      {
+        key: "Department",
+        name: "Department",
+        link: "/app/hrm-setting/department",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Designation",
+        name: "Designation",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Leave",
+        name: "Leave",
+        link: "/app/hrm-setting/leave",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Allowance",
+        name: "Allowance",
+        link: "/app/hrm-setting/allowance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Performance",
+        name: "Performance",
+        link: "/app/hrm-setting/performance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Compentency Type",
+        name: "Compentency Type",
+        link: "/app/hrm-setting/compentency-type",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Competenies",
+        name: "Competenies",
+        link: "/app/hrm-setting/competenies",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Office Shift",
+        name: "Office Shift",
+        link: "/app/hrm-setting/office-shift",
+        icon: "settings_suggest",
+      },
+      {
+        key: "contact-details",
+        name: "contact-details",
+        link: "/app/hrm-setting/contact-details",
+        icon: "settings_suggest",
+      },
+    ],
+  },
+  {
     key: "Lead",
     name: "Lead",
     icon: "settings_suggest",

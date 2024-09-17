@@ -93,6 +93,15 @@ import {
   Job_Application,
   Campaign,
 } from "../pageListAsync";
+import Department from "../Pages/HRMmodule/HRMsettings/Department";
+import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
+import Leave from "../Pages/HRMmodule/HRMsettings/Leave";
+import Allowance from "../Pages/HRMmodule/HRMsettings/Allowance";
+import Performance from "../Pages/HRMmodule/HRMsettings/Performance";
+import CompentencyType from "../Pages/HRMmodule/HRMsettings/CompentencyType";
+import Competenies from "../Pages/HRMmodule/HRMsettings/Competenies";
+import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
+import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
 
 
 function Application(props) {
@@ -104,8 +113,10 @@ function Application(props) {
       <Routes>
         {/* Home */}
         <Route path="/" element={<AnalyticDashboard />} />
+        <Route path="/app" element={<AnalyticDashboard />} />
         <Route path="dashboard/marketing" element={<MarketingDashboard />} />
         <Route path="dashboard/crypto" element={<CryptoDashboard />} />
+
         {/* Widgets */}
         <Route path="widgets" element={<Parent />} />
         <Route path="widgets/infographics" element={<Infographics />} />
@@ -207,12 +218,26 @@ function Application(props) {
         <Route path="maps/street-view" element={<StreetViewMap />} />
         {/* Default */}
         <Route path="*" element={<NotFound />} />
+
+        
+        {/* ---------------HRM Modules--------------- */}
+        <Route path="hrm-setting/department" element={<Department />} />
+        <Route path="hrm-setting/designation" element={<Designation />} />
+        <Route path="hrm-setting/leave" element={<Leave />} />
+        <Route path="hrm-setting/allowance" element={<Allowance />} />
+        <Route path="hrm-setting/performance" element={<Performance />} />
+        <Route path="hrm-setting/compentency-type" element={<CompentencyType />} />
+        <Route path="hrm-setting/competenies" element={<Competenies />} />
+        <Route path="hrm-setting/office-shift" element={<OfficeShift />} />
+        <Route path="hrm-setting/contact-details" element={<ContactDetails />} />
+
         {/* Lead Pages */}
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
         <Route path="lead/Channel" element={<Channel />} />
+        <Route path="lead/Campaign" element={<Campaign />} />
   
        
         {/* Recruitment Pages */}
@@ -221,7 +246,6 @@ function Application(props) {
         <Route path="/Job_Create" element={<Job_Create />} />
         <Route path="/Job_Application" element={<Job_Application />} />
         
-        <Route path="lead/Campaign" element={<Campaign />} />
       </Routes>
     </Dashboard>
   );

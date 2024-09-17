@@ -24,6 +24,7 @@ import link from 'enl-api/ui/link';
 import NotificationsActiveOutlined from '@mui/icons-material/NotificationsActiveOutlined';
 import messages from './messages';
 import useStyles from './header-jss';
+import { Typography } from '@mui/material';
 
 function UserMenu(props) {
   const { classes, cx } = useStyles();
@@ -48,7 +49,7 @@ function UserMenu(props) {
 
   return (
     <div>
-      <IconButton
+      {/* <IconButton
         aria-haspopup="true"
         onClick={handleMenu('notification')}
         color="inherit"
@@ -57,8 +58,8 @@ function UserMenu(props) {
         <Badge className={classes.badge} badgeContent={4} color="secondary">
           <NotificationsActiveOutlined />
         </Badge>
-      </IconButton>
-      <Menu
+      </IconButton> */}
+      {/* <Menu
         id="menu-notification"
         anchorEl={anchorEl}
         anchorOrigin={{
@@ -130,12 +131,19 @@ function UserMenu(props) {
             <ListItemText primary="Suspendisse pharetra pulvinar sollicitudin. Aenean ut orci eu odio cursus lobortis eget tempus velit. " className={classes.textNotif} secondary="Jan 9, 2016" />
           </div>
         </MenuItem>
-      </Menu>
+      </Menu> */}
       <Button onClick={handleMenu('user-setting')}>
         <Avatar
           alt="avatar"
           src={avatar}
         />
+        <Typography
+          variant="subtitle1"
+          className={cx(classes.userSetting, dark ? classes.dark : classes.light)}
+          style={{ textTransform: 'capitalize', fontSize: '14px', marginLeft: "10px" }}
+        >
+          Howdy👋, Admin
+        </Typography>
       </Button>
       <Menu
         id="menu-appbar"
@@ -155,13 +163,7 @@ function UserMenu(props) {
           <FormattedMessage {...messages.profile} />
         </MenuItem>
         <MenuItem onClick={handleClose} component={Link} to={link.task}>
-          <FormattedMessage {...messages.task} />
-        </MenuItem>
-        <MenuItem onClick={handleClose} component={Link} to={link.email}>
-          <FormattedMessage {...messages.email} />
-          <ListItemIcon>
-            <Badge className={cx(classes.badge, classes.badgeMenu)} badgeContent={2} color="secondary">&nbsp;</Badge>
-          </ListItemIcon>
+          <FormattedMessage {...messages.Dashboard} />
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => signOut(navigate)}>

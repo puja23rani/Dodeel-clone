@@ -213,17 +213,17 @@ function Header(props) {
             </Typography>
           </div>
         )}
-        <div className={classes.searchWrapper}>
+        {/* <div className={classes.searchWrapper}>
           <div className={classes.wrapper}>
             <div className={classes.search}>
               <SearchIcon />
             </div>
             <SearchUi history={history} />
           </div>
-        </div>
-        {!smDown && <span className={classes.separatorV} />}
+        </div> */}
+        {/* {!smDown && <span className={classes.separatorV} />} */}
         <div className={classes.userToolbar}>
-          {isLogin ? (
+          {window.localStorage.getItem("role") === "ADMIN" ? (
             <UserMenu signOut={signOut} avatar={avatar} />
           ) : (
             <Button

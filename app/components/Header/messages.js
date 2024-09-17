@@ -32,9 +32,9 @@ export default defineMessages({
     id: `${scope}.user.profile`,
     defaultMessage: 'My Profile',
   },
-  task: {
-    id: `${scope}.user.task`,
-    defaultMessage: 'My Task',
+  Dashboard: {
+    id: `${scope}.user.Dashboard`,
+    defaultMessage: 'Dashboard',
   },
   email: {
     id: `${scope}.user.email`,

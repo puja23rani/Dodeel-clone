@@ -30,8 +30,9 @@ function Dashboard(props) {
   const signOutApp = () => {
     signOut(auth)
       .then(() => {
+        window.localStorage.clear();
+        window.localStorage.clear();
         navigate("/");
-        dispatch(logoutUser());
       })
       .catch((error) => {
         console.error(error);

@@ -12,7 +12,6 @@ import Icon from '@mui/material/Icon';
 import { openAction, openMenuAction, closeMenuAction } from 'enl-redux/modules/ui';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import messages from 'enl-api/ui/menuMessages';
-import MenuProfile from './MenuProfile';
 import useStyles from './sidebarBig-jss';
 
 const LinkBtn = React.forwardRef(function LinkBtn(props, ref) { // eslint-disable-line
@@ -30,6 +29,8 @@ function MainMenuBig(props) { // eslint-disable-line
     dataMenu,
     drawerPaper
   } = props;
+
+  // console.log(dataMenu);
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function MainMenuBig(props) { // eslint-disable-line
   };
 
   const currentMenu = dataMenu.filter(item => item.key === open[0]);
+  // console.log(currentMenu);
   const activeMenu = (key, child) => {
     if (selectedMenu.length < 1) {
       if (open.indexOf(key) > -1) {
@@ -77,6 +79,7 @@ function MainMenuBig(props) { // eslint-disable-line
   };
 
   const getMenus = menuArray => menuArray.map((item, index) => {
+    // console.log(menuArray);
     if (item.key === 'menu_levels') {
       return false;
     }
@@ -126,6 +129,7 @@ function MainMenuBig(props) { // eslint-disable-line
   });
 
   const getChildMenu = menuArray => menuArray.map((item, index) => {
+    // console.log(item);
     if (item.title) {
       return (
         <ListSubheader
@@ -133,6 +137,7 @@ function MainMenuBig(props) { // eslint-disable-line
           disableSticky
           className={classes.title}
         >
+          
           {
             messages[item.key] !== undefined
               ? <FormattedMessage {...messages[item.key]} />
@@ -161,6 +166,7 @@ function MainMenuBig(props) { // eslint-disable-line
               : item.name
           }
         />
+          <Icon className={classes.icon}>chevron_right</Icon>
       </ListItem>
     );
   });
@@ -193,7 +199,7 @@ function MainMenuBig(props) { // eslint-disable-line
     <aside className={classes.bigSidebar}>
       <nav className={classes.category}>
         <div className={classes.fixedWrap}>
-          <MenuProfile userAttr={userAttr} />
+          {/* <MenuProfile userAttr={userAttr} /> */}
           {getMenus(dataMenu)}
         </div>
       </nav>
