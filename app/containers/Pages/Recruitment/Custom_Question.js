@@ -15,6 +15,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
+import { DialogActions, DialogTitle, Toolbar, Tooltip } from "@mui/material";
+import { DialogContent } from "@mui/material";
+import { Dialog } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Close as CloseIcon } from "@mui/icons-material";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -58,7 +63,7 @@ function Custom_Question() {
       isValid = false;
     }
 
-    if (!state.Required_or_Not.trim()) {
+    if (!state.Required_or_Not.title.trim()) {
       errors.Required_or_Not = "Requirements is required";
       isValid = false;
     }
@@ -82,8 +87,16 @@ function Custom_Question() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+
 
   const columnData = [
+    {
+      id: "slNo",
+      numeric: true,
+      disablePadding: false,
+      label: "Sl No",
+    },
     {
       id: "Custom_Question",
       numeric: false,
@@ -112,6 +125,7 @@ function Custom_Question() {
         if (response.data.recruitments) {
           setRowdata(
             response.data.recruitments.map((item) => ({
+              slNo: response.data.recruitments.indexOf(item) + 1,
               id: item._id,
               Custom_Question: item.customQuestion,
               Required_or_Not: item.requirement,
@@ -132,6 +146,8 @@ function Custom_Question() {
                         },
                         isUpdate: true,
                       });
+                      setOpenDialog(true);
+
                     }}
                   >
                     <EditIcon />
@@ -201,6 +217,8 @@ function Custom_Question() {
             setMessage("Saved successfully!");
         setOpen(true);
         setSeverity("success");
+        setOpenDialog(false);
+
       } else {
         setMessage(result.message);
         setOpen(true);
@@ -303,6 +321,7 @@ function Custom_Question() {
             setMessage("Updated successfully!");
             setOpen(true);
             setSeverity("success");
+            setOpenDialog(false);
             // Navigate("/Department");
           } else {
             setMessage(actualData.message);
@@ -322,18 +341,51 @@ function Custom_Question() {
 
   return (
     <>
-      <PapperBlock title="Custom Question" icon="library_books">
-        <Grid
-          container
-          spacing={3}
-          alignItems="flex-start"
-          direction="row"
-          justifyContent="stretch"
+     <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Custom Question
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="md"
         >
-          <Grid item xs={12}>
+          <DialogTitle>
+          Custom Question Details
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setOpenDialog(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
+              <Grid
+                container
+                spacing={3}
+                alignItems="flex-start"
+                direction="row"
+                justifyContent="stretch"
+              >
+                <Grid item xs={12}>
+                  <div className={classes.form}>
+                    <Grid container spacing={2}>
+                    <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -346,7 +398,6 @@ function Custom_Question() {
                     }
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <Autocomplete
                     id="highlights-demo"
@@ -400,38 +451,42 @@ function Custom_Question() {
                     }}
                   />
                 </Grid>
-
+                     
+                    </Grid>
+                  </div>
+                </Grid>
               </Grid>
-              {state.isUpdate ? (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleUpdateCustomQuestion}
-                    >
-                      Update
-                    </Button>
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <Grid container justifyContent="flex-end">
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleSaveCustomQuestion}
-                    >
-                      Create
-                    </Button>
-                  </Grid>
-                </>
-              )}
             </div>
-          </Grid>
-        </Grid>
-      </PapperBlock>
-
+          </DialogContent>
+          <DialogActions>
+            {state.isUpdate ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpdateCustomQuestion}
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleSaveCustomQuestion}
+                >
+                  Create
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+     
       {rowdata && (
         <TablePlayground
           columnData={columnData}

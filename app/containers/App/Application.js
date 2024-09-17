@@ -218,7 +218,6 @@ function Application(props) {
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="/Interviewer" element={<Interviewer />} />
-        <Route path="/Job_Create" element={<Job_Create />} />
         <Route path="/Job_Application" element={<Job_Application />} />
         
         <Route path="lead/Campaign" element={<Campaign />} />
