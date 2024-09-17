@@ -381,38 +381,50 @@ export const Channel = loadable(
     fallback: <Loading />,
   }
 );
-  
-  // ---------------------------------------------------------------
-  //            TRUPTI DEV CODE
-  // ---------------------------------------------------------------
-  export const Custom_Question = loadable(
-    () => import("../containers/Pages/Recruitment/Custom_Question"),
-    {
-      fallback: <Loading />,
-    }
-  );
-  export const Interviewer = loadable(
-    () => import("../containers/Pages/Recruitment/Interviewer"),
-    {
-      fallback: <Loading />,
-    }
-  );
-  export const Job_Create = loadable(
-    () => import("../containers/Pages/Recruitment/Job_Create"),
-    {
-      fallback: <Loading />,
-    }
-  );
-  export const Job_Application = loadable(
-    () => import("../containers/Pages/Recruitment/Job_Application"),
-    {
-      fallback: <Loading />,
-    }
-  );
-  
-  // ---------------------------------------------------------------
+
+// ---------------------------------------------------------------
+//            TRUPTI DEV CODE
+// ---------------------------------------------------------------
+export const Custom_Question = loadable(
+  () => import("../containers/Pages/Recruitment/Custom_Question"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Interviewer = loadable(
+  () => import("../containers/Pages/Recruitment/Interviewer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Create = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Create"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Application = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Application"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+// ---------------------------------------------------------------
 export const Campaign = loadable(
   () => import("../api/Lead_Management/Campaign"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const NewLead = loadable(
+  () => import("../api/Lead_Management/New_lead"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const LeadMembers = loadable(
+  () => import("../api/Lead_Management/LeadMemebers"),
   {
     fallback: <Loading />,
   }

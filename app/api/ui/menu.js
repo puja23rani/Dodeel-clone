@@ -26,7 +26,7 @@ module.exports = [
       {
         key: "Channel",
         name: "Channel",
-        link: "/app/lead/Channel",
+        link: "/app/lead/channel",
         icon: "settings_suggest",
         badge: "Hot",
       },
@@ -39,19 +39,19 @@ module.exports = [
         key: "Campaign",
         name: "Campaign",
         icon: "settings_suggest",
-        link: "/app/lead/Campaign",
+        link: "/app/lead/campaign",
       },
       {
         key: "NewLead",
         name: "New Lead",
         icon: "settings_suggest",
-        link: "/app/dashboard/marketing",
+        link: "/app/lead/new-lead",
       },
       {
         key: "Lead_Members",
         name: "Lead Members",
         icon: "settings_suggest",
-        link: "/app/dashboard/crypto",
+        link: "/app/lead/lead-members",
       },
     ],
   },
@@ -84,4 +84,3 @@ module.exports = [
     ],
   },
 ];
-
