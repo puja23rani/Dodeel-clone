@@ -92,6 +92,8 @@ import {
   Job_Create,
   Job_Application,
   Campaign,
+  NewLead,
+  LeadMembers,
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -102,7 +104,6 @@ import CompentencyType from "../Pages/HRMmodule/HRMsettings/CompentencyType";
 import Competenies from "../Pages/HRMmodule/HRMsettings/Competenies";
 import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
-
 
 function Application(props) {
   const { history } = props;
@@ -236,16 +237,16 @@ function Application(props) {
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
-        <Route path="lead/Channel" element={<Channel />} />
-        <Route path="lead/Campaign" element={<Campaign />} />
-  
-       
+        <Route path="lead/channel" element={<Channel />} />
+        <Route path="lead/campaign" element={<Campaign />} />
+        <Route path="lead/new-lead" element={<NewLead />} />
+        <Route path="lead/lead-members" element={<LeadMembers />} />
+
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/Job_Create" element={<Job_Create />} />
         <Route path="/Job_Application" element={<Job_Application />} />
-        
       </Routes>
     </Dashboard>
   );
