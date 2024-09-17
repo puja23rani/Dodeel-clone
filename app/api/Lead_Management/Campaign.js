@@ -175,7 +175,7 @@ function Campaign() {
         setEmpList(newobj);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 
@@ -206,7 +206,7 @@ function Campaign() {
       }
 
       const actualData = await res.json();
-      console.log(actualData, "ressss");
+      //console.log(actualData, "ressss");
       // Check if actualData.data is an array
       if (Array.isArray(actualData.data)) {
         // Map the data to an array of objects with 'title' and 'id'
@@ -214,7 +214,7 @@ function Campaign() {
           title: item.channelName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
-        console.log(newobj, "neee");
+        //console.log(newobj, "neee");
         // Update state with the new array of objects
         setChannelList(newobj);
         // setChannelList(actualData.data);
@@ -224,7 +224,7 @@ function Campaign() {
         throw new Error("Data format is incorrect");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
 
@@ -363,7 +363,7 @@ function Campaign() {
         setSeverity("error");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -372,9 +372,9 @@ function Campaign() {
 
   const handleCampaignDelete = async () => {
     try {
-      const data = { id: itemToDelete };
+      const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteChannel`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCampaign`,
         {
           method: "DELETE",
           headers: {
@@ -400,7 +400,7 @@ function Campaign() {
         setItemToDelete(null);
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -421,7 +421,7 @@ function Campaign() {
         loginHeaders.append("Authorization", `Bearer ${token}`);
       }
       const data = {
-        id: itemToDelete,
+        id: parseInt(itemToDelete), // id from itemToDelete,
         campaignName: state.campaignName, // campaignName from state
         membersID: state.membersID, // membersID from state
         fields: state.fieldset.map((field) => ({
@@ -449,7 +449,7 @@ function Campaign() {
         );
 
         const actualData = await res.json();
-        console.log(actualData);
+        //console.log(actualData);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchCampaign();
@@ -479,7 +479,7 @@ function Campaign() {
         }
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       // toast.error("Failed to save. Please try again.", {
       //   position: "top-center",
       // });
@@ -514,7 +514,7 @@ function Campaign() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  console.log(state, "sssssss");
+  //console.log(state, "sssssss");
   return (
     <>
       <div>
@@ -541,14 +541,20 @@ function Campaign() {
         >
           <DialogTitle>
             Campaign
-            <IconButton
+          </DialogTitle>
+          <IconButton
               aria-label="close"
               className={classes.closeButton}
               onClick={() => setOpenDialog(false)}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
               <CloseIcon />
             </IconButton>
-          </DialogTitle>
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
@@ -632,9 +638,11 @@ function Campaign() {
                     )}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <Autocomplete
+                    sx={{
+                      marginTop: "-16px"
+                    }}
                     id="highlights-demo"
                     options={[
                       { title: "Active" },
@@ -665,11 +673,12 @@ function Campaign() {
                 {state.fieldset.map((el, idx) => (
                   <Grid
                     container
-                    spacing={1}
+                    spacing={2}
                     key={idx}
-                    sx={{ display: "flex", alignItems: "center" }}
+                    style={{ display: "flex", alignItems: "center", marginLeft: 0 }}
+                    xs={12}
                   >
-                    <Grid item xs={5}>
+                    <Grid item xs={6}>
                       <TextField
                         fullWidth
                         variant="standard"
@@ -704,10 +713,10 @@ function Campaign() {
                       />
                     </Grid>
                     {idx > 0 && (
-                      <Grid item xs={2}>
+                      <Grid item xs={1}>
                         <DeleteIcon
                           onClick={() => handleDeleteSection(idx)}
-                          style={{ cursor: "pointer" }}
+                          style={{ cursor: "pointer", color: "red", width: 24, height: 24, marginTop: 8 }}
                         />
                       </Grid>
                     )}

@@ -197,7 +197,7 @@ function Log_Notes() {
         setSeverity("error");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -232,7 +232,7 @@ function Log_Notes() {
         setSeverity("error");
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       setMessage(err.message);
       setOpen(true);
       setSeverity("error");
@@ -275,7 +275,7 @@ function Log_Notes() {
         );
 
         const actualData = await res.json();
-        console.log(actualData.holidays);
+        //console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchLeadStatus();
@@ -300,7 +300,7 @@ function Log_Notes() {
         }
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
       // toast.error("Failed to save. Please try again.", {
       //   position: "top-center",
       // });

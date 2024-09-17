@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import brand from 'enl-api/dummy/brand';
-import { LockForm } from 'enl-components';
-import useStyles from '../../../components/Forms/user-jss';
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import brand from "enl-api/dummy/brand";
+import { LockForm } from "enl-components";
+import useStyles from "../../../components/Forms/user-jss";
 
 function LockScreen() {
   const { classes } = useStyles();
-  const title = brand.name + ' - Lock Screen';
+  const title = brand.name + " - Lock Screen";
   const description = brand.desc;
   const [valueForm, setValueForm] = useState(null);
 
@@ -14,8 +14,8 @@ function LockScreen() {
 
   useEffect(() => {
     if (valueForm) {
-      console.log(`You submitted:\n\n${valueForm}`);
-      window.location.href = '/app';
+      //console.log(`You submitted:\n\n${valueForm}`);
+      window.location.href = "/app";
     }
   }, [valueForm]);
 

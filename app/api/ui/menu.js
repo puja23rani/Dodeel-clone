@@ -1,10 +1,8 @@
-const { LogoIcon } = require("../../../Assets/Index");
-
 module.exports = [
   {
     key: "Lead",
     name: "Lead",
-    icon: LogoIcon,
+    icon: "settings_suggest",
     child: [
       {
         key: "Lead_Settings",
@@ -15,21 +13,21 @@ module.exports = [
         key: "Lead_Status",
         name: "Lead Status",
         link: "/app/lead/lead-status",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Log_Notes",
         name: "Log Notes",
         link: "/app/lead/log-notes",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Channel",
         name: "Channel",
         link: "/app/lead/Channel",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
@@ -40,41 +38,40 @@ module.exports = [
       {
         key: "Campaign",
         name: "Campaign",
-        icon: LogoIcon,
-        link: "/app",
+        icon: "settings_suggest",
+        link: "/app/lead/Campaign",
       },
       {
         key: "NewLead",
         name: "New Lead",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         link: "/app/dashboard/marketing",
       },
       {
         key: "Lead_Members",
         name: "Lead Members",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         link: "/app/dashboard/crypto",
       },
-      
     ],
   },
   {
     key: "Recruitments",
     name: "Recruitments",
-    icon: LogoIcon,
+    icon: "settings_suggest",
     child: [
       {
         key: "Custom_Question",
         name: "Custom Question",
         link: "/app/Custom_Question",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Interviewer",
         name: "Interviewer",
         link: "/app/Interviewer",
-        icon: LogoIcon,
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
@@ -84,14 +81,6 @@ module.exports = [
         icon: LogoIcon,
         badge: "Hot",
       },
-      // {
-      //   key: "Log_Notes",
-      //   name: "Log Notes",
-      //   link: "/",
-      //   icon: "business",
-      //   badge: "Hot",
-      // },
-      
     ],
   },
 ];

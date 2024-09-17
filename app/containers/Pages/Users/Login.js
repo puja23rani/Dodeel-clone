@@ -20,9 +20,8 @@ function Login() {
   const description = brand.desc;
 
   const submitForm = (values) => {
-    console.log(process.env.REACT_APP_BASE_URL);
-
-    console.log("You submitted:" + JSON.stringify(values, null, 2));
+    //console.log(process.env.REACT_APP_BASE_URL);
+    //console.log("You submitted:" + JSON.stringify(values, null, 2));
     // window.location.href = '/app';
   };
 
