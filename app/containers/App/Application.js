@@ -94,6 +94,7 @@ import {
   Campaign,
   NewLead,
   LeadMembers,
+  LeadDetails,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -217,6 +218,7 @@ function Application(props) {
         <Route path="lead/campaign" element={<Campaign />} />
         <Route path="lead/new-lead" element={<NewLead />} />
         <Route path="lead/lead-members" element={<LeadMembers />} />
+        <Route path="lead/lead-details" element={<LeadDetails />} />
 
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
