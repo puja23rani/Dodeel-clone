@@ -381,6 +381,7 @@ export const Channel = loadable(
     fallback: <Loading />,
   }
 );
+<<<<<<<< < Temporary merge branch 1
 
 // ---------------------------------------------------------------
 //            TRUPTI DEV CODE
@@ -406,6 +407,38 @@ export const Job_Application = loadable(
 );
 
 // ---------------------------------------------------------------
+=========
+
+// ---------------------------------------------------------------
+//            TRUPTI DEV CODE
+// ---------------------------------------------------------------
+export const Custom_Question = loadable(
+  () => import("../containers/Pages/Recruitment/Custom_Question"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Interviewer = loadable(
+  () => import("../containers/Pages/Recruitment/Interviewer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Create = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Create"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Application = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Application"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+// ---------------------------------------------------------------
+>>>>>>>>> Temporary merge branch 2
 export const Campaign = loadable(
   () => import("../api/Lead_Management/Campaign"),
   {

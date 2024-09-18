@@ -89,12 +89,12 @@ import {
   LogNotes,
   Channel,
   Interviewer,
-  Job_Create,
   Job_Application,
   Campaign,
   NewLead,
   LeadMembers,
   LeadDetails,
+  Applicantlist,
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -221,7 +221,7 @@ function Application(props) {
         {/* Default */}
         <Route path="*" element={<NotFound />} />
 
-        
+
         {/* ---------------HRM Modules--------------- */}
         <Route path="hrm-setting/department" element={<Department />} />
         <Route path="hrm-setting/designation" element={<Designation />} />
@@ -247,6 +247,7 @@ function Application(props) {
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="/Interviewer" element={<Interviewer />} />
+        <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
       </Routes>
     </Dashboard>

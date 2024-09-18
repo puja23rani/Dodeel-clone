@@ -64,7 +64,7 @@ function Interviewer() {
     let errors = {};
 
     if (!state.interviewerName.trim()) {
-      errors.interviewerName = "Tnterviewer Name is required";
+      errors.interviewerName = "Interviewer Name is required";
       isValid = false;
     }
 

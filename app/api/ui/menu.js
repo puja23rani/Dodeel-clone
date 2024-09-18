@@ -179,7 +179,10 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
+<<<<<<<< < Temporary merge branch 1
 
+=========
+>>>>>>>>> Temporary merge branch 2
     ],
   },
   {
