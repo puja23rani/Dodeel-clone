@@ -215,7 +215,7 @@ function LeadMemebers() {
         }
       )
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
@@ -240,16 +240,25 @@ function LeadMemebers() {
                       });
                       setItemToDelete(item._id);
                       // Set state with required format
-                      setState({
-                        membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
-                        employeeName: item.membersID.map((member) => ({
-                          title: member.employeeName,
-                          id: member.id,
-                        })), // Format employeeName as [{ title, id }]
-                        leadName: { title: item.leadName, id: item.leadID }, // Set leadName as { title: 'Active' }
-
-                        isUpdate: true, // Set isUpdate to true for edit mode
-                      });
+                      //   setState({
+                      //     campaignName: item.campaignName, // Set campaign name
+                      //     membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
+                      //     employeeName: item.membersID.map((member) => ({
+                      //       title: member.employeeName,
+                      //       id: member.id,
+                      //     })), // Format employeeName as [{ title, id }]
+                      //     campaignStatus: { title: item.campaignStatus }, // Set campaignStatus as { title: 'Active' }
+                      //     channelID: item.channelID.map((channel) => channel.id), // Extract only IDs from channelID
+                      //     channelName: item.channelID.map((channel) => ({
+                      //       title: channel.channelName,
+                      //       id: channel.id,
+                      //     })), // Format channelName as [{ title, id }]
+                      //     isUpdate: true, // Set isUpdate to true for edit mode
+                      //     fieldset: item.fields.map((field) => ({
+                      //       name: field.name,
+                      //       value: field.value.toString(),
+                      //     })), // Format fieldset as [{ name, value }]
+                      //   });
                       setOpenDialog(true);
                     }}
                   >
@@ -271,7 +280,7 @@ function LeadMemebers() {
           setLength(response.data.totalItems);
           setPagination(true);
         }
-        console.log(response.data.data);
+        // console.log(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);

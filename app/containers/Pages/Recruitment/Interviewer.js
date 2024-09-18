@@ -15,7 +15,15 @@ import Autocomplete from '@mui/material/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
-// import { ModalDemo } from './demos';
+import { DialogContent, Toolbar } from "@mui/material";
+import { DialogTitle } from "@mui/material";
+import { Dialog } from "@mui/material";
+import { DialogActions } from "@mui/material";
+import { Tooltip } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Close as CloseIcon } from "@mui/icons-material";
+
+
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -56,7 +64,7 @@ function Interviewer() {
     let errors = {};
 
     if (!state.interviewerName.trim()) {
-      errors.interviewerName = "Tnterviewer Name is required";
+      errors.interviewerName = "Interviewer Name is required";
       isValid = false;
     }
 
@@ -78,9 +86,15 @@ function Interviewer() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
-  const [open1, setOpen1] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const columnData = [
+    {
+      id: "slNo",
+      numeric: true,
+      disablePadding: false,
+      label: "Sl No",
+    },
     {
       id: "interviewerName",
       numeric: false,
@@ -104,6 +118,7 @@ function Interviewer() {
         if (response.data.interviewers) {
           setRowdata(
             response.data.interviewers.map((item) => ({
+              slNo: response.data.interviewers.indexOf(item) + 1,
               id: item._id,
               interviewerName: item.interviewerName,
               actions: (
@@ -120,6 +135,7 @@ function Interviewer() {
                         interviewerName: item.interviewerName,
                         isUpdate: true,
                       });
+                      setOpenDialog(true);
                     }}
                   >
                     <EditIcon />
@@ -186,6 +202,7 @@ function Interviewer() {
             setMessage("Saved successfully!");
             setOpen(true);
             setSeverity("success");
+            setOpenDialog(false);
           } else {
             setMessage(result.message);
             setOpen(true);
@@ -290,6 +307,8 @@ function Interviewer() {
             setMessage("Updated successfully!");
             setOpen(true);
             setSeverity("success");
+            setOpenDialog(false);
+
           } else {
             setMessage(response.data.message);
             setOpen(true);
@@ -306,39 +325,54 @@ function Interviewer() {
   
   console.log(state)
   
-  const handleOpenDialog1 = () => {
-    setOpen1(true);
-  };
-  const handleCloseDialog1 = () => {
-    setState({
-      ...state,
-      interviewerName: "",
-     
-    })
-    setOpen1(false);
-    setisUpdate(true);
-  };
+  
   return (
     <>
-    <Grid container justifyContent="flex-end">
-  <Button  variant="contained" color="primary" className={classes.button}  onClick={handleOpenDialog1}>
-    Add Interviewer
-  </Button>
-</Grid>
-
-
-      <PapperBlock title="Interviwers Details" icon="library_books">
-        <Grid
-          container
-          spacing={3}
-          alignItems="center"
-          direction="row"
-          justifyContent="stretch"
+    <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.spacer} style={{ flexGrow: 1 }} />
+          <div className={classes.actions}>
+            <Tooltip title="Add Item">
+              <Button
+                variant="contained"
+                onClick={() => setOpenDialog(true)}
+                color="primary"
+                className={classes.button}
+              >
+                <AddIcon /> Add Interviewer
+              </Button>
+            </Tooltip>
+          </div>
+        </Toolbar>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="md"
         >
-          <Grid item xs={12}>
+          <DialogTitle>
+          Interviewer Details
+            <IconButton
+              aria-label="close"
+              className={classes.closeButton}
+              onClick={() => setOpenDialog(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={8}>
+              <Grid
+                container
+                spacing={3}
+                alignItems="flex-start"
+                direction="row"
+                justifyContent="stretch"
+              >
+                <Grid item xs={12}>
+                  <div className={classes.form}>
+                    <Grid container spacing={2}>
+                    <Grid item xs={8}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -349,38 +383,45 @@ function Interviewer() {
                     onChange={(e) =>
                       setState({ ...state, interviewerName: e.target.value })
                     }
+                    error={!!errors.interviewerName}
+                    helperText={errors.interviewerName}
                   />
                 </Grid>
-
-                <Grid item xs={4} container justifyContent="flex-end">
-                  {state.isUpdate ? (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleUpdateInterviewer}
-                    >
-                      Update
-                    </Button>
-                  ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={handleSaveInterviewer}
-                    >
-                      Create
-                    </Button>
-                  )}
+                     
+                    </Grid>
+                  </div>
                 </Grid>
               </Grid>
             </div>
-          </Grid>
-        </Grid>
-        {/* <div>
-          <ModalDemo />
-         
-        </div> */}
-      </PapperBlock>
-
+          </DialogContent>
+          <DialogActions>
+            {state.isUpdate ? (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleUpdateInterviewer}
+                >
+                  Update
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleSaveInterviewer}
+                >
+                  Create
+                </Button>
+              </>
+            )}
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
       {rowdata && (
         <TablePlayground

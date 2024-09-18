@@ -43,7 +43,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Job_Application() {
+function Applicantlist() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -975,4 +975,4 @@ const handleRowsPerPageChange = (event) => {
   );
 };
 
-export default Job_Application;
+export default Applicantlist;

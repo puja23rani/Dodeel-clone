@@ -324,48 +324,48 @@ function New_lead() {
     table4();
   }, []);
   const [anchorEl, setAnchorEl] = React.useState(null);
-const [selectedEmployee, setSelectedEmployee] = React.useState(null);
+  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
 
-const handleMenuClick = (event, employee) => {
-  setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
-  setSelectedEmployee(employee); // Set the selected employee
-};
+  const handleMenuClick = (event, employee) => {
+    setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
+    setSelectedEmployee(employee); // Set the selected employee
+  };
 
-const handleMenuClose = () => {
-  setAnchorEl(null); // Reset anchorEl to null to close the menu
-  setSelectedEmployee(null); // Reset selected employee
-};
+  const handleMenuClose = () => {
+    setAnchorEl(null); // Reset anchorEl to null to close the menu
+    setSelectedEmployee(null); // Reset selected employee
+  };
 
-function fetchLead(pg) {
-  axios
-    .post(
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+  function fetchLead(pg) {
+    axios
+      .post(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
         },
-      }
-    )
-    .then((response) => {
-      console.log(response.data.data);
-      if (response.data.data) {
-        setRowdata(
-          response.data.data.map((item, index) => ({
-            slNo: response.data.data.indexOf(item) + 1,
-            id: item._id,
-            leadName: item.leadName || "N/A",
-            contactNumber: item.contactNumber || "N/A",
-            email: item.email || "N/A",
-            campaignName: item.campaignID?.campaignName || "N/A",
-            channelName: item.channelID?.channelName || "N/A",
-            status: item.leadStatusID?.StatusName || "N/A",
-            actions: (
-              <>
-               <IconButton
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data.data);
+        if (response.data.data) {
+          setRowdata(
+            response.data.data.map((item, index) => ({
+              slNo: response.data.data.indexOf(item) + 1,
+              id: item._id,
+              leadName: item.leadName || "N/A",
+              contactNumber: item.contactNumber || "N/A",
+              email: item.email || "N/A",
+              campaignName: item.campaignID?.campaignName || "N/A",
+              channelName: item.channelID?.channelName || "N/A",
+              status: item.leadStatusID?.StatusName || "N/A",
+              actions: (
+                <>
+                  <IconButton
                     aria-label="Edit"
                     onClick={(e) => {
                       window.scrollTo({
@@ -406,18 +406,18 @@ function fetchLead(pg) {
                   >
                     <InfoIcon />
                   </IconButton>
-              </>
-            ),
-          }))
-        );
-        setLength(response.data.totalItems);
-        setPagination(true);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
-}
+                </>
+              ),
+            }))
+          );
+          setLength(response.data.totalItems);
+          setPagination(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }
   useEffect(() => {
     fetchLead(page);
   }, [page, rowsPerPage]);
@@ -911,7 +911,7 @@ function fetchLead(pg) {
                 <Button
                   color="primary"
                   variant="contained"
-                  //   onClick={handleUpdateCampaign}
+                //   onClick={handleUpdateCampaign}
                 >
                   Update
                 </Button>

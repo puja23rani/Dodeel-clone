@@ -8,13 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
 import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
 import axios from "axios";
-import { PapperBlock } from "enl-components";
 import TablePlayground from "../../containers/Tables/TablePlayground";
-import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
-import parse from "autosuggest-highlight/parse";
-import match from "autosuggest-highlight/match";
-import DeleteIcons from "@mui/icons-material/Delete";
+import Popup from "../../components/Popup/Popup"
 import {
   Autocomplete,
   Dialog,
@@ -24,9 +19,7 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-
 import AddIcon from "@mui/icons-material/Add";
 
 const useStyles = makeStyles()((theme) => ({
@@ -63,6 +56,9 @@ function Campaign() {
     isUpdate: false,
     fieldset: [{ name: "", value: "" }],
   });
+
+  // console.log(state);
+
   const [errors, setErrors] = useState({
     campaignName: "",
     employeeName: "",
@@ -111,6 +107,7 @@ function Campaign() {
   };
 
   const [rowdata, setRowdata] = useState([]);
+  // console.log(rowdata, "rowdata");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -180,6 +177,8 @@ function Campaign() {
   };
 
   const [channelList, setChannelList] = React.useState([]);
+  // console.log(channelList);
+  // console.log(state);
   const table4 = async () => {
     try {
       const loginHeaders = new Headers();
@@ -543,18 +542,18 @@ function Campaign() {
             Campaign
           </DialogTitle>
           <IconButton
-              aria-label="close"
-              className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
-              sx={{
-                position: "absolute",
-                right: 12,
-                top: 12,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={() => setOpenDialog(false)}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
