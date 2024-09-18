@@ -89,11 +89,11 @@ import {
   LogNotes,
   Channel,
   Interviewer,
-  Job_Create,
   Job_Application,
   Campaign,
   NewLead,
   LeadMembers,
+  Applicantlist,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -221,6 +221,7 @@ function Application(props) {
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="/Interviewer" element={<Interviewer />} />
+        <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
       </Routes>
     </Dashboard>

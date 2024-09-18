@@ -397,6 +397,12 @@ export const Channel = loadable(
       fallback: <Loading />,
     }
   );
+  export const Applicantlist = loadable(
+    () => import("../containers/Pages/Recruitment/applicantlist"),
+    {
+      fallback: <Loading />,
+    }
+  );
  
   export const Job_Application = loadable(
     () => import("../containers/Pages/Recruitment/Job_Application"),
@@ -404,6 +410,7 @@ export const Channel = loadable(
       fallback: <Loading />,
     }
   );
+ 
   
   // ---------------------------------------------------------------
 export const Campaign = loadable(
