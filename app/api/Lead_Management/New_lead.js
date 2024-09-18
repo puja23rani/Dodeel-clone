@@ -399,7 +399,7 @@ function fetchLead(pg) {
                     //   setDeleteDialogOpen(true);
                     // }}
                     onClick={(e) => {
-                      navigate("/app/lead/lead-details", {
+                      navigate("/app/lead/new-lead/lead-details", {
                         state: { leadId: item._id },
                       });
                     }}
