@@ -179,7 +179,6 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
-
     ],
   },
   {

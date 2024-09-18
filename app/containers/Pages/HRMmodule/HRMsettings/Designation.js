@@ -466,7 +466,7 @@ function Designation() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Campaign Status"
+                      label="Department Name"
                       margin="normal"
                       variant="standard"
                       error={!!errors.departmentName} // Show error if it exists
@@ -501,6 +501,9 @@ function Designation() {
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -522,9 +525,6 @@ function Designation() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
           </DialogActions>
         </Dialog>
       </div>

@@ -78,7 +78,7 @@ function ContactDetails() {
       isValid = false;
     }
 
-    if (!state.address.trim()) {
+    if (!state.address) {
       errors.address = "Address Name is required";
       isValid = false;
     }
@@ -507,18 +507,26 @@ function ContactDetails() {
                   id="emailAddress"
                   name="emailAddress"
                   label="Email Address (e.g. xyz@example.com)"
-                  type="email" // Set the input type to email
+                  type="email"
                   value={state.emailAddress}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation regex
-                    if (regex.test(value) || value === '') {
-                      setState({ ...state, emailAddress: value });
+                    setState({ ...state, emailAddress: value });
+                  }}
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    // Updated email validation regex to check for valid domain and TLD
+                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+                    if (!regex.test(value)) {
+                      setErrors({ ...errors, emailAddress: 'Invalid email address format' });
+                    } else {
+                      setErrors({ ...errors, emailAddress: '' });
                     }
                   }}
-                  error={!!errors.emailAddress} // Show error if it exists
-                  helperText={errors.emailAddress} // Display error message
+                  error={!!errors.emailAddress}
+                  helperText={errors.emailAddress}
                 />
+
               </Grid>
               <Grid item xs={12} sx={{ marginTop: "-20px" }}>
                 <TextField
@@ -547,6 +555,9 @@ function ContactDetails() {
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -568,9 +579,7 @@ function ContactDetails() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>
