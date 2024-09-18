@@ -21,21 +21,24 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper
+  ListItemIcon,
+  ListItemText,
+  Menu,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-
+import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from "@mui/icons-material/Add";
-// import ClickAwayListener from "@mui/material/ClickAwayListener";
-// import Grow from "@mui/material/Grow";
-// import Paper from "@mui/material/Paper";
-// import Popper from "@mui/material/Popper";
-// import MenuItem from "@mui/material/MenuItem";
-// import MenuList from "@mui/material/MenuList";
-
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import { Buttons } from "../../containers/pageListAsync";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -60,7 +63,7 @@ function New_lead() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
-
+  const navigate = useNavigate();
   const [state, setState] = React.useState({
     Name: "",
     Phone_Number: "",
@@ -132,8 +135,8 @@ function New_lead() {
       errors.Description = "Description is required";
       isValid = false;
     }
-    // console.log(errors);
-    // console.log(isValid);
+    console.log(errors);
+    console.log(isValid);
     setErrors(errors);
     return isValid;
   };
@@ -149,9 +152,6 @@ function New_lead() {
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const [openPopperId, setOpenPopperId] = useState(null); // State to track which row's menu is open
-
 
   const columnData = [
     {
@@ -291,14 +291,13 @@ function New_lead() {
       .then((response) => {
         // Handle the response
         setCampaignList(response.data.data);
-        // console.log(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         // Handle errors
         console.error("Error fetching data:", error);
       });
   }
-
   const [leadStatusList, setLeadStatusList] = React.useState([]);
   function table1() {
     axios
@@ -310,7 +309,7 @@ function New_lead() {
       .then((response) => {
         // Handle the response
         setLeadStatusList(response.data.data);
-        // console.log(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         // Handle errors
@@ -324,138 +323,18 @@ function New_lead() {
     table3();
     table4();
   }, []);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
 
-  //   const fetchLead = () => {
-  //     axios
-  //       .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllCampaigns`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       })
-  //       .then((response) => {
-  //         if (response.data.data) {
-  //           setRowdata(
-  //             response.data.data.map((item) => ({
-  //               slNo: response.data.data.indexOf(item) + 1,
-  //               id: item._id,
-  //               campaignName: item.campaignName,
-  //               status: item.campaignStatus,
-  //               startedOn: item.createDate.slice(0, 10),
-  //               actions: (
-  //                 <>
-  //                   <IconButton
-  //                     aria-label="Edit"
-  //                     onClick={(e) => {
-  //                       window.scrollTo({
-  //                         top: 0,
-  //                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-  //                       });
-  //                       setItemToDelete(item._id);
-  //                       // Set state with required format
-  //                       setState({
-  //                         campaignName: item.campaignName, // Set campaign name
-  //                         membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
-  //                         employeeName: item.membersID.map((member) => ({
-  //                           title: member.employeeName,
-  //                           id: member.id,
-  //                         })), // Format employeeName as [{ title, id }]
-  //                         campaignStatus: { title: item.campaignStatus }, // Set campaignStatus as { title: 'Active' }
-  //                         channelID: item.channelID.map((channel) => channel.id), // Extract only IDs from channelID
-  //                         channelName: item.channelID.map((channel) => ({
-  //                           title: channel.channelName,
-  //                           id: channel.id,
-  //                         })), // Format channelName as [{ title, id }]
-  //                         isUpdate: true, // Set isUpdate to true for edit mode
-  //                         fieldset: item.fields.map((field) => ({
-  //                           name: field.name,
-  //                           value: field.value.toString(),
-  //                         })), // Format fieldset as [{ name, value }]
-  //                       });
-  //                       setOpenDialog(true);
-  //                     }}
-  //                   >
-  //                     <EditIcon />
-  //                   </IconButton>
-  //                   <IconButton
-  //                     aria-label="Delete"
-  //                     onClick={() => {
-  //                       setItemToDelete(item._id);
-  //                       setDeleteDialogOpen(true);
-  //                     }}
-  //                   >
-  //                     <DeleteIcon />
-  //                   </IconButton>
-  //                 </>
-  //               ),
-  //             }))
-  //           );
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   };
-  const handleToggle = (id) => {
-    setOpenPopperId((prevId) => (prevId === id ? null : id)); // Toggle Popper for each row
+  const handleMenuClick = (event, employee) => {
+    setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
+    setSelectedEmployee(employee); // Set the selected employee
   };
 
-  const handleClose2 = (event, id) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setOpenPopperId(null); // Close Popper for specific row
+  const handleMenuClose = () => {
+    setAnchorEl(null); // Reset anchorEl to null to close the menu
+    setSelectedEmployee(null); // Reset selected employee
   };
-
-  const anchorRef = useRef([]);
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen2(false);
-    }
-  }
-  const prevOpen = React.useRef(open2);
-  // React.useEffect(() => {
-  //   if (prevOpen.current === true && open2 === false) {
-  //     anchorRef.current.focus();
-  //   }
-
-  //   prevOpen.current = open2;
-  // }, [open2]);
-
-
-  // =============================
-  const [openActionMenu, setOpenActionMenu] = useState(false);
-  // console.log(openActionMenu);
-  const anchorRefActionMenu = useRef(null);
-
-  const handleToggleActionMenu = () => {
-    setOpenActionMenu((prevOpen) => !prevOpen);
-  };
-
-  const handleCloseActionMenu = (event) => {
-    if (anchorRefActionMenu.current && anchorRefActionMenu.current.contains(event.target)) {
-      return;
-    }
-
-    setOpenActionMenu(false);
-  };
-
-  function handleListKeyDownActionMenu(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpenActionMenu(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpenActionMenu = useRef(openActionMenu);
-  useEffect(() => {
-    if (prevOpen.current === true && openActionMenu === false) {
-      anchorRefActionMenu.current.focus();
-    }
-
-    prevOpenActionMenu.current = openActionMenu;
-  }, [openActionMenu]);
-
-  // =============================
 
   function fetchLead(pg) {
     axios
@@ -472,7 +351,7 @@ function New_lead() {
         }
       )
       .then((response) => {
-        // console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item, index) => ({
@@ -486,39 +365,47 @@ function New_lead() {
               status: item.leadStatusID?.StatusName || "N/A",
               actions: (
                 <>
-                  <div>
-                    <Button
-                      ref={anchorRefActionMenu}
-                      aria-controls={openActionMenu ? 'menu-list-grow' : undefined}
-                      aria-haspopup="true"
-                      onClick={handleToggleActionMenu}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" /></svg>
-                    </Button>
-                    <Popper open={openActionMenu} anchorEl={anchorRefActionMenu.current} role={undefined} transition disablePortal>
-                      {({ TransitionProps, placement }) => (
-                        <Grow
-                          {...TransitionProps}
-                          style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                        >
-                          <Paper>
-                            <ClickAwayListener onClickAway={handleCloseActionMenu}>
-                              <MenuList autoFocusItem={openActionMenu} id="menu-list-grow" onKeyDown={handleListKeyDownActionMenu}>
-                                <MenuItem onClick={handleCloseActionMenu}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
-                                  <span style={{ marginLeft: '10px' }}>Edit</span>
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseActionMenu} sx={{ marginTop: '10px' }}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
-                                  <span style={{ marginLeft: '10px' }}>Delete</span>
-                                </MenuItem>
-                              </MenuList>
-                            </ClickAwayListener>
-                          </Paper>
-                        </Grow>
-                      )}
-                    </Popper>
-                  </div>
+                  <IconButton
+                    aria-label="Edit"
+                    onClick={(e) => {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+                      });
+                      setItemToDelete(item._id);
+                      // setState({
+                      //   Status_Name: item.statusName,
+                      //   Description: item.description,
+                      //   isUpdate: true,
+                      // });
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={() => {
+                      setItemToDelete(item._id);
+                      setDeleteDialogOpen(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/lead/lead-details", {
+                        state: { leadId: item._id },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
+                  </IconButton>
                 </>
               ),
             }))
@@ -526,7 +413,6 @@ function New_lead() {
           setLength(response.data.totalItems);
           setPagination(true);
         }
-        // console.log(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -542,7 +428,7 @@ function New_lead() {
       setSeverity("warning");
       return;
     }
-    // console.log("p1");
+    console.log("p1");
     try {
       // Prepare the data to match the required request body format
       const data = {
@@ -555,7 +441,7 @@ function New_lead() {
         contactNumber: parseInt(state.Phone_Number),
         notes: state.Description,
       };
-      // console.log("p2");
+      console.log("p2");
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadDetail`,
         {
@@ -567,7 +453,7 @@ function New_lead() {
           body: JSON.stringify(data),
         }
       );
-      // console.log("p3");
+      console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
         fetchLead();
@@ -729,7 +615,7 @@ function New_lead() {
     setOpen(false);
   };
   const handlePageChange = (event, newPage) => {
-    // console.log(newPage);
+    console.log(newPage);
     if (newPage !== 0) {
       setPage(newPage + 1); // Update the current page
     }
@@ -757,8 +643,8 @@ function New_lead() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  // console.log(state, "sssssss");
-  // console.log(open2, "eeeeeee");
+  console.log(state, "sssssss");
+  console.log(anchorEl, "annnn");
   return (
     <>
       <div>
