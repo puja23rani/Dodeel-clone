@@ -302,7 +302,7 @@ function Designation() {
         "id": state.id,
         "departmentID": state.departmentName.id,
         "designationName": state.departmentName.title
-    }
+      }
       // console.log(data);
       const requestOptions = {
         method: "PUT",
@@ -377,8 +377,19 @@ function Designation() {
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDeleteDialog = () => {
     setDeleteDialogOpen(false);
+  };
+
+  const handleCloseDialog = () => {
+    setState({
+      id: "",
+      departmentId: "",
+      departmentName: null,
+      designationName: "",
+      isUpdate: false,
+    })
+    setOpenDialog(false);
   };
 
   const handleClose = () => {
@@ -407,14 +418,14 @@ function Designation() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Department
+                <AddIcon /> Add Designation
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleCloseDialog}
           maxWidth="md"
           fullWidth
         >
@@ -424,7 +435,7 @@ function Designation() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={handleCloseDialog}
             sx={{
               position: "absolute",
               right: 12,
@@ -476,8 +487,10 @@ function Designation() {
                   label="Designation Name"
                   value={state.designationName}
                   onChange={(e) => {
-                    const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                    if (regex.test(e.target.value)) {
+                    const value = e.target.value;
+                    const regex = /^[a-zA-Z\s]*$/;
+                    const maxValue = 50
+                    if (regex.test(value) && value.length <= maxValue) {
                       setState({ ...state, designationName: e.target.value });
                     }
                   }}
@@ -509,7 +522,7 @@ function Designation() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={handleCloseDialog} color="secondary">
               Close
             </Button>
           </DialogActions>
@@ -518,7 +531,7 @@ function Designation() {
 
       {rowdata && (
         <TablePlayground
-          title="Department List"
+          title="Designation List"
           columnData={columnData}
           rowData={rowdata}
           component="div"
@@ -532,7 +545,7 @@ function Designation() {
 
       <AlertDialog
         open={deleteDialogOpen}
-        onClose={handleCloseDialog}
+        onClose={handleCloseDeleteDialog}
         onDelete={handleDptDelete}
       />
       <Popup

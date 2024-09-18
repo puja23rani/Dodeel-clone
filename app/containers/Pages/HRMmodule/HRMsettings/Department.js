@@ -223,7 +223,7 @@ function Department() {
       setOpen(true);
       setSeverity("warning");
       return;
-    } 
+    }
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -310,10 +310,19 @@ function Department() {
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDeleteDialog = () => {
     setDeleteDialogOpen(false);
   };
-  
+
+  const handleCloseDialog = () => {
+    setState({
+      id: "",
+      departmentName: "",
+      isUpdate: false,
+    })
+    setOpenDialog(false);
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -347,7 +356,7 @@ function Department() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleCloseDialog}
           maxWidth="md"
         >
           <DialogTitle>
@@ -356,7 +365,7 @@ function Department() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={handleCloseDialog}
             sx={{
               position: "absolute",
               right: 12,
@@ -380,8 +389,10 @@ function Department() {
               label="Department Name"
               value={state.departmentName}
               onChange={(e) => {
-                const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                if (regex.test(e.target.value)) {
+                const value = e.target.value;
+                const regex = /^[a-zA-Z\s]*$/;
+                const maxValue = 50
+                if (regex.test(value) && value.length <= maxValue) {
                   setState({ ...state, departmentName: e.target.value });
                 }
               }}
@@ -411,7 +422,7 @@ function Department() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={handleCloseDialog} color="secondary">
               Close
             </Button>
           </DialogActions>
@@ -434,7 +445,7 @@ function Department() {
 
       <AlertDialog
         open={deleteDialogOpen}
-        onClose={handleCloseDialog}
+        onClose={handleCloseDeleteDialog}
         onDelete={handleDptDelete}
       />
       <Popup

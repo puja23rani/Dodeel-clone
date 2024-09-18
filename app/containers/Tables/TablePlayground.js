@@ -78,6 +78,8 @@ function TablePlayground(props) {
       </TableCell>
     ));
 
+  // console.log(rowData);
+
   return (
     <div>
       <Grid container className={classes.rootTable}>
@@ -109,6 +111,7 @@ function TablePlayground(props) {
                       {" "}
                       {rowData.map((n) => {
                         const isSelected = thisIsSelected(n.id);
+                        // console.log(n.actions);
                         return (
                           <TableRow
                             role="checkbox"

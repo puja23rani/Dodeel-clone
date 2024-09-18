@@ -57,7 +57,7 @@ function Campaign() {
     fieldset: [{ name: "", value: "" }],
   });
 
-  console.log(state);
+  // console.log(state);
 
   const [errors, setErrors] = useState({
     campaignName: "",
@@ -177,8 +177,8 @@ function Campaign() {
   };
 
   const [channelList, setChannelList] = React.useState([]);
-  console.log(channelList);
-  console.log(state);
+  // console.log(channelList);
+  // console.log(state);
   const table4 = async () => {
     try {
       const loginHeaders = new Headers();
@@ -542,18 +542,18 @@ function Campaign() {
             Campaign
           </DialogTitle>
           <IconButton
-              aria-label="close"
-              className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
-              sx={{
-                position: "absolute",
-                right: 12,
-                top: 12,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={() => setOpenDialog(false)}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>

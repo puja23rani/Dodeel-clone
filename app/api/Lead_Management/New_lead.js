@@ -21,6 +21,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
@@ -28,12 +29,14 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 
 import AddIcon from "@mui/icons-material/Add";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
+// import ClickAwayListener from "@mui/material/ClickAwayListener";
+// import Grow from "@mui/material/Grow";
+// import Paper from "@mui/material/Paper";
+// import Popper from "@mui/material/Popper";
+// import MenuItem from "@mui/material/MenuItem";
+// import MenuList from "@mui/material/MenuList";
+
+
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -129,8 +132,8 @@ function New_lead() {
       errors.Description = "Description is required";
       isValid = false;
     }
-    console.log(errors);
-    console.log(isValid);
+    // console.log(errors);
+    // console.log(isValid);
     setErrors(errors);
     return isValid;
   };
@@ -148,6 +151,7 @@ function New_lead() {
   const [pagination, setPagination] = useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [openPopperId, setOpenPopperId] = useState(null); // State to track which row's menu is open
+
 
   const columnData = [
     {
@@ -287,7 +291,7 @@ function New_lead() {
       .then((response) => {
         // Handle the response
         setCampaignList(response.data.data);
-        console.log(response.data.data);
+        // console.log(response.data.data);
       })
       .catch((error) => {
         // Handle errors
@@ -306,7 +310,7 @@ function New_lead() {
       .then((response) => {
         // Handle the response
         setLeadStatusList(response.data.data);
-        console.log(response.data.data);
+        // console.log(response.data.data);
       })
       .catch((error) => {
         // Handle errors
@@ -408,13 +412,51 @@ function New_lead() {
     }
   }
   const prevOpen = React.useRef(open2);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open2 === false) {
-      anchorRef.current.focus();
+  // React.useEffect(() => {
+  //   if (prevOpen.current === true && open2 === false) {
+  //     anchorRef.current.focus();
+  //   }
+
+  //   prevOpen.current = open2;
+  // }, [open2]);
+
+
+  // =============================
+  const [openActionMenu, setOpenActionMenu] = useState(false);
+  // console.log(openActionMenu);
+  const anchorRefActionMenu = useRef(null);
+
+  const handleToggleActionMenu = () => {
+    setOpenActionMenu((prevOpen) => !prevOpen);
+  };
+
+  const handleCloseActionMenu = (event) => {
+    if (anchorRefActionMenu.current && anchorRefActionMenu.current.contains(event.target)) {
+      return;
     }
 
-    prevOpen.current = open2;
-  }, [open2]);
+    setOpenActionMenu(false);
+  };
+
+  function handleListKeyDownActionMenu(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpenActionMenu(false);
+    }
+  }
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpenActionMenu = useRef(openActionMenu);
+  useEffect(() => {
+    if (prevOpen.current === true && openActionMenu === false) {
+      anchorRefActionMenu.current.focus();
+    }
+
+    prevOpenActionMenu.current = openActionMenu;
+  }, [openActionMenu]);
+
+  // =============================
+
   function fetchLead(pg) {
     axios
       .post(
@@ -430,7 +472,7 @@ function New_lead() {
         }
       )
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item, index) => ({
@@ -444,56 +486,31 @@ function New_lead() {
               status: item.leadStatusID?.StatusName || "N/A",
               actions: (
                 <>
-                  <div style={{ display: "flex" }}>
+                  <div>
                     <Button
-                      ref={(el) => (anchorRef.current[index] = el)}
-                      aria-controls={
-                        openPopperId === index ? "menu-list-grow" : undefined
-                      }
+                      ref={anchorRefActionMenu}
+                      aria-controls={openActionMenu ? 'menu-list-grow' : undefined}
                       aria-haspopup="true"
-                      onClick={() => handleToggle(index)}
+                      onClick={handleToggleActionMenu}
                     >
-                      v
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" /></svg>
                     </Button>
-                    <Popper
-                      open={openPopperId === index}
-                      anchorEl={anchorRef.current[index]}
-                      role={undefined}
-                      transition
-                      disablePortal
-                    >
+                    <Popper open={openActionMenu} anchorEl={anchorRefActionMenu.current} role={undefined} transition disablePortal>
                       {({ TransitionProps, placement }) => (
                         <Grow
                           {...TransitionProps}
-                          style={{
-                            transformOrigin:
-                              placement === "bottom"
-                                ? "center top"
-                                : "center bottom",
-                          }}
+                          style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
                         >
                           <Paper>
-                            <ClickAwayListener
-                              onClickAway={(e) => handleClose2(e, index)}
-                            >
-                              <MenuList
-                                autoFocusItem={openPopperId === index}
-                                id="menu-list-grow"
-                              >
-                                <MenuItem
-                                  onClick={() => handleClose2(null, index)}
-                                >
-                                  Profile
+                            <ClickAwayListener onClickAway={handleCloseActionMenu}>
+                              <MenuList autoFocusItem={openActionMenu} id="menu-list-grow" onKeyDown={handleListKeyDownActionMenu}>
+                                <MenuItem onClick={handleCloseActionMenu}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" /></svg>
+                                  <span style={{ marginLeft: '10px' }}>Edit</span>
                                 </MenuItem>
-                                <MenuItem
-                                  onClick={() => handleClose2(null, index)}
-                                >
-                                  My account
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() => handleClose2(null, index)}
-                                >
-                                  Logout
+                                <MenuItem onClick={handleCloseActionMenu} sx={{ marginTop: '10px' }}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
+                                  <span style={{ marginLeft: '10px' }}>Delete</span>
                                 </MenuItem>
                               </MenuList>
                             </ClickAwayListener>
@@ -509,7 +526,7 @@ function New_lead() {
           setLength(response.data.totalItems);
           setPagination(true);
         }
-        console.log(response.data.data);
+        // console.log(response.data.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -525,7 +542,7 @@ function New_lead() {
       setSeverity("warning");
       return;
     }
-    console.log("p1");
+    // console.log("p1");
     try {
       // Prepare the data to match the required request body format
       const data = {
@@ -538,7 +555,7 @@ function New_lead() {
         contactNumber: parseInt(state.Phone_Number),
         notes: state.Description,
       };
-      console.log("p2");
+      // console.log("p2");
       const response = await fetch(
         `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadDetail`,
         {
@@ -550,7 +567,7 @@ function New_lead() {
           body: JSON.stringify(data),
         }
       );
-      console.log("p3");
+      // console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
         fetchLead();
@@ -712,7 +729,7 @@ function New_lead() {
     setOpen(false);
   };
   const handlePageChange = (event, newPage) => {
-    console.log(newPage);
+    // console.log(newPage);
     if (newPage !== 0) {
       setPage(newPage + 1); // Update the current page
     }
@@ -740,8 +757,8 @@ function New_lead() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  console.log(state, "sssssss");
-  console.log(open2, "eeeeeee");
+  // console.log(state, "sssssss");
+  // console.log(open2, "eeeeeee");
   return (
     <>
       <div>
@@ -1008,7 +1025,7 @@ function New_lead() {
                 <Button
                   color="primary"
                   variant="contained"
-                  //   onClick={handleUpdateCampaign}
+                //   onClick={handleUpdateCampaign}
                 >
                   Update
                 </Button>
