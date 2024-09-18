@@ -140,21 +140,18 @@ module.exports = [
         name: "Lead Status",
         link: "/app/lead/lead-status",
         icon: "settings_suggest",
-        badge: "Hot",
       },
       {
         key: "Log_Notes",
         name: "Log Notes",
         link: "/app/lead/log-notes",
         icon: "settings_suggest",
-        badge: "Hot",
       },
       {
         key: "Channel",
         name: "Channel",
         link: "/app/lead/channel",
         icon: "settings_suggest",
-        badge: "Hot",
       },
       {
         key: "Lead_Management",
@@ -179,10 +176,6 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
-<<<<<<<< < Temporary merge branch 1
-
-=========
->>>>>>>>> Temporary merge branch 2
     ],
   },
   {
@@ -195,21 +188,18 @@ module.exports = [
         name: "Custom Question",
         link: "/app/Custom_Question",
         icon: "settings_suggest",
-        badge: "Hot",
       },
       {
         key: "Interviewer",
         name: "Interviewer",
         link: "/app/Interviewer",
         icon: "settings_suggest",
-        badge: "Hot",
       },
       {
         key: "Job_Application",
         name: "Job Application",
         link: "/app/Job_Application",
         icon: "settings_suggest",
-        badge: "Hot",
       },
     ],
   },
