@@ -33,6 +33,8 @@ function TablePlayground(props) {
     count,
   } = props;
 
+  // console.log(rowData);
+
   const [selected, setSelected] = useState([]);
 
   const handleSelectAllClick = (event) => {
@@ -112,7 +114,6 @@ function TablePlayground(props) {
                       {" "}
                       {rowData.map((n) => {
                         const isSelected = thisIsSelected(n.id);
-                        // console.log(n.actions);
                         return (
                           <TableRow
                             role="checkbox"
@@ -169,11 +170,6 @@ function TablePlayground(props) {
                     </>
                   )}
 
-                  {/* {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )} */}
                 </TableBody>
               </Table>
               {rowData.length === 0 && <EmptyData />}

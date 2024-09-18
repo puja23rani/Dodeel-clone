@@ -78,7 +78,7 @@ module.exports = [
       {
         key: "Employee_Details",
         name: "Employee Details",
-        link: "/app/hrm-setting/department",
+        link: "/app/hrm-setting/employee-details",
         icon: "settings_suggest",
       },
       {
