@@ -397,12 +397,7 @@ export const Interviewer = loadable(
     fallback: <Loading />,
   }
 );
-export const Job_Create = loadable(
-  () => import("../containers/Pages/Recruitment/Job_Create"),
-  {
-    fallback: <Loading />,
-  }
-);
+
 export const Job_Application = loadable(
   () => import("../containers/Pages/Recruitment/Job_Application"),
   {

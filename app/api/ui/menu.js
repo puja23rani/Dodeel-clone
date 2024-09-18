@@ -179,6 +179,7 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
+
     ],
   },
   {
@@ -201,9 +202,9 @@ module.exports = [
         badge: "Hot",
       },
       {
-        key: "Job_Create",
-        name: "Job Create",
-        link: "/app/Job_Create",
+        key: "Job_Application",
+        name: "Job Application",
+        link: "/app/Job_Application",
         icon: "settings_suggest",
         badge: "Hot",
       },
