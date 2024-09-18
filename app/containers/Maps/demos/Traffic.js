@@ -1,29 +1,24 @@
-import React from 'react';
-import { GoogleMap, TrafficLayer } from '@react-google-maps/api';
-import GoogleMapWrapper from './GoogleMapWrapper';
+import React from "react";
+import { GoogleMap, TrafficLayer } from "@react-google-maps/api";
+import GoogleMapWrapper from "./GoogleMapWrapper";
 
 const containerStyle = {
-  height: '400px'
+  height: "400px",
 };
 
-const MapWithATrafficLayer = props => {
+const MapWithATrafficLayer = (props) => {
   const center = {
     lat: 42.3726399,
-    lng: -71.1096528
+    lng: -71.1096528,
   };
 
-  const onLoad = trafficLayer => {
-    console.log('trafficLayer: ', trafficLayer);
+  const onLoad = (trafficLayer) => {
+    //console.log('trafficLayer: ', trafficLayer);
   };
 
   return (
     <GoogleMapWrapper>
-      <GoogleMap
-        {...props}
-        id="bicycling-example"
-        zoom={14}
-        center={center}
-      >
+      <GoogleMap {...props} id="bicycling-example" zoom={14} center={center}>
         <TrafficLayer onload={onLoad} />
       </GoogleMap>
     </GoogleMapWrapper>
@@ -33,9 +28,9 @@ const MapWithATrafficLayer = props => {
 function Traffic() {
   return (
     <MapWithATrafficLayer
-      loadingElement={<div style={{ height: '100%' }} />}
+      loadingElement={<div style={{ height: "100%" }} />}
       mapContainerStyle={containerStyle}
-      mapElement={<div style={{ height: '100%' }} />}
+      mapElement={<div style={{ height: "100%" }} />}
     />
   );
 }

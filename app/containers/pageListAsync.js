@@ -363,7 +363,103 @@ export const TermsConditions = loadable(
 );
 // pagess
 export const LeadStatus = loadable(
-  () => import("../api/Pages_form/Lead_Status"),
+  () => import("../api/Lead_Management/Lead_Status"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const LogNotes = loadable(
+  () => import("../api/Lead_Management/Log_Notes"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const Channel = loadable(
+  () => import("../api/Lead_Management/Channel"),
+  {
+    fallback: <Loading />,
+  }
+);
+<<<<<<<< < Temporary merge branch 1
+
+// ---------------------------------------------------------------
+//            TRUPTI DEV CODE
+// ---------------------------------------------------------------
+export const Custom_Question = loadable(
+  () => import("../containers/Pages/Recruitment/Custom_Question"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Interviewer = loadable(
+  () => import("../containers/Pages/Recruitment/Interviewer"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const Job_Application = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Application"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+// ---------------------------------------------------------------
+=========
+
+// ---------------------------------------------------------------
+//            TRUPTI DEV CODE
+// ---------------------------------------------------------------
+export const Custom_Question = loadable(
+  () => import("../containers/Pages/Recruitment/Custom_Question"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Interviewer = loadable(
+  () => import("../containers/Pages/Recruitment/Interviewer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Create = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Create"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Job_Application = loadable(
+  () => import("../containers/Pages/Recruitment/Job_Application"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+// ---------------------------------------------------------------
+>>>>>>>>> Temporary merge branch 2
+export const Campaign = loadable(
+  () => import("../api/Lead_Management/Campaign"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const NewLead = loadable(
+  () => import("../api/Lead_Management/New_lead"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const LeadMembers = loadable(
+  () => import("../api/Lead_Management/LeadMemebers"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const LeadDetails = loadable(
+  () => import("../api/Lead_Management/LeadDetails"),
   {
     fallback: <Loading />,
   }

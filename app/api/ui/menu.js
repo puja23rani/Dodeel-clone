@@ -1,124 +1,134 @@
 module.exports = [
   {
-    key: 'home',
-    name: 'Home',
-    icon: 'home',
+    key: "Dashboard",
+    name: "Dashboard",
+    link: "/app",
+    icon: "dashboard",
+    title: true
+  },
+  {
+    key: "HRM",
+    name: "HRM",
+    icon: "room_preferences",
     child: [
       {
-        key: 'landing_page',
-        name: 'Landing Page',
+        key: "HRM_Settings",
+        name: "HRM Settings",
         title: true,
       },
       {
-        key: 'corporate',
-        name: 'Corporate',
-        link: '/',
-        icon: 'business',
-        badge: 'Hot'
+        key: "Department",
+        name: "Department",
+        link: "/app/hrm-setting/department",
+        icon: "settings_suggest",
       },
       {
-        key: 'dashboard',
-        name: 'Dashboard',
+        key: "Designation",
+        name: "Designation",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Leave",
+        name: "Leave",
+        link: "/app/hrm-setting/leave",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Allowance",
+        name: "Allowance",
+        link: "/app/hrm-setting/allowance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Performance",
+        name: "Performance",
+        link: "/app/hrm-setting/performance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Compentency Type",
+        name: "Compentency Type",
+        link: "/app/hrm-setting/compentency-type",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Competenies",
+        name: "Competenies",
+        link: "/app/hrm-setting/competenies",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Office Shift",
+        name: "Office Shift",
+        link: "/app/hrm-setting/office-shift",
+        icon: "settings_suggest",
+      },
+      {
+        key: "contact-details",
+        name: "Contact Details",
+        link: "/app/hrm-setting/contact-details",
+        icon: "settings_suggest",
+      },
+      {
+        key: "HRM_Management",
+        name: "HRM Management",
         title: true,
       },
       {
-        key: 'personal',
-        name: 'Analytic',
-        icon: 'settings_brightness',
-        link: '/app'
+        key: "Employee_Details",
+        name: "Employee Details",
+        link: "/app/hrm-setting/department",
+        icon: "settings_suggest",
       },
       {
-        key: 'crm',
-        name: 'Marketing',
-        icon: 'settings_system_daydream',
-        link: '/app/dashboard/marketing'
+        key: "Timesheet",
+        name: "Timesheet",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
       },
       {
-        key: 'crypto',
-        name: 'Cryptocurrency',
-        icon: 'local_atm',
-        link: '/app/dashboard/crypto'
+        key: "Attendance",
+        name: "Attendance",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
       },
       {
-        key: 'widgets',
-        name: 'Widgets',
-        title: true,
+        key: "Leave_Request",
+        name: "Leave Request",
+        link: "/app/hrm-setting/leave",
+        icon: "settings_suggest",
       },
       {
-        key: 'infographics_widget',
-        icon: 'timelapse',
-        name: 'Infographics',
-        link: '/app/widgets/infographics'
+        key: "Task",
+        name: "Task",
+        link: "/app/hrm-setting/allowance",
+        icon: "settings_suggest",
       },
       {
-        key: 'status_widget',
-        icon: 'nature_people',
-        name: 'Status',
-        link: '/app/widgets/status'
+        key: "Holidays",
+        name: "Holidays",
+        link: "/app/hrm-setting/performance",
+        icon: "settings_suggest",
       },
       {
-        key: 'analytics_widget',
-        icon: 'insert_chart',
-        name: 'Analytics',
-        link: '/app/widgets/analytics'
+        key: "Payroll",
+        name: "Payroll",
+        link: "/app/hrm-setting/compentency-type",
+        icon: "settings_suggest",
       },
       {
-        key: 'mini_apps_widget',
-        icon: 'web',
-        name: 'Mini Apps',
-        link: '/app/widgets/mini-apps'
-      },
-      {
-        key: 'gallery_widget',
-        icon: 'satellite',
-        name: 'Gallery',
-        link: '/app/widgets/gallery-carousel'
-      },
-      {
-        key: 'material_font_icon',
-        name: 'Fonts & Icons',
-        title: true,
-      },
-      {
-        key: 'typography',
-        name: 'Typography',
-        icon: 'font_download',
-        link: '/app/ui/typography'
-      },
-      {
-        key: 'icons',
-        name: 'Material Icons',
-        icon: 'bookmark',
-        link: '/app/ui/icons'
-      },
-      {
-        key: 'layouts',
-        name: 'Layouts',
-        title: true,
-      },
-      {
-        key: 'grid',
-        name: 'Grid',
-        icon: 'view_column',
-        link: '/app/layouts/grid'
-      },
-      {
-        key: 'application_layout',
-        name: 'App Layout',
-        icon: 'web',
-        link: '/app/layouts/app-layout'
-      },
-      {
-        key: 'responsive',
-        name: 'Responsive',
-        icon: 'mobile_friendly',
-        link: '/app/layouts/responsive'
+        key: "Appraisal",
+        name: "Appraisal",
+        link: "/app/hrm-setting/competenies",
+        icon: "settings_suggest",
       }
     ],
-    
+  },
+  {
     key: "Lead",
     name: "Lead",
-    icon: "home",
+    icon: "settings_suggest",
     child: [
       {
         key: "Lead_Settings",
@@ -129,21 +139,21 @@ module.exports = [
         key: "Lead_Status",
         name: "Lead Status",
         link: "/app/lead/lead-status",
-        icon: "business",
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Log_Notes",
         name: "Log Notes",
-        link: "/",
-        icon: "business",
+        link: "/app/lead/log-notes",
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Channel",
         name: "Channel",
-        link: "/",
-        icon: "business",
+        link: "/app/lead/channel",
+        icon: "settings_suggest",
         badge: "Hot",
       },
       {
@@ -154,96 +164,50 @@ module.exports = [
       {
         key: "Campaign",
         name: "Campaign",
-        icon: "settings_brightness",
-        link: "/app",
+        icon: "settings_suggest",
+        link: "/app/lead/campaign",
       },
       {
         key: "NewLead",
         name: "New Lead",
-        icon: "settings_system_daydream",
-        link: "/app/dashboard/marketing",
+        icon: "settings_suggest",
+        link: "/app/lead/new-lead",
       },
       {
         key: "Lead_Members",
         name: "Lead Members",
-        icon: "local_atm",
-        link: "/app/dashboard/crypto",
+        icon: "settings_suggest",
+        link: "/app/lead/lead-members",
       },
-      // {
-      //   key: "widgets",
-      //   name: "Widgets",
-      //   title: true,
-      // },
-      // {
-      //   key: "infographics_widget",
-      //   icon: "timelapse",
-      //   name: "Infographics",
-      //   link: "/app/widgets/infographics",
-      // },
-      // {
-      //   key: "status_widget",
-      //   icon: "nature_people",
-      //   name: "Status",
-      //   link: "/app/widgets/status",
-      // },
-      // {
-      //   key: "analytics_widget",
-      //   icon: "insert_chart",
-      //   name: "Analytics",
-      //   link: "/app/widgets/analytics",
-      // },
-      // {
-      //   key: "mini_apps_widget",
-      //   icon: "web",
-      //   name: "Mini Apps",
-      //   link: "/app/widgets/mini-apps",
-      // },
-      // {
-      //   key: "gallery_widget",
-      //   icon: "satellite",
-      //   name: "Gallery",
-      //   link: "/app/widgets/gallery-carousel",
-      // },
-      // {
-      //   key: "material_font_icon",
-      //   name: "Fonts & Icons",
-      //   title: true,
-      // },
-      // {
-      //   key: "typography",
-      //   name: "Typography",
-      //   icon: "font_download",
-      //   link: "/app/ui/typography",
-      // },
-      // {
-      //   key: "icons",
-      //   name: "Material Icons",
-      //   icon: "bookmark",
-      //   link: "/app/ui/icons",
-      // },
-      // {
-      //   key: "layouts",
-      //   name: "Layouts",
-      //   title: true,
-      // },
-      // {
-      //   key: "grid",
-      //   name: "Grid",
-      //   icon: "view_column",
-      //   link: "/app/layouts/grid",
-      // },
-      // {
-      //   key: "application_layout",
-      //   name: "App Layout",
-      //   icon: "web",
-      //   link: "/app/layouts/app-layout",
-      // },
-      // {
-      //   key: "responsive",
-      //   name: "Responsive",
-      //   icon: "mobile_friendly",
-      //   link: "/app/layouts/responsive",
-      // },
+
+    ],
+  },
+  {
+    key: "Recruitments",
+    name: "Recruitments",
+    icon: "settings_suggest",
+    child: [
+      {
+        key: "Custom_Question",
+        name: "Custom Question",
+        link: "/app/Custom_Question",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Interviewer",
+        name: "Interviewer",
+        link: "/app/Interviewer",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Job_Application",
+        name: "Job Application",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
     ],
   },
   {

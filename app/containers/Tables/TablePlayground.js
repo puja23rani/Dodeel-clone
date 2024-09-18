@@ -14,6 +14,7 @@ import EnhancedTableToolbar from "enl-components/Tables/tableParts/TableToolbar"
 import useStyles from "enl-components/Tables/tableStyle-jss";
 import { injectIntl } from "react-intl";
 import messages from "./messages";
+import { EmptyData } from 'enl-components';
 
 function TablePlayground(props) {
   const {
@@ -27,6 +28,9 @@ function TablePlayground(props) {
     rowsPerPage, // Passed from parent
     onPageChange, // Function from parent to handle page change
     onRowsPerPageChange, // Function from parent to handle rows per page change
+    title,
+    pagination,
+    count,
   } = props;
 
   const [selected, setSelected] = useState([]);
@@ -66,65 +70,58 @@ function TablePlayground(props) {
 
   const renderCell = (dataArray, keyArray) =>
     keyArray.map((itemCell, index) => (
-      <TableCell align="center" key={index.toString()}>
+      <TableCell
+        align="left"
+        key={index.toString()}
+        style={{ paddingLeft: "20px" }}
+      >
         {dataArray[itemCell.id]}
       </TableCell>
     ));
 
+  // console.log(rowData);
+
   return (
-    <PapperBlock
-      title={intl.formatMessage(messages.playgroundTitle)}
-      desc=""
-      whiteBg
-      icon="playlist_play"
-    >
-      <div>
-        <Grid container className={classes.rootTable}>
-          <Grid item xs={12}>
-            <Paper className={classes.rootTable}>
-              {toolbarOptions.enabled && (
-                <EnhancedTableToolbar
+    <div>
+      <Grid container className={classes.rootTable}>
+        <Grid item xs={12}>
+          <Paper className={classes.rootTable}>
+            {toolbarOptions.enabled && (
+              <EnhancedTableToolbar title={title} placeholder="Search" />
+            )}
+            <div className={classes.tableWrapper}>
+              <Table
+                className={cx(
+                  classes.table,
+                  styles.hovered && classes.hover,
+                  styles.stripped && classes.stripped,
+                  styles.bordered && classes.bordered,
+                  classes[size]
+                )}
+              >
+                <EnhancedTableHead
                   numSelected={selected.length}
-                  title="Table"
-                  placeholder="Search"
+                  onSelectAllClick={handleSelectAllClick}
+                  rowCount={rowData.length}
+                  columnData={columnData}
+                  checkcell={toolbarOptions.checkcell}
                 />
-              )}
-              <div className={classes.tableWrapper}>
-                <Table
-                  className={cx(
-                    classes.table,
-                    styles.hovered && classes.hover,
-                    styles.stripped && classes.stripped,
-                    styles.bordered && classes.bordered,
-                    classes[size]
-                  )}
-                >
-                  <EnhancedTableHead
-                    numSelected={selected.length}
-                    onSelectAllClick={handleSelectAllClick}
-                    rowCount={rowData.length}
-                    columnData={columnData}
-                    checkcell={toolbarOptions.checkcell}
-                  />
-                  <TableBody>
-                    {rowData
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((n) => {
+                <TableBody>
+                  {pagination ? (
+                    <>
+                      {" "}
+                      {rowData.map((n) => {
                         const isSelected = thisIsSelected(n.id);
+                        // console.log(n.actions);
                         return (
                           <TableRow
                             role="checkbox"
-                            aria-checked={isSelected}
                             tabIndex={-1}
                             key={n.id}
-                            selected={isSelected}
                             onClick={(event) => handleClick(event, n.id)}
                           >
                             {toolbarOptions.checkcell && (
-                              <TableCell padding="checkbox">
+                              <TableCell padding="checkbox" align="left">
                                 <Checkbox checked={isSelected} />
                               </TableCell>
                             )}
@@ -137,35 +134,90 @@ function TablePlayground(props) {
                           </TableRow>
                         );
                       })}
-                    {emptyRows > 0 && (
-                      <TableRow style={{ height: 49 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-              {toolbarOptions.pagination && (
-                <TablePagination
-                  component="div"
-                  count={rowData.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={onPageChange}
-                  onRowsPerPageChange={onRowsPerPageChange}
-                />
-              )}
-            </Paper>
-          </Grid>
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      {rowData
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((n) => {
+                          const isSelected = thisIsSelected(n.id);
+                          return (
+                            <TableRow
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={n.id}
+                              onClick={(event) => handleClick(event, n.id)}
+                            >
+                              {toolbarOptions.checkcell && (
+                                <TableCell padding="checkbox" align="left">
+                                  <Checkbox checked={isSelected} />
+                                </TableCell>
+                              )}
+                              {renderCell(
+                                n,
+                                columnData.filter((col) => col.id !== "actions")
+                              )}
+                              {/* Manually render the action buttons for the "Action" column */}
+                              <TableCell align="center">{n.actions}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </>
+                  )}
+
+                  {/* {emptyRows > 0 && (
+                    <TableRow style={{ height: 49 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )} */}
+                </TableBody>
+              </Table>
+              {rowData.length === 0 && <EmptyData />}
+            </div>
+            {pagination ? (
+              <>
+                {" "}
+                {toolbarOptions.pagination && (
+                  <TablePagination
+                    component="div"
+                    count={count}
+                    rowsPerPage={rowsPerPage}
+                    page={page - 1}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                {" "}
+                {toolbarOptions.pagination && (
+                  <TablePagination
+                    component="div"
+                    count={rowData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                  />
+                )}
+              </>
+            )}
+          </Paper>
         </Grid>
-      </div>
-    </PapperBlock>
+      </Grid>
+    </div>
   );
 }
 
 TablePlayground.propTypes = {
   intl: PropTypes.object.isRequired,
   size: PropTypes.string,
+  title: PropTypes.string,
   styles: PropTypes.shape({
     bordered: PropTypes.bool,
     stripped: PropTypes.bool,
@@ -180,8 +232,10 @@ TablePlayground.propTypes = {
   rowData: PropTypes.array.isRequired, // New Prop
   page: PropTypes.number.isRequired, // New Prop
   rowsPerPage: PropTypes.number.isRequired, // New Prop
+  count: PropTypes.number.isRequired, // New Prop
   onPageChange: PropTypes.func.isRequired, // New Prop
   onRowsPerPageChange: PropTypes.func.isRequired, // New Prop
+  pagination: PropTypes.bool,
 };
 
 TablePlayground.defaultProps = {
