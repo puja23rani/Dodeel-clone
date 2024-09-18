@@ -85,6 +85,7 @@ import {
   StreetViewMap,
   NotFound,
   LeadStatus,
+  Department,
 } from "../pageListAsync";
 
 function Application(props) {
@@ -202,6 +203,9 @@ function Application(props) {
         {/* Lead Pages */}
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
+        {/* Department */}
+        <Route path="/Department" element={<Department />} />
+
       </Routes>
     </Dashboard>
   );

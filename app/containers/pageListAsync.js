@@ -368,3 +368,10 @@ export const LeadStatus = loadable(
     fallback: <Loading />,
   }
 );
+//Department
+export const Department = loadable(
+  () => import("../api/HRM_management/Department"),
+  {
+    fallback: <Loading />,
+  }
+);

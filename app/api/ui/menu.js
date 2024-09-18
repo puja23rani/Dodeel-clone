@@ -260,7 +260,7 @@ module.exports = [
         key: 'Department',
         name: 'Department',
         icon: 'check_circle',
-        link: '/app/pages/todo',
+        link: '/app/Department',
       },
       {
         key: 'Designation',
