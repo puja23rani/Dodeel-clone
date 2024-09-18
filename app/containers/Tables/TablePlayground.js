@@ -14,6 +14,7 @@ import EnhancedTableToolbar from "enl-components/Tables/tableParts/TableToolbar"
 import useStyles from "enl-components/Tables/tableStyle-jss";
 import { injectIntl } from "react-intl";
 import messages from "./messages";
+import { EmptyData } from 'enl-components';
 
 function TablePlayground(props) {
   const {
@@ -78,6 +79,8 @@ function TablePlayground(props) {
       </TableCell>
     ));
 
+  // console.log(rowData);
+
   return (
     <div>
       <Grid container className={classes.rootTable}>
@@ -109,6 +112,7 @@ function TablePlayground(props) {
                       {" "}
                       {rowData.map((n) => {
                         const isSelected = thisIsSelected(n.id);
+                        // console.log(n.actions);
                         return (
                           <TableRow
                             role="checkbox"
@@ -172,6 +176,7 @@ function TablePlayground(props) {
                   )} */}
                 </TableBody>
               </Table>
+              {rowData.length === 0 && <EmptyData />}
             </div>
             {pagination ? (
               <>

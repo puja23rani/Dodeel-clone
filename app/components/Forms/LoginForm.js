@@ -49,8 +49,8 @@ function LoginForm(props) {
     const actualData = await res.json();
     if (actualData.token) {
       localStorage.setItem("token", actualData.token);
-      localStorage.setItem("role", actualData.role);
       if (actualData.role === "ADMIN") {
+        window.localStorage.setItem("role", actualData.role);
         navigate("/app");
       }
     }

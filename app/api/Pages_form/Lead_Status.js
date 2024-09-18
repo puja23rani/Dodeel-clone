@@ -226,7 +226,7 @@ function Lead_Status() {
         );
 
         const actualData = await res.json();
-        console.log(actualData.holidays);
+        // console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
           fetchLeadStatus();

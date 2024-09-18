@@ -431,3 +431,10 @@ export const LeadMembers = loadable(
     fallback: <Loading />,
   }
 );
+
+export const LeadDetails = loadable(
+  () => import("../api/Lead_Management/LeadDetails"),
+  {
+    fallback: <Loading />,
+  }
+);
