@@ -14,6 +14,7 @@ import EnhancedTableToolbar from "enl-components/Tables/tableParts/TableToolbar"
 import useStyles from "enl-components/Tables/tableStyle-jss";
 import { injectIntl } from "react-intl";
 import messages from "./messages";
+import { EmptyData } from 'enl-components';
 
 function TablePlayground(props) {
   const {
@@ -175,6 +176,7 @@ function TablePlayground(props) {
                   )} */}
                 </TableBody>
               </Table>
+              {rowData.length === 0 && <EmptyData />}
             </div>
             {pagination ? (
               <>

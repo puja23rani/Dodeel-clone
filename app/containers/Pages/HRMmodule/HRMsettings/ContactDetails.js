@@ -153,46 +153,48 @@ function ContactDetails() {
       // console.log(actualData);
 
       if (actualData.status === 200) {
-        setRowdata(
-          actualData.contactDetails.map((item) => ({
-            slNo: actualData.contactDetails.indexOf(item) + 1,
-            id: item._id,
-            companyName: item.companyName,
-            contactNumber: item.contactNumber,
-            emailAddress: item.emailAddress,
-            address: item.address,
-            actions: (
-              <>
-                <IconButton
-                  aria-label="Edit"
-                  onClick={(e) => {
-                    // console.log(item);
-                    setState({
-                      id: item._id,
-                      companyName: item.companyName,
-                      contactNumber: item.contactNumber,
-                      emailAddress: item.emailAddress,
-                      address: item.address,
-                      isUpdate: true,
-                    });
-                    setOpenDialog(true);
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="Delete"
-                  onClick={(e) => {
-                    setDeleteDialogOpen(true);
-                    setIdToDelete(item._id);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </>
-            ),
-          }))
-        );
+        if (actualData.data.length > 0) {
+          setRowdata(
+            actualData.contactDetails.map((item) => ({
+              slNo: actualData.contactDetails.indexOf(item) + 1,
+              id: item._id,
+              companyName: item.companyName,
+              contactNumber: item.contactNumber,
+              emailAddress: item.emailAddress,
+              address: item.address,
+              actions: (
+                <>
+                  <IconButton
+                    aria-label="Edit"
+                    onClick={(e) => {
+                      // console.log(item);
+                      setState({
+                        id: item._id,
+                        companyName: item.companyName,
+                        contactNumber: item.contactNumber,
+                        emailAddress: item.emailAddress,
+                        address: item.address,
+                        isUpdate: true,
+                      });
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={(e) => {
+                      setDeleteDialogOpen(true);
+                      setIdToDelete(item._id);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              ),
+            }))
+          );
+        }
       }
     } catch (err) {
       console.log(err);
