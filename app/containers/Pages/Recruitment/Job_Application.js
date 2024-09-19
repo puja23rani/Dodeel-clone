@@ -21,6 +21,9 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
+import InfoIcon from '@mui/icons-material/Info';
+import { Navigate, useNavigate } from "react-router-dom";
+
 
 
 
@@ -53,61 +56,63 @@ function Job_Application() {
   // };
 
   const [errors, setErrors] = useState({
-    // jobTitle: "",
-    // jobCategory: "",
-    // jobDescription: EditorState.createEmpty(),
-    // createStatus: "",
-    // startDate: "",
-    // endDate: "",
-    // skills: [],
-    // resume: "",
-    // customQuestionID: [],
-    // customQuestion: [],
-
+    jobTitle: "",
+    jobCategory: "",
+    jobDescription: "",
+    createStatus: "",
+    startDate: "",
+    endDate: "",
+    skills: [],
+    resume: "",
+    customQuestionID: [],
+    customQuestion: [],
   });
+  console.log(errors)
 
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.jobTitle.trim()) {
+
+    if (!state.jobTitle) {
       errors.jobTitle = "Job Title is required";
       isValid = false;
     }
-    if (!state.jobCategory.trim()) {
+    if (!state.jobCategory) {
       errors.jobCategory = "Job Category is required";
       isValid = false;
     }
-    if (!state.jobDescription.trim()) {
+    if (!state.jobDescription) {
       errors.jobDescription = "Job Description is required";
       isValid = false;
     }
-    if (!state.createStatus.title.trim()) {
+    if (!state.createStatus.title) {
       errors.createStatus = "Create Status is required";
       isValid = false;
     }
-    if (!state.startDate.trim()) {
+    if (!state.startDate) {
       errors.startDate = "Start Date is required";
       isValid = false;
     }
-    if (!state.endDate.trim()) {
+    if (!state.endDate) {
       errors.endDate = "End Date is required";
       isValid = false;
     }
-    if (!state.skills.trim()) {
+    if (!state.skills) {
       errors.skills = "Skills is required";
       isValid = false;
     }
-    if (!state.resume.title.trim()) {
+    if (!state.resume.title) {
       errors.resume = "Resume is required";
       isValid = false;
     }
-    if (!state.customQuestion.trim()) {
+    if (!state.customQuestion) {
       errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
 
     setErrors(errors);
+    console.log(isValid)
     return isValid;
   };
 
@@ -136,7 +141,7 @@ function Job_Application() {
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
-
+  const navigate = useNavigate();
   
     
    
@@ -290,9 +295,14 @@ function Job_Application() {
                         resume: {
                           title: item.resume
                         },
-                       
-                        customQuestionID: item.customQuestionID,
-                        customQuestion: item.customQuestion, isUpdate: true,
+                        customQuestionID: item.customQuestionID.map((cus) => cus._id),
+                        customQuestion: item.customQuestionID.map((cus) => ({
+                          title: cus.customQuestion,
+                          id: cus.id,
+                        })), // Format employeeName as [{ title, id }]
+                        // customQuestionID: item.customQuestionID,
+                        // customQuestion: item.customQuestion, 
+                        isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
@@ -304,9 +314,24 @@ function Job_Application() {
                     onClick={() => {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
+                      setSelectedJob(job);
                     }}
                   >
                     <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/applicantlist", {
+                        state: { jobID: item._id },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
                   </IconButton>
                 </>
               ),
@@ -326,28 +351,13 @@ function Job_Application() {
   }, [page, rowsPerPage]);
 
   const handleSaveJobs = () => {
-    // if (!validate()) {
-    //   setMessage("Please fill all required fields");
-    //   setOpen(true);
-    //   setSeverity("warning");
-    //   return;
-    // }
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == ""
-
-    ) {
-      toast.error("Fill all the information", {
-        position: "top-center",
-      });
-    } else {
+    if (!validate()) {
+      setMessage("Please fill all required fields");
+      setOpen(true);
+      setSeverity("warning");
+      return;
+    }
+   else {
       axios
         .post(
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
@@ -365,7 +375,7 @@ function Job_Application() {
             skills: state.skills,
             resume: state.resume.title,
             customQuestionID: state.customQuestionID,
-            customQuestion: state.customQuestion,
+            // customQuestion: state.customQuestion,
 
           },
           {
@@ -473,24 +483,16 @@ function Job_Application() {
       skills: state.skills.join(","),
       resume: state.resume.title,
       customQuestionID: state.customQuestionID,
-      customQuestion: state.customQuestion,
+     
     };
 
     console.log(requestData);
 
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == "") {
+    if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
+      return;
     } else {
       axios
         .put(
@@ -582,6 +584,8 @@ const handleSkillDelete = (skillToDelete) => () => {
         skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
 };
+
+
 const handlePageChange = (event, newPage) => {
   setPage(newPage); // Update the current page
 };
@@ -766,8 +770,8 @@ const handleRowsPerPageChange = (event) => {
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
 
-                        error={!!errors.resume} // Show error if it exists
-                        helperText={errors.resume}
+                        error={!!errors.skills} // Show error if it exists
+                        helperText={errors.skills}
                       />
                     ))}
                   </div>

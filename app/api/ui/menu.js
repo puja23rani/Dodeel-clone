@@ -207,6 +207,13 @@ module.exports = [
         icon: "settings_suggest",
         badge: "Hot",
       },
+      {
+        key: "applicantlist",
+        name: "Applicant List",
+        link: "/app/applicantlist",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
     ],
   },
 ];
