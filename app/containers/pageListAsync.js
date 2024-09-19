@@ -410,6 +410,12 @@ export const Channel = loadable(
       fallback: <Loading />,
     }
   );
+  export const JobAppView = loadable(
+    () => import("../containers/Pages/Recruitment/JobAppView"),
+    {
+      fallback: <Loading />,
+    }
+  );
  
   
   // ---------------------------------------------------------------

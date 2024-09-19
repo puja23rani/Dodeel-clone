@@ -21,6 +21,7 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
+import { Navigate } from "react-router-dom";
 
 
 
@@ -308,6 +309,14 @@ function Job_Application() {
                   >
                     <DeleteIcon />
                   </IconButton>
+                  <IconButton
+                    aria-label="View"
+                    onClick={() => {
+                      Navigate(`/app/JobAppView`);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </>
               ),
             }))
@@ -355,9 +364,7 @@ function Job_Application() {
 
             jobTitle: state.jobTitle,
             jobCategory: state.jobCategory,
-
             jobDescription: state.jobDescription,
-             
             createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
@@ -865,27 +872,7 @@ const handleRowsPerPageChange = (event) => {
                     )}
                   />
                 </Grid> 
-                 {/* <Grid item xs={12}>
-  <Typography variant="subtitle1" gutterBottom>
-    Job Description
-  </Typography>
-  
-  <Paper elevation={3} style={{ padding: '16px', marginTop: '8px' }}>
-    
-      <Editor
-           editorState={state.jobDescription}
-            editorClassName={classes.textEditor}
-            toolbarClassName={classes.toolbarEditor}
-            
-            onEditorStateChange={(e) =>
-        setState({
-          ...state,
-          jobDescription: e,
-        })
-      }
-    />
-  </Paper>
-</Grid> */}
+                 
 <Grid item xs={12}>
                   <TextField
                     fullWidth
