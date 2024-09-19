@@ -320,6 +320,7 @@ function Department() {
       departmentName: "",
       isUpdate: false,
     })
+    setErrors({});
     setOpenDialog(false);
   }
 
