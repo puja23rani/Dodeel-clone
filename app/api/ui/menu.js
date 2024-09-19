@@ -12,6 +12,59 @@ module.exports = [
     icon: "room_preferences",
     child: [
       {
+        key: "HRM_Management",
+        name: "HRM Management",
+        title: true,
+      },
+      {
+        key: "Employee_Details",
+        name: "Employee Details",
+        link: "/app/hrm-setting/employee-details",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Timesheet",
+        name: "Timesheet",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Attendance",
+        name: "Attendance",
+        link: "/app/hrm-setting/designation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Leave_Request",
+        name: "Leave Request",
+        link: "/app/hrm-setting/leave",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Task",
+        name: "Task",
+        link: "/app/hrm-setting/allowance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Holidays",
+        name: "Holidays",
+        link: "/app/hrm-setting/performance",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Payroll",
+        name: "Payroll",
+        link: "/app/hrm-setting/compentency-type",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Appraisal",
+        name: "Appraisal",
+        link: "/app/hrm-setting/competenies",
+        icon: "settings_suggest",
+      },
+      {
         key: "HRM_Settings",
         name: "HRM Settings",
         title: true,
@@ -70,59 +123,7 @@ module.exports = [
         link: "/app/hrm-setting/contact-details",
         icon: "settings_suggest",
       },
-      {
-        key: "HRM_Management",
-        name: "HRM Management",
-        title: true,
-      },
-      {
-        key: "Employee_Details",
-        name: "Employee Details",
-        link: "/app/hrm-setting/employee-details",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Timesheet",
-        name: "Timesheet",
-        link: "/app/hrm-setting/designation",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Attendance",
-        name: "Attendance",
-        link: "/app/hrm-setting/designation",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Leave_Request",
-        name: "Leave Request",
-        link: "/app/hrm-setting/leave",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Task",
-        name: "Task",
-        link: "/app/hrm-setting/allowance",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Holidays",
-        name: "Holidays",
-        link: "/app/hrm-setting/performance",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Payroll",
-        name: "Payroll",
-        link: "/app/hrm-setting/compentency-type",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Appraisal",
-        name: "Appraisal",
-        link: "/app/hrm-setting/competenies",
-        icon: "settings_suggest",
-      }
+
     ],
   },
   {
