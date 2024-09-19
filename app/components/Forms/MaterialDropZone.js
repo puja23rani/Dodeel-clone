@@ -10,23 +10,9 @@ import Snackbar from '@mui/material/Snackbar';
 import CloudUpload from '@mui/icons-material/CloudUpload';
 import 'enl-styles/vendors/react-dropzone/react-dropzone.css';
 import isImage from './helpers/helpers.js';
+import Popup from '../Popup/Popup.js';
 
 const useStyles = makeStyles()((theme) => ({
-  dropItem: {
-    borderColor: theme.palette.divider,
-    background: theme.palette.background.default,
-    borderRadius: theme.rounded.medium,
-    color: theme.palette.text.disabled,
-    textAlign: 'center'
-  },
-  uploadIconSize: {
-    display: 'inline-block',
-    '& svg': {
-      width: 72,
-      height: 72,
-      fill: theme.palette.secondary.main,
-    }
-  },
   rightIcon: {
     marginLeft: theme.spacing(1),
     '& svg': {
@@ -46,33 +32,44 @@ function MaterialDropZone(props) {
 
   const {
     classes,
-    cx
   } = useStyles();
   const {
     showPreviews,
     maxSize,
-    text,
+    onFilesChange,
     showButton,
     filesLimit,
     ...rest
   } = props;
 
-  const onDrop = useCallback((filesVal) => {
-    let oldFiles = files;
-    const filesLimitVal = filesLimit || '3';
-    oldFiles = oldFiles.concat(filesVal);
-    if (oldFiles.length > filesLimit) {
-      setOpenSnackbar(true);
-      setErrorMessage(`Cannot upload more than ${filesLimitVal} items.`);
-    } else {
-      setFiles(oldFiles);
-    }
-  }, [files, filesLimit]);
+  // const onDrop = useCallback((filesVal) => {
+  //   let oldFiles = files;
+  //   const filesLimitVal = filesLimit || '3';
+  //   oldFiles = oldFiles.concat(filesVal);
+  //   if (oldFiles.length > filesLimit) {
+  //     setOpenSnackbar(true);
+  //     setErrorMessage(`Cannot upload more than ${filesLimitVal} items.`);
+  //   } else {
+  //     setFiles(oldFiles);
+  //   }
+  // }, [files, filesLimit]);
 
   const onDropRejected = () => {
     setOpenSnackbar(true);
     setErrorMessage('File too big, max size is 3MB');
   };
+
+  const onDrop = useCallback((filesVal) => {
+    const filesLimitVal = filesLimit || 1;
+    if (filesVal.length > filesLimitVal) {
+      setOpenSnackbar(true);
+      setErrorMessage(`You can only upload ${filesLimitVal} file.`);
+    } else {
+      setFiles(filesVal);
+      onFilesChange(filesVal); // Update the parent state
+    }
+  }, [filesLimit, onFilesChange]);
+
 
   const handleRequestCloseSnackBar = () => {
     setOpenSnackbar(false);
@@ -90,6 +87,7 @@ function MaterialDropZone(props) {
   }, [files]);
 
   const fileSizeLimit = maxSize || 3000000;
+
   const DeleteBtn = ({ file, index }) => (
     <div className="middle">
       <IconButton onClick={() => handleRemove(file, index)} size="large">
@@ -128,47 +126,39 @@ function MaterialDropZone(props) {
   Previews.propTypes = { filesArray: PropTypes.array.isRequired };
 
   let dropzoneRef;
+
   return (
     <div>
       <Dropzone
         accept={acceptedFiles.join(',')}
         onDrop={onDrop}
         onDropRejected={onDropRejected}
-        acceptClassName="stripes"
-        rejectClassName="rejectStripes"
         maxSize={fileSizeLimit}
         ref={(node) => { dropzoneRef = node; }}
+        noClick
+        noKeyboard
         {...rest}
       >
-        {({ getRootProps, getInputProps }) => (
-          <div {...getRootProps()} className={cx(classes.dropItem, 'dropZone')}>
-            <div className="dropzoneTextStyle">
-              <input {...getInputProps()} />
-              <p className="dropzoneParagraph">{text}</p>
-              <div className={classes.uploadIconSize}>
-                <CloudUpload />
-              </div>
-            </div>
-          </div>
+        {({ getInputProps }) => (
+          <>
+            <input {...getInputProps()} />
+            {showButton && (
+              <Button
+                className={classes.button}
+                fullWidth
+                variant="contained"
+                onClick={() => dropzoneRef.open()}
+                color="secondary"
+              >
+                {'Click to upload file(s)'}
+                <span className={classes.rightIcon}>
+                  <CloudUpload />
+                </span>
+              </Button>
+            )}
+          </>
         )}
-        {/* end */}
       </Dropzone>
-      {showButton && (
-        <Button
-          className={classes.button}
-          fullWidth
-          variant="contained"
-          onClick={() => {
-            dropzoneRef.open();
-          }}
-          color="secondary"
-        >
-          Click to upload file(s)
-          <span className={classes.rightIcon}>
-            <CloudUpload />
-          </span>
-        </Button>
-      )}
       <div className="row preview">
         {showPreviews && <Previews filesArray={files} />}
       </div>
@@ -178,24 +168,46 @@ function MaterialDropZone(props) {
         autoHideDuration={4000}
         onClose={handleRequestCloseSnackBar}
       />
+      {/* <Popup
+        open={openSnackBar}
+        message={errorMessage}
+        onClose={handleRequestCloseSnackBar}
+        severity={"error"} // You can change this to "error", "warning", etc.
+      /> */}
     </div>
   );
 }
 
+// MaterialDropZone.propTypes = {
+//   files: PropTypes.array.isRequired,
+//   text: PropTypes.string.isRequired,
+//   acceptedFiles: PropTypes.array,
+//   showPreviews: PropTypes.bool.isRequired,
+//   showButton: PropTypes.bool,
+//   maxSize: PropTypes.number.isRequired,
+//   filesLimit: PropTypes.number.isRequired,
+// };
+
+// MaterialDropZone.defaultProps = {
+//   acceptedFiles: [],
+//   showButton: true,
+// };
+
 MaterialDropZone.propTypes = {
   files: PropTypes.array.isRequired,
-  text: PropTypes.string.isRequired,
   acceptedFiles: PropTypes.array,
   showPreviews: PropTypes.bool.isRequired,
   showButton: PropTypes.bool,
   maxSize: PropTypes.number.isRequired,
-  filesLimit: PropTypes.number.isRequired,
-
+  filesLimit: PropTypes.number, // Change here
+  onFilesChange: PropTypes.func.isRequired, // Add this line to PropTypes
 };
 
 MaterialDropZone.defaultProps = {
   acceptedFiles: [],
-  showButton: false,
+  showButton: true,
+  filesLimit: 1, // Set the default limit to 1
 };
+
 
 export default MaterialDropZone;

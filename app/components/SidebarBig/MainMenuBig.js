@@ -64,7 +64,7 @@ function MainMenuBig(props) { // eslint-disable-line
   };
 
   const currentMenu = dataMenu.filter(item => item.key === open[0]);
-  // console.log(currentMenu);
+  console.log(currentMenu);
   const activeMenu = (key, child) => {
     if (selectedMenu.length < 1) {
       if (open.indexOf(key) > -1) {
@@ -137,7 +137,7 @@ function MainMenuBig(props) { // eslint-disable-line
           disableSticky
           className={classes.title}
         >
-          
+
           {
             messages[item.key] !== undefined
               ? <FormattedMessage {...messages[item.key]} />
@@ -166,7 +166,7 @@ function MainMenuBig(props) { // eslint-disable-line
               : item.name
           }
         />
-          <Icon className={classes.icon}>chevron_right</Icon>
+        <Icon className={classes.icon}>chevron_right</Icon>
       </ListItem>
     );
   });
@@ -221,7 +221,7 @@ MainMenuBig.propTypes = {
 };
 
 MainMenuBig.defaultProps = {
-  toggleDrawerOpen: () => {},
+  toggleDrawerOpen: () => { },
   mobile: false
 };
 

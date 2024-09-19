@@ -93,8 +93,8 @@ import {
   Campaign,
   NewLead,
   LeadMembers,
-  Applicantlist,
   LeadDetails,
+  Applicantlist,
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -110,6 +110,8 @@ import Category from "../Pages/AssetModule/Category";
 import Supplier from "../Pages/AssetModule/Supplier";
 import JobAppView from "../Pages/Recruitment/JobAppView";
 
+import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
+import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
 
 function Application(props) {
   const { history } = props;
@@ -228,6 +230,7 @@ function Application(props) {
 
 
         {/* ---------------HRM Modules--------------- */}
+        {/* HRM Setting */}
         <Route path="hrm-setting/department" element={<Department />} />
         <Route path="hrm-setting/designation" element={<Designation />} />
         <Route path="hrm-setting/leave" element={<Leave />} />
@@ -237,6 +240,10 @@ function Application(props) {
         <Route path="hrm-setting/competenies" element={<Competenies />} />
         <Route path="hrm-setting/office-shift" element={<OfficeShift />} />
         <Route path="hrm-setting/contact-details" element={<ContactDetails />} />
+
+        {/* HRM Management */}
+        <Route path="hrm-setting/employee-details" element={<EmployeeDetails />} />
+        <Route path="hrm-setting/employee-details/create-employee-details" element={<CreateEmployee />} />
 
         {/* Lead Pages */}
 

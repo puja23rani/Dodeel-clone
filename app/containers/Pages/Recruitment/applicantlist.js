@@ -15,12 +15,15 @@ import Autocomplete from '@mui/material/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
-import { Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Avatar, Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
 import { DialogContent } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
+import { useLocation } from "react-router-dom";
+import { Fragment } from "react";
+import { MaterialDropZone } from 'enl-components';
 
 
 
@@ -70,39 +73,62 @@ function Applicantlist() {
     let isValid = true;
     let errors = {};
 
-    if (!state.jobTitle.trim()) {
+    if (!state.jobTitle) {
       errors.jobTitle = "Job Title is required";
       isValid = false;
     }
-    if (!state.jobCategory.trim()) {
-      errors.jobCategory = "Job Category is required";
+    // if (!state.jobTitle.trim()) {
+    //   errors.jobTitle = "Job Title is required";
+    //   isValid = false;
+    // }
+    if (!state.applicantName) {
+      errors.applicantName = "Applicant Name is required";
       isValid = false;
     }
-    if (!state.jobDescription.trim()) {
-      errors.jobDescription = "Job Description is required";
+    if (!state.phoneNumber) {
+      errors.phoneNumber = "Phone Number is required";
+      isValid = false;
+    } else if (state.phoneNumber.length !== 10) {
+      errors.phoneNumber = "Phone Number must be 10 digits";
       isValid = false;
     }
-    if (!state.createStatus.title.trim()) {
-      errors.createStatus = "Create Status is required";
+
+    if (!state.email) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(state.email)) {
+      errors.email = "Email is invalid";
       isValid = false;
     }
-    if (!state.startDate.trim()) {
+    if (!state.feedback) {
+      errors.feedback = "Feedback is required";
+      isValid = false;
+    }
+    if (!state.interviewStatus.title) {
+      errors.interviewStatus = "Interview Status is required";
+      isValid = false;
+    }
+    if (!state.startDate) {
       errors.startDate = "Start Date is required";
       isValid = false;
     }
-    if (!state.endDate.trim()) {
+    if (!state.endDate) {
       errors.endDate = "End Date is required";
       isValid = false;
     }
-    if (!state.skills.trim()) {
-      errors.skills = "Skills is required";
+    if (!state.interviewerName) {
+      errors.interviewerName = "Interviewer Name is required";
       isValid = false;
     }
-    if (!state.resume.title.trim()) {
-      errors.resume = "Resume is required";
-      isValid = false;
-    }
-    if (!state.customQuestion.trim()) {
+    // if (!state.resume.trim()) {
+    //   errors.resume = "Resume is required";
+    //   isValid = false;
+    // }
+    // if (!state.recentCertification.trim()) {
+    //   errors.recentCertification = "Recent Certification File is required";
+    //   isValid = false;
+    // }
+    if (!state.customQuestion) {
       errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
@@ -112,16 +138,24 @@ function Applicantlist() {
   };
 
   const [state, setState] = useState({
+    jobID: "",
     jobTitle: "",
-    jobCategory: "",
-    jobDescription: "",
-    createStatus: null,
-    startDate: "",
-    endDate: "",
-    skills: [],
+    applicantName: "",
+
+    // jobDescription: EditorState.createEmpty(),
+    phoneNumber: "",
+    email: "",
+    recentCertification: null,
     resume: null,
     customQuestionID: [],
     customQuestion: [],
+    answers: {},
+    interviewerID: "",
+    interviewerName: "",
+    startDate: "",
+    endDate: "",
+    interviewStatus: "",
+    feedback: "",
     searchText: "",
     isUpdate: false,
   });
@@ -136,17 +170,22 @@ function Applicantlist() {
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
+  const location = useLocation();
+  // const { updateId } = location.state || {};
+  const { jobID } = location.state || {};
+  const [selectedJob, setSelectedJob] = React.useState(null);
 
-  
-    
-   
-    const [dataEditorState, setEditorState] = useState();
-  
-    const onEditorStateChange = editorStateParam => {
-      setEditorState(editorStateParam);
-    };
-  
-  
+
+
+
+
+  const [dataEditorState, setEditorState] = useState();
+
+  const onEditorStateChange = editorStateParam => {
+    setEditorState(editorStateParam);
+  };
+
+
 
   const columnData = [
     {
@@ -162,46 +201,85 @@ function Applicantlist() {
       label: "Job Title",
     },
     {
-      id: "jobCategory",
+      id: "applicantName",
       numeric: false,
       disablePadding: false,
-      label: "Job Category",
+      label: "Applicant Name",
     },
     {
-      id: "createStatus",
+      id: "phoneNumber",
       numeric: false,
       disablePadding: false,
-      label: "Status",
+      label: "Phone Number",
+    },
+    {
+      id: "email",
+      numeric: false,
+      disablePadding: false,
+      label: "Email",
     },
     {
       id: "startDate",
       numeric: false,
       disablePadding: false,
-      label: "Start Date",
+      label: "Date Of Job Application",
     },
     {
-      id: "endDate",
+      id: "interviewerName",
       numeric: false,
       disablePadding: false,
-      label: "End Date",
+      label: "Interviewer",
     },
     {
-      id: "resume",
+      id: "interviewStatus",
       numeric: false,
       disablePadding: false,
-      label: "Resume",
+      label: "Interview Status",
     },
 
     { id: "actions", label: "Action" },
   ];
 
   useEffect(() => {
-    
+
     table1();
+    table2();
   }, []);
 
-  const [customQuestionList, setCustomQuestionList] = React.useState([]);
+  const [interviewerList, setInterviewerList] = React.useState([]);
   const table1 = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      const requestOptions = {
+        method: "GET",
+        headers: loginHeaders,
+      };
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllInterviewers`,
+        requestOptions
+      );
+      const actualData = await res.json();
+      if (Array.isArray(actualData.interviewers)) {
+        const newobj = actualData.interviewers.map((item) => ({
+          title: item.interviewerName, // Set the title from channelName
+          id: item._id, // Set the id from _id
+        }));
+        setInterviewerList(newobj);
+      }
+    } catch (err) {
+      //console.log(err);
+    }
+  };
+  const [customQuestionList, setCustomQuestionList] = React.useState([]);
+  const table2 = async () => {
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -233,18 +311,31 @@ function Applicantlist() {
     }
   };
 
-  
 
-  
-    function fetchJobCreate(pg) {
-      axios
-        .post(
-   
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      }, {
+  const handleFilesChange = (fileType) => (files) => {
+    // console.log(`${fileType}:`, files);
+    const imageRef = ref(storage, `/photo/${files.name}`);
+    uploadBytes(imageRef, files).then(() => {
+      getDownloadURL(imageRef).then(url => {
+        if (fileType == "passportSizePhoto") {
+          setState({ ...state, passportSizePhoto: url });
+        } else if (fileType == "identity") {
+          setState({ ...state, identity: url });
+        }
+      });
+    });
+  };
+
+  function fetchJobApp(pg) {
+    axios
+      .post(
+
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getJobApplicationsByJobId`,
+        {
+          jobID: jobID,
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -254,16 +345,14 @@ function Applicantlist() {
             response.data.data.map((item) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
-              jobTitle: item.jobTitle,
-              jobCategory: item.jobCategory,
-              // jobDescription: item.jobDescription,
-              createStatus: item.createStatus ,
-              startDate: item.startDate.slice(0, 10),
-              endDate: item.endDate.slice(0, 10),
-              // skills: item.skills,
-              resume: item.resume ,
-              // customQuestionID: item.customQuestionID,
-              // customQuestion: item.customQuestion,
+              jobTitle: item.jobID.jobTitle,
+              applicantName: item.applicantData.applicantName,
+              phoneNumber: item.applicantData.phoneNumber,
+              email: item.applicantData.email,
+              startDate: item.interviewerDetails.startDate.slice(0, 10),
+              interviewerName: item.interviewerDetails.interviewerName,
+              interviewStatus: item.interviewerDetails.interviewStatus,
+
               actions: (
                 <>
                   <IconButton
@@ -273,26 +362,29 @@ function Applicantlist() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);   
-                      
+                      setItemToDelete(item._id);
+
                       setState({
                         id: item._id,
-                        jobTitle: item.jobTitle,
-                        jobCategory: item.jobCategory,
-                        jobDescription: item.jobDescription,
-                        createStatus: {
-                          title: item.createStatus
+                        jobID: item.jobID._id,
+                        jobTitle: item.jobID.jobTitle,
+                        applicantName: item.applicantData.applicantName,
+                        phoneNumber: item.applicantData.phoneNumber,
+                        email: item.applicantData.email,
+                        recentCertification: item.applicantData.recentCertification,
+                        resume: item.applicantData.resume,
+                        customQuestionID: item.customQuestion.customQuestionID,
+                        customQuestion: item.customQuestion.customQuestion,
+                        answers: item.customQuestion.answer,
+                        startDate: item.interviewerDetails.startDate.slice(0, 10),
+                        endDate: item.interviewerDetails.endDate.slice(0, 10),
+                        interviewerName: item.interviewerDetails.interviewerName,
+                        interviewStatus: {
+                          title: item.interviewerDetails.interviewStatus
                         },
-                       
-                        startDate: item.startDate.slice(0, 10),
-                        endDate: item.endDate.slice(0, 10),
-                        skills: item.skills,
-                        resume: {
-                          title: item.resume
-                        },
-                       
-                        customQuestionID: item.customQuestionID,
-                        customQuestion: item.customQuestion, isUpdate: true,
+                        interviewerID: item.interviewerDetails.interviewerID,
+                        feedback: item.interviewerDetails.feedback,
+                        isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
@@ -312,7 +404,7 @@ function Applicantlist() {
               ),
             }))
           );
-          setLength(response.data.totalJobs);
+          setLength(response.data.totalItems);
           setPagination(true);
         }
       })
@@ -322,50 +414,57 @@ function Applicantlist() {
   };
 
   useEffect(() => {
-    fetchJobCreate(page);
+    fetchJobApp(page);
   }, [page, rowsPerPage]);
 
-  const handleSaveJobs = () => {
-    // if (!validate()) {
-    //   setMessage("Please fill all required fields");
-    //   setOpen(true);
-    //   setSeverity("warning");
-    //   return;
-    // }
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == ""
 
-    ) {
-      toast.error("Fill all the information", {
-        position: "top-center",
-      });
-    } else {
+
+
+  const handleSaveJobApp = () => {
+    var st = state.customQuestion?.map((question) => ({
+      customQuestionID: question._id,
+      answer: question.answer,
+
+    }))
+
+    if (!validate()) {
+      setMessage("Please fill all required fields");
+      setOpen(true);
+      setSeverity("warning");
+      return;
+    }
+
+
+    else {
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/createJobApplication`,
+
           {
 
-            jobTitle: state.jobTitle,
-            jobCategory: state.jobCategory,
+            jobID: jobID,
+            applicantData: {
+              applicantName: state.applicantName,
+              resume:
+                state.resume,
+              phoneNumber: state.phoneNumber,
+              email: state.email,
+              recentCertification:
+                state.recentCertification,
+            },
+            customQuestion: state.customQuestion?.map((question) => ({
+              customQuestionID: question._id,
+              answer: question.answer,
+            })),
+            interviewerDetails: {
+              interviewerID: state.interviewerID,
+              startDate: state.startDate,
+              endDate: state.endDate,
+              interviewStatus: state.interviewStatus,
 
-            jobDescription: state.jobDescription,
-             
-            createStatus: state.createStatus.title,
-            startDate: state.startDate,
-            // visa_id: visaId,
-            endDate: state.endDate,
-            skills: state.skills,
-            resume: state.resume.title,
-            customQuestionID: state.customQuestionID,
-            customQuestion: state.customQuestion,
+              feedback: state.feedback,
+
+            },
 
           },
           {
@@ -375,28 +474,37 @@ function Applicantlist() {
               Authorization: `Bearer ${token}`, // Example authorization header
             },
           }
+
         )
         .then((response) => {
           if (response.status == 200) {
             // Assuming table() refreshes or updates the UI
-            fetchJobCreate();
+            fetchJobApp();
             window.scrollTo({
               top: 400,
               behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
             });
-            setState({
-              jobTitle: "",
-              jobCategory: "",
-              jobDescription: "",
-              createStatus: "",
-              startDate: "",
-              endDate: "",
-              skills: [],
+            setState((prevState) => ({
+              ...prevState,
+              // jobTitle: "",
+              applicantName: "",
+
+              // jobDescription: EditorState.createEmpty(),
+              phoneNumber: "",
+              email: "",
+              recentCertification: "",
               resume: "",
               customQuestionID: [],
               customQuestion: [],
+              answer: {},
+              interviewerID: "",
+              interviewerName: "",
+              startDate: "",
+              endDate: "",
+              interviewStatus: "",
+              feedback: "",
               isUpdate: false,
-            });
+            }));
             setMessage("Saved successfully!");
             setOpen(true);
             setSeverity("success");
@@ -465,7 +573,7 @@ function Applicantlist() {
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-      
+
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -558,39 +666,39 @@ function Applicantlist() {
 
   const handleInputChange = (e) => {
     setState({
-        ...state,
-        inputSkill: e.target.value,
+      ...state,
+      inputSkill: e.target.value,
     });
-};
-const handleKeyDown = (e) => {
+  };
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-        setState({
-            ...state,
-            skills: [...state.skills, state.inputSkill.trim()],
-            inputSkill: "",
-        });
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-        setState({
-            ...state,
-            skills: state.skills.slice(0, -1),
-        });
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
     }
-};
-const handleSkillDelete = (skillToDelete) => () => {
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-        ...prevState,
-        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-};
-const handlePageChange = (event, newPage) => {
-  setPage(newPage); // Update the current page
-};
+  };
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage); // Update the current page
+  };
 
-// Handle rows per page change
-const handleRowsPerPageChange = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-  setPage(0); // Reset to first page
-};
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(0); // Reset to first page
+  };
 
   return (
     <>
@@ -606,7 +714,7 @@ const handleRowsPerPageChange = (event) => {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Job
+                <AddIcon /> Add Applicants
               </Button>
             </Tooltip>
           </div>
@@ -618,7 +726,7 @@ const handleRowsPerPageChange = (event) => {
           maxWidth="md"
         >
           <DialogTitle>
-            Job Details
+            Applicants Details
           </DialogTitle>
           <IconButton
             aria-label="close"
@@ -664,10 +772,10 @@ const handleRowsPerPageChange = (event) => {
                   <TextField
                     fullWidth
                     variant="standard"
-                    id="jobCategory"
-                    name="jobCategory"
-                    label="Job Category"
-                    value={state.jobCategory}
+                    id="applicantName"
+                    name="applicantName"
+                    label="Applicant Name"
+                    value={state.applicantName}
                     // onChange={(e) => {
                     //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
                     //   if (regex.test(e.target.value)) {
@@ -677,45 +785,89 @@ const handleRowsPerPageChange = (event) => {
                     onChange={(e) =>
                       setState({
                         ...state,
-                        jobCategory: e.target.value,
+                        applicantName: e.target.value,
                       })
                     }
-                    error={!!errors.jobCategory} // Show error if it exists
-                    helperText={errors.jobCategory} // Display error message
+                    error={!!errors.applicantName} // Show error if it exists
+                    helperText={errors.applicantName} // Display error message
                   />
                 </Grid>
+
+
 
                 <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px"
-                    }}
-                    id="highlights-demo"
-                    options={[
-                      { title: "Active" },
-                      { title: "Inactive" },
-
-                    ]}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.createStatus} // Ensure value is an object or null
-                    onChange={(e, v) => {
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    label="Phone Number"
+                    value={state.phoneNumber}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const validInput = input
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 10);
                       setState({
                         ...state,
-                        createStatus: v ? v : null, // Set campaignStatus to the selected object or null
+                        phoneNumber: validInput,
                       });
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Create Status"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.createStatus} // Show error if it exists
-                        helperText={errors.createStatus} // Display error message
-                      />
-                    )}
+                    error={!!errors.phoneNumber} // Show error if it exists
+                    helperText={errors.phoneNumber} // Display error message
                   />
                 </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    variant="standard"
+                    id="email"
+                    name="email"
+                    label="Email"
+                    fullWidth
+                    value={state.email}
+                    onChange={(e) =>
+                      setState({
+                        ...state,
+                        email: e.target.value,
+                      })
+                    }
+                    error={!!errors.email} // Show error if it exists
+                    helperText={errors.email} // Display error message
+                  />
+                </Grid>
+                {state.customQuestion ? (
+                  state.customQuestion?.map((ch, idx) => (
+                    <Grid item xs={6} key={idx}>
+                      <Autocomplete
+                        freeSolo
+                        options={[]} // You can pass predefined options if any
+                        inputValue={ch.answer || ''}
+                        onInputChange={(event, newInputValue) => {
+                          const updatedCustomQuestion = [...state.customQuestion];
+                          updatedCustomQuestion[idx].answer = newInputValue;
+                          setState({
+                            ...state,
+                            customQuestion: updatedCustomQuestion,
+                          });
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={ch.customQuestion}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+                  ))
+                ) : (
+                  <p></p>
+                )}
+
+
+
+
+                {/* 
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
@@ -771,129 +923,111 @@ const handleRowsPerPageChange = (event) => {
                       />
                     ))}
                   </div>
+                </Grid> */}
+
+
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="Interview Start Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.startDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setState({ ...state, startDate: e.target.value })}
+                  />
+                </Grid>
+
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="Interview End Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.endDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    onChange={(e) => setState({ ...state, endDate: e.target.value })}
+                  />
                 </Grid>
 
                 <Grid item xs={6}>
                   <Autocomplete
-                    multiple
+                    sx={{
+                      marginTop: "-16px"
+                    }}
                     id="tags-standard"
-                    options={customQuestionList}
-                    value={state.customQuestion}
-                    // isOptionEqualToValue={(option, value) =>
-                    //   option.id === value.id
-                    // }
+                    options={interviewerList}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.interviewerName} // Ensure value is an object or null
                     onChange={(e, v) => {
-                      const selectedCustomquestionIds = v.map((item) => item.id);
+                      // console.log(v);
                       setState({
                         ...state,
-                        customQuestion: v, // Store selected objects
-                        customQuestionID: selectedCustomquestionIds, // Store IDs
+                        interviewerName: v ? v : null, // Set campaignStatus to the selected object or null
                       });
                     }}
-                    getOptionLabel={(option) => option.title}
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        label="Interviewer Name"
+                        margin="normal"
                         variant="standard"
-                        label="Custom Question"
-                        
-                        error={!!errors.customQuestion} // Show error if it exists
-                        helperText={errors.customQuestion} // Display error message
+                        error={!!errors.interviewerName} // Show error if it exists
+                        helperText={errors.interviewerName} // Display error message
                       />
                     )}
                   />
                 </Grid>
 
-               
-                <Grid item xs={6} style={{}}>
+                <Grid item xs={6}>
                   <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.startDate}
+                    sx={{
+                      marginTop: "-16px"
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Applied" },
+                      { title: "Viewed" },
+                      { title: "Verified" },
+                      { title: "Rejected" },
+                      { title: "Selected" },
+
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.interviewStatus} // Ensure value is an object or null
                     onChange={(e, v) => {
                       setState({
                         ...state,
-                        startDate: v,
+                        interviewStatus: v ? v : null, // Set campaignStatus to the selected object or null
                       });
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Start Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            startDate: e.target.value,
-                          })
-                        }
+                        label="Interview Status"
+                        margin="normal"
+                        variant="standard"
+                        error={!!errors.interviewStatus} // Show error if it exists
+                        helperText={errors.interviewStatus} // Display error message
                       />
                     )}
                   />
                 </Grid>
-                <Grid item xs={6} >
-                  <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.endDate}
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        endDate: v,
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="End Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            endDate: e.target.value,
-                          })
-                        }
-                      />
-                    )}
-                  />
-                </Grid> 
-                 {/* <Grid item xs={12}>
-  <Typography variant="subtitle1" gutterBottom>
-    Job Description
-  </Typography>
-  
-  <Paper elevation={3} style={{ padding: '16px', marginTop: '8px' }}>
-    
-      <Editor
-           editorState={state.jobDescription}
-            editorClassName={classes.textEditor}
-            toolbarClassName={classes.toolbarEditor}
-            
-            onEditorStateChange={(e) =>
-        setState({
-          ...state,
-          jobDescription: e,
-        })
-      }
-    />
-  </Paper>
-</Grid> */}
-<Grid item xs={12}>
+
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
                     id="jobDescription"
                     name="jobDescription"
                     label="Job Description"
-                    value={state.jobDescription}
+                    value={state.feedback}
                     // onChange={(e) => {
                     //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
                     //   if (regex.test(e.target.value)) {
@@ -903,12 +1037,51 @@ const handleRowsPerPageChange = (event) => {
                     onChange={(e) =>
                       setState({
                         ...state,
-                        jobDescription: e.target.value,
+                        feedback: e.target.value,
                       })
                     }
-                    error={!!errors.jobDescription} // Show error if it exists
-                    helperText={errors.jobDescription} // Display error message
+                    error={!!errors.feedback} // Show error if it exists
+                    helperText={errors.feedback} // Display error message
                   />
+                </Grid>
+                <Grid item md={6} >
+
+                  {/* elevation={2}
+      style={{ padding: "20px" }} */}
+
+
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                      <Typography variant="body2">Education Certificate</Typography>
+                    </Grid>
+                    <Grid sx={{ width: "100%" }}>
+                      <MaterialDropZone
+                        files={[]}
+                        text="Drag and drop a file here or click to upload"
+                        showPreviews={true}
+                        maxSize={3000000}
+                        filesLimit={1}
+                        onFilesChange={handleFilesChange('recentCertification')} // Pass the type to the generic handler
+                      />
+                    </Grid>
+                  </div>
+                </Grid>
+                <Grid item md={6} >
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                      <Typography variant="body2">Resume File</Typography>
+                    </Grid>
+                    <Grid sx={{ width: "100%" }}>
+                      <MaterialDropZone
+                        files={[]}
+                        text="Drag and drop a file here or click to upload"
+                        showPreviews={true}
+                        maxSize={3000000}
+                        filesLimit={1}
+                        onFilesChange={handleFilesChange('resume')}
+                      />
+                    </Grid>
+                  </div>
                 </Grid>
 
               </Grid>
@@ -920,7 +1093,7 @@ const handleRowsPerPageChange = (event) => {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateJobs}
+                // onClick={handleUpdateJobs}
                 >
                   Update
                 </Button>
@@ -930,7 +1103,7 @@ const handleRowsPerPageChange = (event) => {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleSaveJobs}
+                  onClick={handleSaveJobApp}
                 >
                   Create
                 </Button>
@@ -958,7 +1131,7 @@ const handleRowsPerPageChange = (event) => {
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-      
+
 
       <AlertDialog
         open={deleteDialogOpen}

@@ -14,9 +14,7 @@ import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import {
   Dialog,
   DialogActions,
@@ -167,7 +165,7 @@ function LeadDetails() {
       const actualData = await res.json();
 
       console.log(actualData);
-     setLeadlogList(actualData.data || []); // Ensure it's an array
+      setLeadlogList(actualData.data || []); // Ensure it's an array
     } catch (err) {
       console.log(err);
     }
@@ -202,13 +200,13 @@ function LeadDetails() {
       console.log(err);
     }
   };
-  useEffect(() => { 
+  useEffect(() => {
     table();
     table1();
     table2();
     fetchLeadStatus();
   }, []);
-  
+
   const fetchLeadStatus = () => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
@@ -438,22 +436,22 @@ function LeadDetails() {
       <div>
 
         <Grid
-        container
-        alignItems="flex-start"
-        justifyContent="flex-start"
-        direction="row"
-        spacing={2}
-      >
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Lead Log</Typography>
-          <div className={classes.root}>
-          <Paper
+          container
+          alignItems="flex-start"
+          justifyContent="flex-start"
+          direction="row"
+          spacing={2}
+        >
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Lead Log</Typography>
+            <div className={classes.root}>
+              <Paper
                 elevation={2}
                 style={{ padding: "20px", marginBottom: "20px" }}
               >
-               
+
                 <div
-                  style={{ 
+                  style={{
                     display: "flex",
                     justifyContent: "space-between",
                     marginBottom: "20px",
@@ -462,7 +460,7 @@ function LeadDetails() {
                   <Button
                     variant="contained"
                     color="primary"
-                   // onClick={handleClickOpen}
+                  // onClick={handleClickOpen}
                   >
                     Update
                   </Button>
@@ -474,7 +472,7 @@ function LeadDetails() {
                   style={{ marginTop: "20px" }}
                 >
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Lead Name:
                       </span>
@@ -482,7 +480,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Contact Number:
                       </span>
@@ -490,7 +488,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Email:
                       </span>
@@ -498,7 +496,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Channel Name:
                       </span>
@@ -506,7 +504,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Campaign Name:
                       </span>
@@ -514,7 +512,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Lead Status Name:
                       </span>
@@ -522,7 +520,7 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Description:
                       </span>
@@ -530,8 +528,8 @@ function LeadDetails() {
                     </Typography>
                   </Grid>
                 </Grid>
-           </Paper>
-           {/* <Dialog
+              </Paper>
+              {/* <Dialog
                 open={openleadDetailsDialog}
                 onClose={handleCloseLeadDetailsDialog}
               >
@@ -687,15 +685,15 @@ function LeadDetails() {
                 
               </Dialog> */}
 
-          </div>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Log Notes</Typography>
-          <div className={classes.root}>
-          <Paper
+            </div>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Log Notes</Typography>
+            <div className={classes.root}>
+              <Paper
                 elevation={2}
                 style={{ padding: "20px", marginBottom: "20px" }}
-              >                
+              >
                 <div
                   style={{
                     display: "flex",
@@ -706,7 +704,7 @@ function LeadDetails() {
                   <Button
                     variant="contained"
                     color="primary"
-                   // onClick={handleClickOpen}
+                  // onClick={handleClickOpen}
                   >
                     Create
                   </Button>
@@ -728,7 +726,7 @@ function LeadDetails() {
                                   }}
                                 >
                                   <LeaderboardIcon
-                                    style={{  zIndex: 1 }}
+                                    style={{ zIndex: 1 }}
                                   />
                                   {/* Vertical line */}
                                   {detailIndex < Leadloglist.length - 1 && (
@@ -847,11 +845,11 @@ function LeadDetails() {
                                 {/* Update Icon */}
                                 <EditIcon
                                   style={{
-                                    
+
                                     cursor: "pointer",
                                     marginLeft: "10px",
                                   }}
-                                  //onClick={() => handleUpdateClick(detail, log)}
+                                //onClick={() => handleUpdateClick(detail, log)}
                                 />
                               </div>
                             </Grid>
@@ -865,18 +863,18 @@ function LeadDetails() {
                     </Typography>
                   )}
                 </Grid>
-               
+
               </Paper>
-          </div>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Lead Follow Up</Typography>
-          <div className={classes.root}>
-          <Paper
+            </div>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Lead Follow Up</Typography>
+            <div className={classes.root}>
+              <Paper
                 elevation={2}
                 style={{ padding: "20px", marginBottom: "20px" }}
               >
-                
+
                 <div
                   style={{
                     display: "flex",
@@ -887,7 +885,7 @@ function LeadDetails() {
                   <Button
                     variant="contained"
                     color="primary"
-                   // onClick={handleClickOpen}
+                  // onClick={handleClickOpen}
                   >
                     Create
                   </Button>
@@ -895,7 +893,7 @@ function LeadDetails() {
                 <Grid container spacing={1} direction="column" marginTop="15px">
                   {Followlist.map((followup, index) => (
                     <Grid item key={index} style={{ position: "relative" }}>
-                      <div style={{ display: "flex", alignItems: "center" ,}}>
+                      <div style={{ display: "flex", alignItems: "center", }}>
                         <div
                           style={{
                             display: "flex",
@@ -903,7 +901,7 @@ function LeadDetails() {
                             alignItems: "center",
                           }}
                         >
-                          <AccessAlarmIcon style={{  zIndex: 1 }} />
+                          <AccessAlarmIcon style={{ zIndex: 1 }} />
                           {index < Followlist.length - 1 && (
                             <div
                               style={{
@@ -932,7 +930,7 @@ function LeadDetails() {
                     </Grid>
                   ))}
                 </Grid>
-                
+
                 {/* lead log dialog */}
                 {/* <Dialog open={open} onClose={handleleadlogClose}>
                   <DialogTitle>Create Lead Log</DialogTitle>
@@ -1091,9 +1089,9 @@ function LeadDetails() {
                   </DialogActions>
                 </Dialog> */}
               </Paper>
-          </div>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}
@@ -1191,9 +1189,9 @@ function LeadDetails() {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>  
+      </div>
 
-    
+
 
       <AlertDialog
         open={deleteDialogOpen}
