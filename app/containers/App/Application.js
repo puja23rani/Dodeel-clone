@@ -243,7 +243,6 @@ function Application(props) {
         <Route path="hrm-setting/employee-details/create-employee-details" element={<CreateEmployee />} />
 
         {/* Lead Pages */}
-
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
