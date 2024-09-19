@@ -105,6 +105,10 @@ import CompentencyType from "../Pages/HRMmodule/HRMsettings/CompentencyType";
 import Competenies from "../Pages/HRMmodule/HRMsettings/Competenies";
 import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
+import Contractor from "../Pages/AssetModule/Contractor";
+import Category from "../Pages/AssetModule/Category";
+import Supplier from "../Pages/AssetModule/Supplier";
+
 
 function Application(props) {
   const { history } = props;
@@ -249,6 +253,12 @@ function Application(props) {
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
+
+
+        {/* Asset Management Pages */}
+        <Route path="/Contractor" element={<Contractor />} />
+        <Route path="/Category" element={<Category />} />
+        <Route path="/Supplier" element={<Supplier />} />
       </Routes>
     </Dashboard>
   );

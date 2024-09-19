@@ -435,9 +435,21 @@ export const LeadDetails = loadable(
     fallback: <Loading />,
   }
 );
-//Department
-export const Department = loadable(
-  () => import("../api/HRM_management/Department"),
+// Asset management
+export const Contractor = loadable(
+  () => import("../containers/Pages/AssetModule/Contractor"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Category = loadable(
+  () => import("../containers/Pages/AssetModule/Category"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Supplier = loadable(
+  () => import("../containers/Pages/AssetModule/Supplier"),
   {
     fallback: <Loading />,
   }

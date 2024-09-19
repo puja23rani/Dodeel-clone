@@ -209,101 +209,216 @@ module.exports = [
       },
     ],
   },
+  // Asset management
   {
-    key: 'HRM',
-    name: 'HRM',
-    icon: 'widgets',
+    key: "Asset",
+    name: "Asset",
+    icon: "settings_suggest",
     child: [
       {
-        key: 'HRM Setting',
-        name: 'HRM Setting',
+        key: "Contractor",
+        name: "Contractor",
+        link: "/app/Contractor",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Products",
+        name: "Products",
         title: true,
       },
       {
-        key: 'Department',
-        name: 'Department',
-        icon: 'check_circle',
-        link: '/app/Department',
+        key: "Category",
+        name: "Category",
+        link: "/app/Category",
+        icon: "settings_suggest",
+        badge: "Hot",
       },
       {
-        key: 'Designation',
-        name: 'Designation',
-        icon: 'perm_contact_calendar',
-        link: '/app/pages/contact'
+        key: "Suppiler",
+        name: "Supplier",
+        link: "/app/Supplier",
+        icon: "settings_suggest",
+        badge: "Hot",
       },
       {
-        key: 'Leave',
-        name: 'Leave',
-        icon: 'mail',
-        link: '/app/pages/email',
-        badge: '4'
-      },
-      // {
-      //   key: 'Allowance',
-      //   name: 'Firebase Apps',
-      //   title: true,
-      // },
-      {
-        key: 'Allowance',
-        name: 'Allowance',
-        icon: 'check_circle',
-        link: '/app/pages/todo-firebase',
+        key: "Products",
+        name: "Products",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
       },
       {
-        key: 'Performance',
-        name: 'Performance',
-        icon: 'perm_contact_calendar',
-        link: '/app/pages/contact-firebase'
+        key: "Material Finance Panning",
+        name: "Material Finance Panning",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
       },
       {
-        key: 'Competency Type',
-        name: 'Competency Type',
-        icon: 'mail',
-        link: '/app/pages/email-firebase',
-      },
-      // {
-      //   key: 'Competencies',
-      //   name: 'Competencies',
-      //   title: true,
-      // },
-      {
-        key: 'Competencies',
-        name: 'Competencies',
-        icon: 'mail',
-        link: '/app/pages/email-firebase',
+        key: "Warehouses",
+        name: "warehouses",
+        title: true,
       },
       {
-        key: 'Office Shift',
-        name: 'Office Shift',
-        icon: 'place',
-        link: '/app/maps/map-marker'
+        key: "Warehouse",
+        name: "Warehouse",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
       },
       {
-        key: 'Contact Details',
-        name: 'Contact Details',
-        icon: 'directions',
-        link: '/app/maps/map-direction'
+        key: "Invetory & Stocks",
+        name: "Invetory & Stocks",
+        title: true,
       },
-      // {
-      //   key: 'map_searchbox',
-      //   name: 'Map with Searchbox',
-      //   icon: 'search',
-      //   link: '/app/maps/map-searchbox'
-      // },
-      // {
-      //   key: 'map_traffic',
-      //   name: 'Traffic Indicator',
-      //   icon: 'traffic',
-      //   link: '/app/maps/map-traffic'
-      // },
-      // {
-      //   key: 'street_view',
-      //   name: 'Street View',
-      //   icon: 'map',
-      //   link: '/app/maps/street-view'
-      // },
-    ]
+      {
+        key: "Warehouse Stocks",
+        name: "Warehouse stocks",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Contractor / Engineer Stocks",
+        name: "Contractor / Engineer Stocks",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Purchase Indent",
+        name: "Purchase Indent",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Transfer",
+        name: "Stock Transfer",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Transfer Indent",
+        name: "Transfer Indent",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Receive",
+        name: "Stock Receive",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Recall",
+        name: "Stock Recall",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      
+    ],
   },
+  // {
+  //   key: 'HRM',
+  //   name: 'HRM',
+  //   icon: 'widgets',
+  //   child: [
+  //     {
+  //       key: 'HRM Setting',
+  //       name: 'HRM Setting',
+  //       title: true,
+  //     },
+  //     {
+  //       key: 'Department',
+  //       name: 'Department',
+  //       icon: 'check_circle',
+  //       link: '/app/Department',
+  //     },
+  //     {
+  //       key: 'Designation',
+  //       name: 'Designation',
+  //       icon: 'perm_contact_calendar',
+  //       link: '/app/pages/contact'
+  //     },
+  //     {
+  //       key: 'Leave',
+  //       name: 'Leave',
+  //       icon: 'mail',
+  //       link: '/app/pages/email',
+  //       badge: '4'
+  //     },
+  //     // {
+  //     //   key: 'Allowance',
+  //     //   name: 'Firebase Apps',
+  //     //   title: true,
+  //     // },
+  //     {
+  //       key: 'Allowance',
+  //       name: 'Allowance',
+  //       icon: 'check_circle',
+  //       link: '/app/pages/todo-firebase',
+  //     },
+  //     {
+  //       key: 'Performance',
+  //       name: 'Performance',
+  //       icon: 'perm_contact_calendar',
+  //       link: '/app/pages/contact-firebase'
+  //     },
+  //     {
+  //       key: 'Competency Type',
+  //       name: 'Competency Type',
+  //       icon: 'mail',
+  //       link: '/app/pages/email-firebase',
+  //     },
+  //     // {
+  //     //   key: 'Competencies',
+  //     //   name: 'Competencies',
+  //     //   title: true,
+  //     // },
+  //     {
+  //       key: 'Competencies',
+  //       name: 'Competencies',
+  //       icon: 'mail',
+  //       link: '/app/pages/email-firebase',
+  //     },
+  //     {
+  //       key: 'Office Shift',
+  //       name: 'Office Shift',
+  //       icon: 'place',
+  //       link: '/app/maps/map-marker'
+  //     },
+  //     {
+  //       key: 'Contact Details',
+  //       name: 'Contact Details',
+  //       icon: 'directions',
+  //       link: '/app/maps/map-direction'
+  //     },
+  //     // {
+  //     //   key: 'map_searchbox',
+  //     //   name: 'Map with Searchbox',
+  //     //   icon: 'search',
+  //     //   link: '/app/maps/map-searchbox'
+  //     // },
+  //     // {
+  //     //   key: 'map_traffic',
+  //     //   name: 'Traffic Indicator',
+  //     //   icon: 'traffic',
+  //     //   link: '/app/maps/map-traffic'
+  //     // },
+  //     // {
+  //     //   key: 'street_view',
+  //     //   name: 'Street View',
+  //     //   icon: 'map',
+  //     //   link: '/app/maps/street-view'
+  //     // },
+  //   ]
+  // },
   // {
   //   key: 'apps',
   //   name: 'Applications',
