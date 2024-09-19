@@ -93,8 +93,8 @@ import {
   Campaign,
   NewLead,
   LeadMembers,
-  LeadDetails,
   Applicantlist,
+  LeadDetails,
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
