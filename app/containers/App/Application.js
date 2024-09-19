@@ -93,8 +93,8 @@ import {
   Campaign,
   NewLead,
   LeadMembers,
-  Applicantlist,
   LeadDetails,
+  Applicantlist,
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -105,6 +105,8 @@ import CompentencyType from "../Pages/HRMmodule/HRMsettings/CompentencyType";
 import Competenies from "../Pages/HRMmodule/HRMsettings/Competenies";
 import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
+import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
+import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
 
 function Application(props) {
   const { history } = props;
@@ -221,8 +223,9 @@ function Application(props) {
         {/* Default */}
         <Route path="*" element={<NotFound />} />
 
-        
+
         {/* ---------------HRM Modules--------------- */}
+        {/* HRM Setting */}
         <Route path="hrm-setting/department" element={<Department />} />
         <Route path="hrm-setting/designation" element={<Designation />} />
         <Route path="hrm-setting/leave" element={<Leave />} />
@@ -233,6 +236,10 @@ function Application(props) {
         <Route path="hrm-setting/office-shift" element={<OfficeShift />} />
         <Route path="hrm-setting/contact-details" element={<ContactDetails />} />
 
+        {/* HRM Management */}
+        <Route path="hrm-setting/employee-details" element={<EmployeeDetails />} />
+        <Route path="hrm-setting/employee-details/create-employee-details" element={<CreateEmployee />} />
+
         {/* Lead Pages */}
 
         <Route path="lead/lead-status" element={<LeadStatus />} />
@@ -242,7 +249,7 @@ function Application(props) {
         <Route path="lead/campaign" element={<Campaign />} />
         <Route path="lead/new-lead" element={<NewLead />} />
         <Route path="lead/lead-members" element={<LeadMembers />} />
-        <Route path="lead/lead-details" element={<LeadDetails />} />
+        <Route path="lead/new-lead/lead-details" element={<LeadDetails />} />
 
         {/* Recruitment Pages */}
         <Route path="/Custom_Question" element={<Custom_Question />} />

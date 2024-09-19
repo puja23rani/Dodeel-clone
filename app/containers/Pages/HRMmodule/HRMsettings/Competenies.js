@@ -500,6 +500,9 @@ function Competenies() {
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -521,9 +524,7 @@ function Competenies() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>

@@ -63,7 +63,7 @@ function ContactDetails() {
     let isValid = true;
     let errors = {};
 
-    if (!state.companyName.trim()) {
+    if (state.companyName == "") {
       errors.companyName = "Company Name is required";
       isValid = false;
     }
@@ -73,12 +73,12 @@ function ContactDetails() {
       isValid = false;
     }
 
-    if (!state.emailAddress) {
+    if (state.emailAddress == "") {
       errors.emailAddress = "Email Address is required";
       isValid = false;
     }
 
-    if (!state.address.trim()) {
+    if (state.address == "") {
       errors.address = "Address Name is required";
       isValid = false;
     }
@@ -153,7 +153,7 @@ function ContactDetails() {
       // console.log(actualData);
 
       if (actualData.status === 200) {
-        if (actualData.data.length > 0) {
+        if (actualData.contactDetails.length > 0) {
           setRowdata(
             actualData.contactDetails.map((item) => ({
               slNo: actualData.contactDetails.indexOf(item) + 1,
@@ -463,9 +463,8 @@ function ContactDetails() {
                   value={state.companyName}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const regex = /^[a-zA-Z\s]*$/;
                     const maxValue = 50
-                    if (regex.test(value) && value.length <= maxValue) {
+                    if (value.length <= maxValue) {
                       setState({ ...state, companyName: e.target.value });
                     }
                   }}
@@ -482,20 +481,20 @@ function ContactDetails() {
                   variant="standard"
                   id="contactNumber"
                   name="contactNumber"
-                  label="Contact Number (e.g. 123-456-7890 or 9876543210)"
+                  label="Contact Number (e.g. +123-456-7890 or 987 654 3210)"
                   value={state.contactNumber}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const regex = /^[0-9]*$/;
-                    const maxValue = 15
+                    // Updated regex to allow numbers, '+', space, and '-'
+                    const regex = /^[0-9+\s-]*$/;
+                    const maxValue = 15;
                     if (regex.test(value) && value.length <= maxValue) {
-                      setState({ ...state, contactNumber: e.target.value });
+                      setState({ ...state, contactNumber: value });
                     }
                   }}
                   error={!!errors.contactNumber} // Show error if it exists
                   helperText={errors.contactNumber} // Display error message
                 />
-
               </Grid>
               <Grid item xs={12} sx={{ marginTop: "-20px" }}>
                 <TextField
@@ -507,18 +506,26 @@ function ContactDetails() {
                   id="emailAddress"
                   name="emailAddress"
                   label="Email Address (e.g. xyz@example.com)"
-                  type="email" // Set the input type to email
+                  type="email"
                   value={state.emailAddress}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email validation regex
-                    if (regex.test(value) || value === '') {
-                      setState({ ...state, emailAddress: value });
+                    setState({ ...state, emailAddress: value });
+                  }}
+                  onBlur={(e) => {
+                    const value = e.target.value;
+                    // Updated email validation regex to check for valid domain and TLD
+                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+                    if (!regex.test(value)) {
+                      setErrors({ ...errors, emailAddress: 'Invalid email address format' });
+                    } else {
+                      setErrors({ ...errors, emailAddress: '' });
                     }
                   }}
-                  error={!!errors.emailAddress} // Show error if it exists
-                  helperText={errors.emailAddress} // Display error message
+                  error={!!errors.emailAddress}
+                  helperText={errors.emailAddress}
                 />
+
               </Grid>
               <Grid item xs={12} sx={{ marginTop: "-20px" }}>
                 <TextField
@@ -540,13 +547,16 @@ function ContactDetails() {
                   sx={{
                     marginBottom: 2,
                   }}
-                  error={!!errors.companyName} // Show error if it exists
-                  helperText={errors.companyName} // Display error message
+                  error={!!errors.address} // Show error if it exists
+                  helperText={errors.address} // Display error message
                 />
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -568,9 +578,7 @@ function ContactDetails() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>

@@ -14,9 +14,7 @@ import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import {
   Dialog,
   DialogActions,
@@ -25,8 +23,10 @@ import {
   Paper,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Breadcrumbs from "../../containers/UiElements/Breadcrumbs";
 import { useLocation, useNavigate } from "react-router-dom";
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -165,7 +165,7 @@ function LeadDetails() {
       const actualData = await res.json();
 
       console.log(actualData);
-     setLeadlogList(actualData.data || []); // Ensure it's an array
+      setLeadlogList(actualData.data || []); // Ensure it's an array
     } catch (err) {
       console.log(err);
     }
@@ -195,12 +195,12 @@ function LeadDetails() {
       const actualData = await res.json();
 
       console.log(actualData);
-      //setFollowlist(actualData.data || []); // Ensure it's an array
+      setFollowlist(actualData.data || []); // Ensure it's an array
     } catch (err) {
       console.log(err);
     }
   };
-  useEffect(() => { 
+  useEffect(() => {
     table();
     table1();
     table2();
@@ -434,38 +434,24 @@ function LeadDetails() {
   return (
     <>
       <div>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.spacer} style={{ flexGrow: 1 }} />
-          <div className={classes.actions}>
-            <Tooltip title="Add Item">
-              <Button
-                variant="contained"
-                onClick={() => setOpenDialog(true)}
-                color="primary"
-                className={classes.button}
-              >
-                <AddIcon /> Add Lead Status
-              </Button>
-            </Tooltip>
-          </div>
-        </Toolbar>
+
         <Grid
-        container
-        alignItems="flex-start"
-        justifyContent="flex-start"
-        direction="row"
-        spacing={2}
-      >
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Lead Log</Typography>
-          <div className={classes.root}>
-          <Paper
+          container
+          alignItems="flex-start"
+          justifyContent="flex-start"
+          direction="row"
+          spacing={2}
+        >
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Lead Log</Typography>
+            <div className={classes.root}>
+              <Paper
                 elevation={2}
                 style={{ padding: "20px", marginBottom: "20px" }}
               >
-               
+
                 <div
-                  style={{ 
+                  style={{
                     display: "flex",
                     justifyContent: "space-between",
                     marginBottom: "20px",
@@ -474,7 +460,7 @@ function LeadDetails() {
                   <Button
                     variant="contained"
                     color="primary"
-                   // onClick={handleClickOpen}
+                  // onClick={handleClickOpen}
                   >
                     Update
                   </Button>
@@ -483,67 +469,67 @@ function LeadDetails() {
                   container
                   spacing={3}
                   direction="column"
-                  //style={{ marginTop: "20px" }}
+                  style={{ marginTop: "20px" }}
                 >
                   <Grid item>
-                    <Typography  color="textSecondary">
-                      <span style={{ fontWeight:"bold", marginRight: "20px",marginTop:"10px" }}>
+                    <Typography color="textSecondary">
+                      <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Lead Name:
                       </span>
-                      <span>jjjj</span>
+                      <span>{mainlist?.leadName || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Contact Number:
                       </span>
-                      {/* <span>{mainlist?.contactNumber || "N/A"}</span> */}
+                      <span>{mainlist?.contactNumber || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Email:
                       </span>
-                      {/* <span>{mainlist?.email || "N/A"}</span> */}
+                      <span>{mainlist?.email || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Channel Name:
                       </span>
-                      {/* <span>{mainlist?.channelID?.channelName || "N/A"}</span> */}
+                      <span>{mainlist?.channelID?.channelName || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Campaign Name:
                       </span>
-                      {/* <span>{mainlist?.campaignID?.campaignName || "N/A"}</span> */}
+                      <span>{mainlist?.campaignID?.campaignName || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Lead Status Name:
                       </span>
-                      {/* <span>{mainlist?.leadStatusID?.StatusName || "N/A"}</span> */}
+                      <span>{mainlist?.leadStatusID?.StatusName || "N/A"}</span>
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography  color="textSecondary">
+                    <Typography color="textSecondary">
                       <span style={{ fontWeight: "bold", marginRight: "20px" }}>
                         Description:
                       </span>
-                      {/* <span>{mainlist?.notes || "N/A"}</span> */}
+                      <span>{mainlist?.notes || "N/A"}</span>
                     </Typography>
                   </Grid>
                 </Grid>
-           </Paper>
-           {/* <Dialog
+              </Paper>
+              {/* <Dialog
                 open={openleadDetailsDialog}
                 onClose={handleCloseLeadDetailsDialog}
               >
@@ -699,43 +685,15 @@ function LeadDetails() {
                 
               </Dialog> */}
 
-          </div>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Log Notes</Typography>
-          <div className={classes.root}>
-          <Paper
-                elevation={2}
-                style={{ padding: "20px", marginBottom: "20px" }}
-              >                
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                   // onClick={handleClickOpen}
-                  >
-                    Create
-                  </Button>
-                </div>
-                
-               
-              </Paper>
-          </div>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <Typography variant="button" className={classes.divider}>Lead Follow Up</Typography>
-          <div className={classes.root}>
-          <Paper
+            </div>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Log Notes</Typography>
+            <div className={classes.root}>
+              <Paper
                 elevation={2}
                 style={{ padding: "20px", marginBottom: "20px" }}
               >
-                
                 <div
                   style={{
                     display: "flex",
@@ -746,12 +704,233 @@ function LeadDetails() {
                   <Button
                     variant="contained"
                     color="primary"
-                   // onClick={handleClickOpen}
+                  // onClick={handleClickOpen}
                   >
                     Create
                   </Button>
                 </div>
-                
+                <Grid container spacing={3} direction="column">
+                  {Leadloglist.length > 0 ? (
+                    Leadloglist.map((log, logIndex) => (
+                      <React.Fragment key={logIndex}>
+                        {log.logDetails.map((detail, detailIndex) => (
+                          <React.Fragment key={detailIndex}>
+                            <Grid item style={{ position: "relative" }}>
+                              <div style={{ display: "flex" }}>
+                                {/* Alarm Icon */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <LeaderboardIcon
+                                    style={{ zIndex: 1 }}
+                                  />
+                                  {/* Vertical line */}
+                                  {detailIndex < Leadloglist.length - 1 && (
+                                    <div
+                                      style={{
+                                        height: "8vw", // Adjust height as needed
+                                        width: "2px",
+                                        backgroundColor: "grey",
+                                        marginTop: "6px",
+                                        marginBottom: "1px",
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                                {/* Lead Status and other details */}
+                                <div
+                                  style={{
+                                    marginLeft: "10px",
+                                    alignItems: "start",
+                                    flex: 1,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body1"
+                                    color="textSecondary"
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginRight: "10px",
+                                      }}
+                                    >
+                                      Lead Status Name:
+                                    </span>
+                                    <span>
+                                      {detail.leadStatusName || "N/A"}
+                                    </span>
+                                  </Typography>
+                                  <Grid item>
+                                    <Grid container spacing={1} direction="row">
+                                      <Grid item>
+                                        <Typography
+                                          variant="body1"
+                                          color="textSecondary"
+                                        >
+                                          <span
+                                            style={{
+                                              fontWeight: "bold",
+                                              marginRight: "10px",
+                                            }}
+                                          >
+                                            Date:
+                                          </span>
+                                          <span>
+                                            {new Date(
+                                              detail.date
+                                            ).toLocaleDateString() || "N/A"}
+                                          </span>
+                                        </Typography>
+                                      </Grid>
+                                      <Grid item>
+                                        <Typography
+                                          variant="body1"
+                                          color="textSecondary"
+                                        >
+                                          <span
+                                            style={{
+                                              fontWeight: "bold",
+                                              marginRight: "10px",
+                                            }}
+                                          >
+                                            Time:
+                                          </span>
+                                          <span>{detail.time || "N/A"}</span>
+                                        </Typography>
+                                      </Grid>
+                                    </Grid>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography
+                                      variant="body1"
+                                      color="textSecondary"
+                                    >
+                                      <span
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginRight: "10px",
+                                        }}
+                                      >
+                                        Employee Name:
+                                      </span>
+                                      <span>
+                                        {detail.employeeName || "N/A"}
+                                      </span>
+                                    </Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Typography
+                                      variant="body1"
+                                      color="textSecondary"
+                                    >
+                                      <span
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginRight: "20px",
+                                        }}
+                                      >
+                                        Note Description:
+                                      </span>
+                                      <span>
+                                        {detail.noteDescription || "N/A"}
+                                      </span>
+                                    </Typography>
+                                  </Grid>
+                                </div>
+                                {/* Update Icon */}
+                                <EditIcon
+                                  style={{
+
+                                    cursor: "pointer",
+                                    marginLeft: "10px",
+                                  }}
+                                //onClick={() => handleUpdateClick(detail, log)}
+                                />
+                              </div>
+                            </Grid>
+                          </React.Fragment>
+                        ))}
+                      </React.Fragment>
+                    ))
+                  ) : (
+                    <Typography variant="body1" color="textSecondary" marginLeft="26px" marginTop="20px">
+                      No log details available.
+                    </Typography>
+                  )}
+                </Grid>
+
+              </Paper>
+            </div>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <Typography variant="button" className={classes.divider}>Lead Follow Up</Typography>
+            <div className={classes.root}>
+              <Paper
+                elevation={2}
+                style={{ padding: "20px", marginBottom: "20px" }}
+              >
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                  // onClick={handleClickOpen}
+                  >
+                    Create
+                  </Button>
+                </div>
+                <Grid container spacing={1} direction="column" marginTop="15px">
+                  {Followlist.map((followup, index) => (
+                    <Grid item key={index} style={{ position: "relative" }}>
+                      <div style={{ display: "flex", alignItems: "center", }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AccessAlarmIcon style={{ zIndex: 1 }} />
+                          {index < Followlist.length - 1 && (
+                            <div
+                              style={{
+                                // position: 'absolute',
+                                // top: '40px',
+                                // left: '18px', // Align with the center of the alarm icon
+                                height: ["4vw"], // Adjust height as needed
+                                width: "2px",
+                                backgroundColor: "grey",
+                                marginTop: "6px",
+                                marginBottom: "1px",
+                                // zIndex: 0,
+                              }}
+                            />
+                          )}
+                        </div>
+
+                        <Typography
+                          variant="h6"
+                          color="textSecondary"
+                          style={{ marginLeft: "10px" }}
+                        >
+                          {followup.reminderNote || "N/A"}
+                        </Typography>
+                      </div>
+                    </Grid>
+                  ))}
+                </Grid>
+
                 {/* lead log dialog */}
                 {/* <Dialog open={open} onClose={handleleadlogClose}>
                   <DialogTitle>Create Lead Log</DialogTitle>
@@ -910,9 +1089,9 @@ function LeadDetails() {
                   </DialogActions>
                 </Dialog> */}
               </Paper>
-          </div>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}
@@ -1010,9 +1189,9 @@ function LeadDetails() {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>  
+      </div>
 
-    
+
 
       <AlertDialog
         open={deleteDialogOpen}
