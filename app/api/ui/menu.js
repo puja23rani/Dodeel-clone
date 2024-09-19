@@ -202,13 +202,13 @@ module.exports = [
         link: "/app/Job_Application",
         icon: "settings_suggest",
       },
-      {
-        key: "applicantlist",
-        name: "Applicant List",
-        link: "/app/applicantlist",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
+      // {
+      //   key: "applicantlist",
+      //   name: "Applicant List",
+      //   link: "/app/applicantlist",
+      //   icon: "settings_suggest",
+      //   badge: "Hot",
+      // },
     ],
   },
 ];

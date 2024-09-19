@@ -24,7 +24,9 @@ import { convertToRaw } from "draft-js";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { MaterialDropZone } from 'enl-components';
-
+import { ref } from "firebase/storage";
+import { Navigate, useNavigate } from "react-router-dom";
+import InfoIcon from '@mui/icons-material/Info';
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -145,8 +147,8 @@ function Applicantlist() {
     // jobDescription: EditorState.createEmpty(),
     phoneNumber: "",
     email: "",
-    recentCertification: null,
-    resume: null,
+    recentCertification: "",
+    resume: "",
     customQuestionID: [],
     customQuestion: [],
     answers: {},
@@ -171,14 +173,13 @@ function Applicantlist() {
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
+
   // const { updateId } = location.state || {};
   const { jobID } = location.state || {};
+
+
   const [selectedJob, setSelectedJob] = React.useState(null);
-
-
-
-
-
   const [dataEditorState, setEditorState] = useState();
 
   const onEditorStateChange = editorStateParam => {
@@ -243,7 +244,7 @@ function Applicantlist() {
   useEffect(() => {
 
     table1();
-    table2();
+    // table2();
   }, []);
 
   const [interviewerList, setInterviewerList] = React.useState([]);
@@ -279,37 +280,37 @@ function Applicantlist() {
     }
   };
   const [customQuestionList, setCustomQuestionList] = React.useState([]);
-  const table2 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
+  // const table2 = async () => {
+  //   try {
+  //     const loginHeaders = new Headers();
+  //     loginHeaders.append("Content-Type", "application/json");
 
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
+  //     // Assuming you have an authorization token stored in localStorage
+  //     const authToken = localStorage.getItem("token");
+  //     if (authToken) {
+  //       loginHeaders.append("Authorization", `Bearer ${authToken}`);
+  //     }
 
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getRecruitments`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      if (Array.isArray(actualData.recruitments)) {
-        const newobj = actualData.recruitments.map((item) => ({
-          title: item.customQuestion, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setCustomQuestionList(newobj);
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-  };
+  //     const requestOptions = {
+  //       method: "GET",
+  //       headers: loginHeaders,
+  //     };
+  //     const res = await fetch(
+  //       `${process.env.REACT_APP_BASE_URL}/api/auth/getRecruitments`,
+  //       requestOptions
+  //     );
+  //     const actualData = await res.json();
+  //     if (Array.isArray(actualData.recruitments)) {
+  //       const newobj = actualData.recruitments.map((item) => ({
+  //         title: item.customQuestion, // Set the title from channelName
+  //         id: item._id, // Set the id from _id
+  //       }));
+  //       setCustomQuestionList(newobj);
+  //     }
+  //   } catch (err) {
+  //     //console.log(err);
+  //   }
+  // };
 
 
   const handleFilesChange = (fileType) => (files) => {
@@ -317,10 +318,10 @@ function Applicantlist() {
     const imageRef = ref(storage, `/photo/${files.name}`);
     uploadBytes(imageRef, files).then(() => {
       getDownloadURL(imageRef).then(url => {
-        if (fileType == "passportSizePhoto") {
-          setState({ ...state, passportSizePhoto: url });
-        } else if (fileType == "identity") {
-          setState({ ...state, identity: url });
+        if (fileType == "recentCertification") {
+          setState({ ...state, recentCertification: url });
+        } else if (fileType == "resume") {
+          setState({ ...state, resume: url });
         }
       });
     });
@@ -340,6 +341,7 @@ function Applicantlist() {
       })
       .then((response) => {
         if (response.data.data) {
+          setState({...state,jobTitle:response.data.job.jobTitle ?? 'No job title'})
 
           setRowdata(
             response.data.data.map((item) => ({
@@ -378,7 +380,7 @@ function Applicantlist() {
                         answers: item.customQuestion.answer,
                         startDate: item.interviewerDetails.startDate.slice(0, 10),
                         endDate: item.interviewerDetails.endDate.slice(0, 10),
-                        interviewerName: item.interviewerDetails.interviewerName,
+                        interviewerName: {title:item.interviewerDetails.interviewerName},
                         interviewStatus: {
                           title: item.interviewerDetails.interviewStatus
                         },
@@ -400,6 +402,18 @@ function Applicantlist() {
                   >
                     <DeleteIcon />
                   </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={(e) => {
+                      navigate("/app/applicantview", {
+                        state: {
+                          jobID: item
+                        },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
+                  </IconButton>
                 </>
               ),
             }))
@@ -407,6 +421,10 @@ function Applicantlist() {
           setLength(response.data.totalItems);
           setPagination(true);
         }
+        // setState({
+        //   ...state,
+        //   jobTitle: response.data.data.jobID.jobTitle,
+        // })
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -441,7 +459,7 @@ function Applicantlist() {
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJobApplication`,
 
           {
-
+          
             jobID: jobID,
             applicantData: {
               applicantName: state.applicantName,
@@ -525,11 +543,11 @@ function Applicantlist() {
   };
 
 
-  const handleJobsDelete = async () => {
+  const handleJobsAppDelete = async () => {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteJob`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteJobApplication`,
         {
           method: "DELETE",
           headers: {
@@ -543,7 +561,7 @@ function Applicantlist() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchJobCreate();
+        fetchJobApp();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -567,42 +585,54 @@ function Applicantlist() {
   };
 
 
-  const handleUpdateJobs = () => {
+  const handleUpdateJobApp = () => {
     const requestData = {
       id: itemToDelete,
-      jobTitle: state.jobTitle,
-      jobCategory: state.jobCategory,
-      jobDescription: state.jobDescription,
+      
+        jobID: state.jobID,
+        applicantData: {
+          applicantName: state.applicantName,
+          resume:
+          state.resume,
+          phoneNumber: state.phoneNumber,
+          email: state.email,
+          recentCertification:
+          state.recentCertification,
+        },
+        // customQuestion: transformedQuestions,
+        customQuestion: state.customQuestion?.map((question) => ({
+          customQuestionID: question.customQuestionID,
+          answer: question.answer,
+        })),
+        interviewerDetails: {
+          interviewerID: state.interviewerID,
+          startDate: state.startDate,
+          endDate: state.endDate,
+          interviewStatus: state.interviewStatus,
 
-      createStatus: state.createStatus.title,
-      startDate: state.startDate,
-      // visa_id: visaId,
-      endDate: state.endDate,
-      skills: state.skills.join(","),
-      resume: state.resume.title,
-      customQuestionID: state.customQuestionID,
-      customQuestion: state.customQuestion,
+          feedback: state.feedback,
+          
+        },
     };
 
     console.log(requestData);
 
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == "") {
+    if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
-    } else {
+      return;
+    }
+
+    //    {
+    //   setMessage("Please fill all required fields");
+    //   setOpen(true);
+    //   setSeverity("warning");
+    // }
+     else {
       axios
         .put(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateJob`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateJobApplication`,
           requestData,
           {
             headers: {
@@ -614,7 +644,7 @@ function Applicantlist() {
         .then((response) => {
           if (response.status === 200) {
             // Refresh the list of interviewers
-            fetchJobCreate();
+            fetchJobApp();
 
             // Scroll smoothly to the top
             window.scrollTo({
@@ -623,25 +653,28 @@ function Applicantlist() {
             });
 
             // Clear the form fields and reset isUpdate to false
-            setState({
-              ...state,
-              jobTitle: "",
-              jobCategory: "",
-              // description: JSON.stringify(
-              //   convertToRaw(state.description.getCurrentContent())
-              // ),
-              jobDescription: "",
-              createStatus: "",
-              startDate: "",
-              // visa_id: visaId,
-              endDate: "",
-              skills: [],
-              resume: "",
-              customQuestionID: [],
-              customQuestion: [], // Clear the interviewer name
+            
+              setState((prevState) => ({
+                ...prevState,
+                applicantName: "",
+      
+                // jobDescription: EditorState.createEmpty(),
+                phoneNumber: "",
+                email: "",
+                recentCertification: "",
+                resume: "",
+                customQuestionID: [],
+                customQuestion: [],
+                answer: {},
+                interviewerID: "",
+                interviewerName: "",
+                startDate: "",
+                endDate: "",
+                interviewStatus: "",
+                feedback: "",
               id: "", // Reset the id
               isUpdate: false, // Set isUpdate to false
-            });
+            }));
 
             // Set success message and show notification
             setMessage("Updated successfully!");
@@ -664,32 +697,7 @@ function Applicantlist() {
 
   console.log(state)
 
-  const handleInputChange = (e) => {
-    setState({
-      ...state,
-      inputSkill: e.target.value,
-    });
-  };
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && state.inputSkill.trim()) {
-      setState({
-        ...state,
-        skills: [...state.skills, state.inputSkill.trim()],
-        inputSkill: "",
-      });
-    } else if (e.key === "Backspace" && !state.inputSkill) {
-      setState({
-        ...state,
-        skills: state.skills.slice(0, -1),
-      });
-    }
-  };
-  const handleSkillDelete = (skillToDelete) => () => {
-    setState((prevState) => ({
-      ...prevState,
-      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
-    }));
-  };
+  
   const handlePageChange = (event, newPage) => {
     setPage(newPage); // Update the current page
   };
@@ -835,36 +843,7 @@ function Applicantlist() {
                     helperText={errors.email} // Display error message
                   />
                 </Grid>
-                {state.customQuestion ? (
-                  state.customQuestion?.map((ch, idx) => (
-                    <Grid item xs={6} key={idx}>
-                      <Autocomplete
-                        freeSolo
-                        options={[]} // You can pass predefined options if any
-                        inputValue={ch.answer || ''}
-                        onInputChange={(event, newInputValue) => {
-                          const updatedCustomQuestion = [...state.customQuestion];
-                          updatedCustomQuestion[idx].answer = newInputValue;
-                          setState({
-                            ...state,
-                            customQuestion: updatedCustomQuestion,
-                          });
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label={ch.customQuestion}
-                            fullWidth
-                          />
-                        )}
-                      />
-                    </Grid>
-                  ))
-                ) : (
-                  <p></p>
-                )}
-
-
+                
 
 
                 {/* 
@@ -966,10 +945,12 @@ function Applicantlist() {
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     value={state.interviewerName} // Ensure value is an object or null
                     onChange={(e, v) => {
+                      // const selectedinterviewIds = v.map((item) => item.id);
                       // console.log(v);
                       setState({
                         ...state,
                         interviewerName: v ? v : null, // Set campaignStatus to the selected object or null
+                        interviewerID: v.id,
                       });
                     }}
                     renderInput={(params) => (
@@ -1019,6 +1000,66 @@ function Applicantlist() {
                     )}
                   />
                 </Grid>
+                {/* <Grid item xs={6}>
+                  <Autocomplete
+                    multiple
+                    id="tags-standard"
+                    options={customQuestionList}
+                    value={state.customQuestion}
+                    // isOptionEqualToValue={(option, value) =>
+                    //   option.id === value.id
+                    // }
+                    onChange={(e, v) => {
+                      const selectedCustomquestionIds = v.map((item) => item.id);
+                      setState({
+                        ...state,
+                        customQuestion: v, // Store selected objects
+                        customQuestionID: selectedCustomquestionIds, // Store IDs
+                      });
+                    }}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label="Custom Question"
+                        
+                        error={!!errors.customQuestion} // Show error if it exists
+                        helperText={errors.customQuestion} // Display error message
+                      />
+                    )}
+                  />
+                </Grid> */}
+                {state.customQuestion ? (
+                  state.customQuestion?.map((ch, idx) => (
+                    <Grid item xs={6} key={idx}>
+                      <Autocomplete
+                        freeSolo
+                        options={[]} // You can pass predefined options if any
+                        inputValue={ch.answer || ''}
+                        onInputChange={(event, newInputValue) => {
+                          const updatedCustomQuestion = [...state.customQuestion];
+                          updatedCustomQuestion[idx].answer = newInputValue;
+                          setState({
+                            ...state,
+                            customQuestion: updatedCustomQuestion,
+                          });
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={ch.customQuestion}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+                  ))
+                ) : (
+                  <p>No</p>
+                )}
+
+
 
                 <Grid item xs={12}>
                   <TextField
@@ -1093,7 +1134,7 @@ function Applicantlist() {
                 <Button
                   color="primary"
                   variant="contained"
-                // onClick={handleUpdateJobs}
+                onClick={handleUpdateJobApp}
                 >
                   Update
                 </Button>
@@ -1136,7 +1177,7 @@ function Applicantlist() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleJobsDelete}
+        onDelete={handleJobsAppDelete}
       />
       <Popup
         open={open}

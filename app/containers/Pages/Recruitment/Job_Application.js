@@ -333,6 +333,24 @@ function Job_Application() {
                   >
                     <InfoIcon />
                   </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/jobview", {
+                        state: {
+                          jobID: item,
+
+                         
+                        },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
+                  </IconButton>
                 </>
               ),
             }))

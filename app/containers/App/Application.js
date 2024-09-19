@@ -107,6 +107,8 @@ import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
 import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
 import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
+import JobAppView from "../Pages/Recruitment/jobview";
+import JobApplicantView from "../Pages/Recruitment/applicantview";
 
 function Application(props) {
   const { history } = props;
@@ -256,6 +258,8 @@ function Application(props) {
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
+        <Route path="/jobview" element={<JobAppView />} />
+        <Route path="/applicantview" element={<JobApplicantView />} />
       </Routes>
     </Dashboard>
   );
