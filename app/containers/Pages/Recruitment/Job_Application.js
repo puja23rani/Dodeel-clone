@@ -809,66 +809,35 @@ const handleRowsPerPageChange = (event) => {
                 </Grid>
 
                
-                <Grid item xs={6} style={{}}>
-                  <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.startDate}
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        startDate: v,
-                      });
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="Start Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.startDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Start Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            startDate: e.target.value,
-                          })
-                        }
-                      />
-                    )}
+                    onChange={(e) => setState({ ...state, startDate: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={6} >
-                  <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.endDate}
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        endDate: v,
-                      });
+
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="End Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.endDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="End Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            endDate: e.target.value,
-                          })
-                        }
-                      />
-                    )}
+                    onChange={(e) => setState({ ...state, endDate: e.target.value })}
                   />
-                </Grid> 
+                </Grid>
                  {/* <Grid item xs={12}>
   <Typography variant="subtitle1" gutterBottom>
     Job Description
