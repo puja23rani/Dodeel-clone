@@ -252,7 +252,7 @@ module.exports = [
       {
         key: "Products",
         name: "Products",
-        link: "/app/Job_Application",
+        link: "/app/Product",
         icon: "settings_suggest",
         badge: "Hot",
       },

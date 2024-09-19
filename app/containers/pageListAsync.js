@@ -463,3 +463,9 @@ export const Supplier = loadable(
     fallback: <Loading />,
   }
 );
+export const Product = loadable(
+  () => import("../containers/Pages/AssetModule/Product"),
+  {
+    fallback: <Loading />,
+  }
+);

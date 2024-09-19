@@ -150,7 +150,7 @@ function Supplier() {
       id: "contactNumber",
       numeric: false,
       disablePadding: false,
-      label: "COntact Number",
+      label: "Contact Number",
     },
     {
       id: "contactPerson",

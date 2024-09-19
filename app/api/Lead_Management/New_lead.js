@@ -3,7 +3,6 @@ import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
 import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
@@ -14,16 +13,17 @@ import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
-import DeleteIcons from "@mui/icons-material/Delete";
 import {
   Autocomplete,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
+  MenuItem,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
@@ -35,10 +35,10 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import { Buttons } from "../../containers/pageListAsync";
 import { useNavigate } from "react-router-dom";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -325,6 +325,7 @@ function New_lead() {
   }, []);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
+  const [selectedItem, setSelectedItem] = useState(null); // Make sure th
 
   const handleMenuClick = (event, employee) => {
     setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
@@ -335,7 +336,15 @@ function New_lead() {
     setAnchorEl(null); // Reset anchorEl to null to close the menu
     setSelectedEmployee(null); // Reset selected employee
   };
-
+  const handleSmallMenuClick = (event, employee) => {
+    setAnchorEl(event.currentTarget);  // This will open the menu at the button clicked
+    setSelectedItem(employee);         // This will set the clicked employee
+  };
+  
+  const handleSmallMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItem(null);
+  };
   function fetchLead(pg) {
     axios
       .post(
@@ -354,62 +363,71 @@ function New_lead() {
         console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
-            response.data.data.map((item, index) => ({
-              slNo: response.data.data.indexOf(item) + 1,
-              id: item._id,
-              leadName: item.leadName || "N/A",
-              contactNumber: item.contactNumber || "N/A",
-              email: item.email || "N/A",
-              campaignName: item.campaignID?.campaignName || "N/A",
-              channelName: item.channelID?.channelName || "N/A",
-              status: item.leadStatusID?.StatusName || "N/A",
+            response.data.data.map((employee, index) => ({
+              slNo: index + 1,
+              id: employee._id,
+              leadName: employee.leadName || "N/A",
+              contactNumber: employee.contactNumber || "N/A",
+              email: employee.email || "N/A",
+              campaignName: employee.campaignID?.campaignName || "N/A",
+              channelName: employee.channelID?.channelName || "N/A",
+              status: employee.leadStatusID?.StatusName || "N/A",
               actions: (
                 <>
                   <IconButton
-                    aria-label="Edit"
-                    onClick={(e) => {
-                      window.scrollTo({
-                        top: 0,
-                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-                      });
-                      setItemToDelete(item._id);
-                      // setState({
-                      //   Status_Name: item.statusName,
-                      //   Description: item.description,
-                      //   isUpdate: true,
-                      // });
-                      setOpenDialog(true);
-                    }}
+                    aria-label="More"
+                    id={index}
+                    onClick={(e) => handleSmallMenuClick(e, employee)} // Pass 'employee'
                   >
-                    <EditIcon />
+                    <MoreVertIcon />
                   </IconButton>
-                  <IconButton
-                    aria-label="Delete"
-                    onClick={() => {
-                      setItemToDelete(item._id);
-                      setDeleteDialogOpen(true);
-                    }}
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleSmallMenuClose}
                   >
-                    <DeleteIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Delete"
-                    // onClick={() => {
-                    //   setItemToDelete(item._id);
-                    //   setDeleteDialogOpen(true);
-                    // }}
-                    onClick={(e) => {
-                      navigate("/app/lead/new-lead/lead-details", {
-                        state: { leadId: item._id },
-                      });
-                    }}
-                  >
-                    <InfoIcon />
-                  </IconButton>
+                    <MenuItem
+                      onClick={() => {
+                        handleSmallMenuClose();
+                        window.scrollTo({
+                          top: 0,
+                          behavior: "smooth",
+                        });
+                        setItemToDelete(selectedItem._id);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      <EditIcon />
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleSmallMenuClose();
+                        setItemToDelete(selectedItem._id);
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                      Delete
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleSmallMenuClose();
+                        navigate("/app/lead/new-lead/lead-details", {
+                          state: { leadId: selectedItem._id },
+                        });
+                      }}
+                    >
+                      <InfoIcon />
+                      Lead Details
+                    </MenuItem>
+                  </Menu>
                 </>
               ),
             }))
           );
+          
+          
           setLength(response.data.totalItems);
           setPagination(true);
         }
