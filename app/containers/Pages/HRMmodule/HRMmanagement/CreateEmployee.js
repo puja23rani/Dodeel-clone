@@ -118,6 +118,43 @@ const CreateEmployee = () => {
         let isValid = true;
         let errors = {};
 
+        if (!state.employeeName.trim()) {
+            errors.employeeName = "Employee Name is required";
+            isValid = false;
+        }
+
+        if (!state.dateOfBirth.trim()) {
+            errors.dateOfBirth = "Date Of Birth is required";
+            isValid = false;
+        }
+
+        if (!state.gender.trim()) {
+            errors.gender = "Gender is required";
+            isValid = false;
+        }
+
+        if (!state.email.trim()) {
+            errors.email = "Email is required";
+            isValid = false;
+        }
+
+        if (!state.emergencyPhoneNumber.trim()) {
+            errors.emergencyPhoneNumber = "Emergency Phone Number is required";
+            isValid = false;
+        }
+
+        if (!state.address.trim()) {
+            errors.address = "Address is required";
+            isValid = false;
+        }
+
+        if (!state.country.trim()) {
+            errors.country = "Country is required";
+            isValid = false;
+        }
+
+
+
         setErrors(errors);
         return isValid;
     };
@@ -355,7 +392,6 @@ const CreateEmployee = () => {
             console.log(err);
         }
     };
-
 
     return (
         <div>
