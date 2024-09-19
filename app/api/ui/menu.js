@@ -130,32 +130,7 @@ module.exports = [
     name: "Lead",
     icon: "settings_suggest",
     child: [
-      {
-        key: "Lead_Settings",
-        name: "Lead Settings",
-        title: true,
-      },
-      {
-        key: "Lead_Status",
-        name: "Lead Status",
-        link: "/app/lead/lead-status",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
-      {
-        key: "Log_Notes",
-        name: "Log Notes",
-        link: "/app/lead/log-notes",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
-      {
-        key: "Channel",
-        name: "Channel",
-        link: "/app/lead/channel",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
+      
       {
         key: "Lead_Management",
         name: "Lead Management",
@@ -178,6 +153,32 @@ module.exports = [
         name: "Lead Members",
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
+      },
+      {
+        key: "Lead_Settings",
+        name: "Lead Settings",
+        title: true,
+      },
+      {
+        key: "Lead_Status",
+        name: "Lead Status",
+        link: "/app/lead/lead-status",
+        icon: "settings_suggest",
+       
+      },
+      {
+        key: "Log_Notes",
+        name: "Log Notes",
+        link: "/app/lead/log-notes",
+        icon: "settings_suggest",
+       
+      },
+      {
+        key: "Channel",
+        name: "Channel",
+        link: "/app/lead/channel",
+        icon: "settings_suggest",
+       
       },
 
     ],

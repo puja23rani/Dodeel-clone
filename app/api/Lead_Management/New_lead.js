@@ -29,7 +29,7 @@ import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
@@ -75,7 +75,6 @@ function New_lead() {
     Lead_Status: "",
     Lead_Status_Id: "",
     Description: "",
-
     isUpdate: false,
   });
   const [errors, setErrors] = useState({
@@ -90,7 +89,6 @@ function New_lead() {
     Lead_Status_Id: "",
     Description: "",
   });
-
   const validate = () => {
     let isValid = true;
     let errors = {};
@@ -100,10 +98,10 @@ function New_lead() {
       isValid = false;
     }
 
-    if (!state.Phone_Number.trim()) {
+    if (!state.Phone_Number.toString().trim()) {
       errors.Phone_Number = "Phone Number is required";
       isValid = false;
-    } else if (state.Phone_Number.length !== 10) {
+    } else if (state.Phone_Number.toString().length !== 10) {
       errors.Phone_Number = "Phone Number must be 10 digits";
       isValid = false;
     }
@@ -231,7 +229,6 @@ function New_lead() {
       //console.log(err);
     }
   };
-
   const [channelList, setChannelList] = React.useState([]);
   const table4 = async () => {
     try {
@@ -373,11 +370,16 @@ function New_lead() {
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
                       setItemToDelete(item._id);
-                      // setState({
-                      //   Status_Name: item.statusName,
-                      //   Description: item.description,
-                      //   isUpdate: true,
-                      // });
+                      setState({
+                        Name: item.leadName,
+                        Phone_Number: item.contactNumber,
+                        Email: item.email,
+                        Campaign: {id: item.campaignID?.id, title: item.campaignID?.campaignName},
+                        Channel: {id: item.channelID?.id, title: item.channelID?.channelName},
+                        Lead_Status:{id: item.leadStatusID?.id, title: item.leadStatusID?.StatusName},
+                        Description: item.notes,
+                        isUpdate: true,
+                      });
                       setOpenDialog(true);
                     }}
                   >
@@ -492,12 +494,82 @@ function New_lead() {
       setSeverity("error");
     }
   };
+  const handleUpdateLead = async () => {
+    if (!validate()) {
+      setMessage("Please fill all required fields");
+      setOpen(true);
+      setSeverity("warning");
+      return;
+    }
+    console.log("p1");
+    try {
+      // Prepare the data to match the required request body format
+      const data = {id:parseInt(itemToDelete),
+        leadName: state.Name,
+        email: state.Email,
+        campaignID: state.Campaign.id, // campaignName from state
+        channelID: state.Channel.id,
+        leadStatusID: state.Lead_Status.id,
 
+        contactNumber: parseInt(state.Phone_Number),
+        notes: state.Description,
+      };
+      console.log("p2");
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }, 
+          body: JSON.stringify(data),
+        }
+      );
+      console.log("p3");
+      const result = await response.json();
+      if (result.status === 200) {
+        fetchLead();
+        window.scrollTo({
+          top: 400,
+          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+        });
+        // Reset the state after successful creation
+        setState({
+          Name: "",
+          Phone_Number: "",
+          Email: "",
+          Campaign: "",
+          Campaign_Id: "",
+          Channel: "",
+          Channel_Id: "",
+          Lead_Status: "",
+          Lead_Status_Id: "",
+          Description: "",
+
+          isUpdate: false,
+        });
+        setOpenDialog(false);
+        setMessage("Saved successfully!");
+        setOpen(true);
+        setSeverity("success");
+      } else {
+        setMessage(result.message);
+        setOpen(true);
+        setSeverity("error");
+      }
+    } catch (err) {
+      console.log(err);
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
+    }
+  };
   const handleCampaignDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCampaign`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadDetail`,
         {
           method: "DELETE",
           headers: {
@@ -533,84 +605,6 @@ function New_lead() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  //   const handleUpdateCampaign = async () => {
-  //     try {
-  //       const loginHeaders = new Headers();
-  //       loginHeaders.append("Content-Type", "application/json");
-
-  //       // Assuming you have an authorization token stored in localStorage
-  //       const token = localStorage.getItem("token");
-  //       if (token) {
-  //         loginHeaders.append("Authorization", `Bearer ${token}`);
-  //       }
-  //       const data = {
-  //         id: parseInt(itemToDelete), // id from itemToDelete,
-  //         campaignName: state.campaignName, // campaignName from state
-  //         membersID: state.membersID, // membersID from state
-  //         fields: state.fieldset.map((field) => ({
-  //           name: field.name,
-  //           value: parseInt(field.value),
-  //         })), // Transform fieldset into fields array
-  //         channelID: state.channelID, // channelID from state
-  //         campaignStatus: state.campaignStatus.title, // campaignStatus title from state
-  //       };
-
-  //       if (!validate()) {
-  //         setMessage("Please fill all required fields");
-  //         setOpen(true);
-  //         setSeverity("warning");
-  //         return;
-  //       } else {
-  //         const requestOptions = {
-  //           method: "PUT",
-  //           headers: loginHeaders,
-  //           body: JSON.stringify(data),
-  //         };
-  //         const res = await fetch(
-  //           `${process.env.REACT_APP_BASE_URL}/api/auth/updateCampaign`,
-  //           requestOptions
-  //         );
-
-  //         const actualData = await res.json();
-  //         //console.log(actualData);
-  //         // setVisaList(actualData.Country);
-  //         if (actualData.status == 200) {
-  //           fetchLead();
-  //           window.scrollTo({
-  //             top: 400,
-  //             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-  //           });
-  //           setOpenDialog(false);
-  //           setState({
-  //             campaignName: "",
-  //             membersID: [],
-  //             employeeName: [],
-  //             channelName: [],
-  //             channelID: [],
-  //             campaignStatus: "",
-  //             fieldset: [{ name: "", value: "" }],
-  //             isUpdate: false,
-  //           });
-  //           setMessage("Updated successfully!");
-  //           setOpen(true);
-  //           setSeverity("success");
-  //           // Navigate("/Department");
-  //         } else {
-  //           setMessage(actualData.message);
-  //           setOpen(true);
-  //           setSeverity("error");
-  //         }
-  //       }
-  //     } catch (err) {
-  //       //console.log(err);
-  //       // toast.error("Failed to save. Please try again.", {
-  //       //   position: "top-center",
-  //       // });
-  //       setMessage(err.message);
-  //       setOpen(true);
-  //       setSeverity("error");
-  //     }
-  //   };
   const handleClose = () => {
     setOpen(false);
   };
@@ -637,14 +631,6 @@ function New_lead() {
   };
 
   // Delete a section by index
-  const handleDeleteSection = (idx) => {
-    setState({
-      ...state,
-      fieldset: state.fieldset.filter((_, index) => index !== idx),
-    });
-  };
-  console.log(state, "sssssss");
-  console.log(anchorEl, "annnn");
   return (
     <>
       <div>
@@ -665,7 +651,22 @@ function New_lead() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={() => {
+            setState({
+              Name: "",
+              Phone_Number: "",
+              Email: "",
+              Campaign: "",
+              Campaign_Id: "",
+              Channel: "",
+              Channel_Id: "",
+              Lead_Status: "",
+              Lead_Status_Id: "",
+              Description: "",
+              isUpdate: false,
+            });
+            setOpenDialog(false);
+          }}
           fullWidth
           maxWidth="md"
         >
@@ -673,7 +674,22 @@ function New_lead() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={() => {
+              setState({
+                Name: "",
+                Phone_Number: "",
+                Email: "",
+                Campaign: "",
+                Campaign_Id: "",
+                Channel: "",
+                Channel_Id: "",
+                Lead_Status: "",
+                Lead_Status_Id: "",
+                Description: "",
+                isUpdate: false,
+              });
+              setOpenDialog(false);
+            }}
             sx={{
               position: "absolute",
               right: 12,
@@ -906,12 +922,33 @@ function New_lead() {
             </div>
           </DialogContent>
           <DialogActions>
+            <Button
+              onClick={() => {
+                setState({
+                  Name: "",
+                  Phone_Number: "",
+                  Email: "",
+                  Campaign: "",
+                  Campaign_Id: "",
+                  Channel: "",
+                  Channel_Id: "",
+                  Lead_Status: "",
+                  Lead_Status_Id: "",
+                  Description: "",
+                  isUpdate: false,
+                });
+                setOpenDialog(false);
+              }}
+              color="secondary"
+            >
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
                   color="primary"
                   variant="contained"
-                //   onClick={handleUpdateCampaign}
+                    onClick={handleUpdateLead}
                 >
                   Update
                 </Button>
@@ -927,9 +964,6 @@ function New_lead() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
           </DialogActions>
         </Dialog>
       </div>

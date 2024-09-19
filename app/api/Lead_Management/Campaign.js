@@ -534,7 +534,18 @@ function Campaign() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={() => { 
+            setState({
+              membersID: [],
+    campaignName: "",
+    employeeName: [],
+    campaignStatus: null,
+    channelID: [],
+    channelName: [],
+    isUpdate: false,
+    fieldset: [{ name: "", value: "" }],
+            })
+            setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
@@ -544,7 +555,18 @@ function Campaign() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={() => { 
+              setState({
+                membersID: [],
+      campaignName: "",
+      employeeName: [],
+      campaignStatus: null,
+      channelID: [],
+      channelName: [],
+      isUpdate: false,
+      fieldset: [{ name: "", value: "" }],
+              })
+              setOpenDialog(false)}}
             sx={{
               position: "absolute",
               right: 12,
@@ -734,6 +756,20 @@ function Campaign() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() => { 
+            setState({
+              membersID: [],
+    campaignName: "",
+    employeeName: [],
+    campaignStatus: null,
+    channelID: [],
+    channelName: [],
+    isUpdate: false,
+    fieldset: [{ name: "", value: "" }],
+            })
+            setOpenDialog(false)}} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -755,9 +791,7 @@ function Campaign() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>

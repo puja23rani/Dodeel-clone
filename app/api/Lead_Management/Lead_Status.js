@@ -356,7 +356,15 @@ function Lead_Status() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose= {() =>{ 
+            setState({
+              Status_Name: "",
+              Description: "",
+              id: "",
+              searchText: "",
+              isUpdate: false,
+            })
+            setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
@@ -365,7 +373,15 @@ function Lead_Status() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={() =>{ 
+                setState({
+                  Status_Name: "",
+                  Description: "",
+                  id: "",
+                  searchText: "",
+                  isUpdate: false,
+                })
+                setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -425,6 +441,18 @@ function Lead_Status() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick=
+          {() =>{ 
+                setState({
+                  Status_Name: "",
+                  Description: "",
+                  id: "",
+                  searchText: "",
+                  isUpdate: false,
+                })
+                setOpenDialog(false)}} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -446,9 +474,7 @@ function Lead_Status() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+            
           </DialogActions>
         </Dialog>
       </div>
