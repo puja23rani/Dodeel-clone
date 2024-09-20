@@ -161,7 +161,7 @@ export default function JobApplicantView() {
 
                             </Typography>
                         </Paper>
-                        <Paper>
+                        <Paper style={{ marginBottom:"6px"}}>
                             <Typography
                                 variant="h5"
                                 color="textSecondary"

@@ -906,6 +906,9 @@ const handleRowsPerPageChange = (event) => {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -927,9 +930,7 @@ const handleRowsPerPageChange = (event) => {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>

@@ -24,9 +24,10 @@ import { convertToRaw } from "draft-js";
 import { useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { MaterialDropZone } from 'enl-components';
-import { ref } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { Navigate, useNavigate } from "react-router-dom";
 import InfoIcon from '@mui/icons-material/Info';
+import { storage } from "../../../../firebase.config";
 
 
 const useStyles = makeStyles()((theme) => ({
@@ -130,10 +131,10 @@ function Applicantlist() {
     //   errors.recentCertification = "Recent Certification File is required";
     //   isValid = false;
     // }
-    if (!state.customQuestion) {
-      errors.customQuestion = "Custom Question is required";
-      isValid = false;
-    }
+    // if (!state.customQuestion) {
+    //   errors.customQuestion = "Custom Question is required";
+    //   isValid = false;
+    // }
 
     setErrors(errors);
     return isValid;
@@ -312,20 +313,24 @@ function Applicantlist() {
   //   }
   // };
 
-
-  const handleFilesChange = (fileType) => (files) => {
-    // console.log(`${fileType}:`, files);
-    const imageRef = ref(storage, `/photo/${files.name}`);
-    uploadBytes(imageRef, files).then(() => {
-      getDownloadURL(imageRef).then(url => {
-        if (fileType == "recentCertification") {
-          setState({ ...state, recentCertification: url });
-        } else if (fileType == "resume") {
-          setState({ ...state, resume: url });
-        }
-      });
-    });
-  };
+  const [isLoading, setisLoading] = useState(false)
+  const handleFilesChange = (e, field) => {
+    const file = e.target.files[0];
+    if (file) {
+        setisLoading(true);
+        const imageRef = ref(storage, `/photo/${file.name}`);
+        uploadBytes(imageRef, file).then(() => {
+            getDownloadURL(imageRef).then(url => {
+                // console.log(url);
+                setState(prevState => ({
+                    ...prevState,
+                    [field]: url
+                }));
+                setisLoading(false);
+            });
+        });
+    }
+};
 
   function fetchJobApp(pg) {
     axios
@@ -465,7 +470,7 @@ function Applicantlist() {
               applicantName: state.applicantName,
               resume:
                 state.resume,
-              phoneNumber: state.phoneNumber,
+              phoneNumber: parseInt(state.phoneNumber),
               email: state.email,
               recentCertification:
                 state.recentCertification,
@@ -478,7 +483,7 @@ function Applicantlist() {
               interviewerID: state.interviewerID,
               startDate: state.startDate,
               endDate: state.endDate,
-              interviewStatus: state.interviewStatus,
+              interviewStatus: state.interviewStatus.title,
 
               feedback: state.feedback,
 
@@ -594,21 +599,21 @@ function Applicantlist() {
           applicantName: state.applicantName,
           resume:
           state.resume,
-          phoneNumber: state.phoneNumber,
+          phoneNumber: parseInt(state.phoneNumber),
           email: state.email,
           recentCertification:
           state.recentCertification,
         },
         // customQuestion: transformedQuestions,
-        customQuestion: state.customQuestion?.map((question) => ({
-          customQuestionID: question.customQuestionID,
-          answer: question.answer,
-        })),
+        // customQuestion: state.customQuestion?.map((question) => ({
+        //   customQuestionID: question.customQuestionID,
+        //   answer: question.answer,
+        // })),
         interviewerDetails: {
           interviewerID: state.interviewerID,
           startDate: state.startDate,
           endDate: state.endDate,
-          interviewStatus: state.interviewStatus,
+          interviewStatus: state.interviewStatus.title,
 
           feedback: state.feedback,
           
@@ -846,64 +851,7 @@ function Applicantlist() {
                 
 
 
-                {/* 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px"
-                    }}
-                    id="highlights-demo"
-                    options={[
-                      { title: "Required" },
-                      { title: "Not required" },
-
-                    ]}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.resume} // Ensure value is an object or null
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        resume: v ? v : null, // Set campaignStatus to the selected object or null
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Resume"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.resume} // Show error if it exists
-                        helperText={errors.resume} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="skills"
-                    name="skills"
-                    label="Skills"
-                    value={state.inputSkill}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                  <div style={{ marginTop: 10 }}>
-                    {state.skills?.map((skill, index) => (
-                      <Chip
-                        key={index}
-                        label={skill}
-                        onDelete={handleSkillDelete(skill)}
-                        style={{ marginRight: 10, marginBottom: 10 }}
-
-                        error={!!errors.resume} // Show error if it exists
-                        helperText={errors.resume}
-                      />
-                    ))}
-                  </div>
-                </Grid> */}
-
+               
 
                 <Grid item xs={6} sx={{ width: "100%" }}>
                   <TextField
@@ -1030,7 +978,7 @@ function Applicantlist() {
                     )}
                   />
                 </Grid> */}
-                {state.customQuestion ? (
+                {/* {state.customQuestion ? (
                   state.customQuestion?.map((ch, idx) => (
                     <Grid item xs={6} key={idx}>
                       <Autocomplete
@@ -1058,7 +1006,7 @@ function Applicantlist() {
                 ) : (
                   <p>No</p>
                 )}
-
+ */}
 
 
                 <Grid item xs={12}>
@@ -1085,50 +1033,96 @@ function Applicantlist() {
                     helperText={errors.feedback} // Display error message
                   />
                 </Grid>
-                <Grid item md={6} >
-
-                  {/* elevation={2}
-      style={{ padding: "20px" }} */}
 
 
-                  <div style={{ display: "flex", gap: "20px" }}>
-                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
-                      <Typography variant="body2">Education Certificate</Typography>
-                    </Grid>
-                    <Grid sx={{ width: "100%" }}>
-                      <MaterialDropZone
-                        files={[]}
-                        text="Drag and drop a file here or click to upload"
-                        showPreviews={true}
-                        maxSize={3000000}
-                        filesLimit={1}
-                        onFilesChange={handleFilesChange('recentCertification')} // Pass the type to the generic handler
-                      />
-                    </Grid>
-                  </div>
-                </Grid>
-                <Grid item md={6} >
-                  <div style={{ display: "flex", gap: "20px" }}>
-                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
-                      <Typography variant="body2">Resume File</Typography>
-                    </Grid>
-                    <Grid sx={{ width: "100%" }}>
-                      <MaterialDropZone
-                        files={[]}
-                        text="Drag and drop a file here or click to upload"
-                        showPreviews={true}
-                        maxSize={3000000}
-                        filesLimit={1}
-                        onFilesChange={handleFilesChange('resume')}
-                      />
-                    </Grid>
-                  </div>
-                </Grid>
+                <Grid item md={6} xs={12}>
+                        <div style={{ display: "flex", gap: "20px" }}>
+                            <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                                <Typography variant="body2">Education Certificate</Typography>
+                            </Grid>
+                            <Grid sx={{ paddingTop: "28px" }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                    <label
+                                        style={{
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            width: '100%',
+                                            overflow: 'hidden',
+                                            borderRadius: '0.75rem', // Equivalent to rounded-xl
+                                            border: '1px solid #27282C',
+                                            backgroundColor: 'white',
+                                            fontWeight: '500', // Equivalent to font-medium
+                                            color: '#27282C',
+                                            fontSize: "12px",
+                                            padding: "10px"
+                                        }}
+                                    >
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleFilesChange(e, "recentCertification")}
+                                            style={{
+                                                display: 'none', // Equivalent to hidden
+                                            }}
+                                        />
+                                        Click to upload photo
+                                    </label>
+                                    {state.recentCertification && (
+                                        <img src={state.recentCertification} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
+                                    )}
+                                </div>
+                            </Grid>
+                        </div>
+                        </Grid>
+                <Grid item md={6} xs={12}>
+                        <div style={{ display: "flex", gap: "20px" }}>
+                            <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                                <Typography variant="body2">Resume File</Typography>
+                            </Grid>
+                            <Grid sx={{ paddingTop: "28px" }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                    <label
+                                        style={{
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            width: '100%',
+                                            overflow: 'hidden',
+                                            borderRadius: '0.75rem', // Equivalent to rounded-xl
+                                            border: '1px solid #27282C',
+                                            backgroundColor: 'white',
+                                            fontWeight: '500', // Equivalent to font-medium
+                                            color: '#27282C',
+                                            fontSize: "12px",
+                                            padding: "10px"
+                                        }}
+                                    >
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleFilesChange(e, "resume")}
+                                            style={{
+                                                display: 'none', // Equivalent to hidden
+                                            }}
+                                        />
+                                        Click to upload photo
+                                    </label>
+                                    {state.resume && (
+                                        <img src={state.resume} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
+                                    )}
+                                </div>
+                            </Grid>
+                        </div>
+                        </Grid>
 
+                       
+                
               </Grid>
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -1150,9 +1144,7 @@ function Applicantlist() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>
