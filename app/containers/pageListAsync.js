@@ -437,3 +437,40 @@ export const LeadDetails = loadable(
     fallback: <Loading />,
   }
 );
+export const BillTax = loadable(
+  () => import("../containers/Pages/Sales/BillTax"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const  Invoice = loadable(
+  () => import("../containers/Pages/Sales/Invoice"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Payments = loadable(
+  () => import("../containers/Pages/Sales/Payments"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Project = loadable(
+  () => import("../containers/Pages/Sales/Project"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Proposal = loadable(
+  () => import("../containers/Pages/Sales/Proposal"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Customer = loadable(
+  () => import("../containers/Pages/Sales/Customer"),
+  {
+    fallback: <Loading />,
+  }
+);

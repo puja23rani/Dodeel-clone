@@ -565,6 +565,54 @@ function LeadDetails() {
   const handleClose = () => {
     setOpen(false);
   };
+  const [errorsLog, setErrorsLog] = useState({
+    leadID: "",
+    leadStatusID: "",
+    date: "",
+    time: "",
+    employeeName: "",
+    noteID: "",
+  });
+  
+  // Validation function for the log
+  const validateLog = () => {
+    let isValid = true;
+    let errors = {};
+  
+    if (!leadId) {
+      errors.leadID = "Lead ID is required";
+      isValid = false;
+    }
+  
+    if (!statelog.Lead_Status?.id) {
+      errors.leadStatusID = "Lead Status is required";
+      isValid = false;
+    }
+  
+    if (!statelog.date?.trim()) {
+      errors.date = "Date is required";
+      isValid = false;
+    }
+  
+    if (!statelog.time?.trim()) {
+      errors.time = "Time is required";
+      isValid = false;
+    }
+  
+    if (!statelog.employeeName?.id) {
+      errors.employeeName = "Employee Name is required";
+      isValid = false;
+    }
+  
+    if (!statelog.notes?.id) {
+      errors.noteID = "Note is required";
+      isValid = false;
+    }
+  
+    setErrorsLog(errors);
+    return isValid;
+  };
+  
 
   const handleUpdateNewLead = async () => {
     if(!validate()){return;}
@@ -653,7 +701,7 @@ function LeadDetails() {
   }
   console.log(state);
   const handleCreateLeadlog = async () => {
-    console.log(state);
+   if(!validateLog()){return;}
 
     try {
       const loginHeaders = new Headers();
@@ -697,7 +745,7 @@ function LeadDetails() {
         setMessage("Created successfully!");
         setOpen(true);
         setSeverity("success");
-        table();
+        table1();
         setStatelog({
           ...statelog,
           date: "",
@@ -732,6 +780,7 @@ function LeadDetails() {
 
   // Test examples
   const handleUpdateLeadlog = async () => {
+    if(!validateLog()){return;}
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -1518,12 +1567,14 @@ function LeadDetails() {
                             }
                             sx={{ width: 414 }}
                             InputLabelProps={{ shrink: true }}
+                              error={!!errorsLog.date} // Show error if it exists
+                              helperText={errorsLog.date} // Display error message
                           />
                         </Grid>
                         <Grid item xs={6}>
                           <TextField
                             id="time"
-                            label="End Time"
+                            label="Time"
                             type="time"
                             value={statelog.showtime}
                             onChange={(e) => {
@@ -1548,8 +1599,8 @@ function LeadDetails() {
                               step: 300, // 5 min
                             }}
                             sx={{ width: 414 }}
-                            //   error={!!errors.endTime} // Show error if it exists
-                            //   helperText={errors.endTime} // Display error message
+                              error={!!errorsLog.time} // Show error if it exists
+                              helperText={errorsLog.time} // Display error message
                           />
                         </Grid>
 
@@ -1596,8 +1647,9 @@ function LeadDetails() {
                                 label="Notes"
                                 margin="normal"
                                 variant="standard"
-                                // error={!!errors.Channel} // Show error if it exists
-                                // helperText={errors.Channel} // Display error message
+                                name="notes"
+                                error={!!errorsLog.noteID } // Show error if it exists
+                                helperText={errorsLog.noteID } // Display error message
                               />
                             )}
                           />
@@ -1642,8 +1694,9 @@ function LeadDetails() {
                                 label="Lead Status"
                                 margin="normal"
                                 variant="standard"
-                                // error={!!errors.Lead_Status} // Show error if it exists
-                                // helperText={errors.Lead_Status} // Display error message
+                                name="leadStatus"
+                                error={!!errorsLog.leadStatusID } // Show error if it exists
+                                helperText={errorsLog.leadStatusID } // Display error message
                               />
                             )}
                           />
@@ -1687,8 +1740,9 @@ function LeadDetails() {
                                 label="Employee Name"
                                 margin="normal"
                                 variant="standard"
-                                // error={!!errors.Lead_Status} // Show error if it exists
-                                // helperText={errors.Lead_Status} // Display error message
+                                name="employeeName"
+                                error={!!errorsLog.employeeName } // Show error if it exists
+                                helperText={errorsLog.employeeName } // Display error message
                               />
                             )}
                           />

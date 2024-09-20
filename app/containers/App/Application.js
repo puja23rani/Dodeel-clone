@@ -95,6 +95,14 @@ import {
   LeadMembers,
   LeadDetails,
   Applicantlist,
+  BillTax,
+  Proposal_Template,
+  Invoice,
+  Payments,
+  Project,
+  Proposal,
+  Customer,
+ 
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -249,7 +257,21 @@ function Application(props) {
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
+
+          {/* Sales Pages */}
+          <Route path="/sales/bill-tax" element={<BillTax />} />
+          <Route path="/sales/customer" element={<Customer />} />
+          
+          <Route path="/sales/invoice" element={<Invoice />} />
+          <Route path="/sales/payments" element={<Payments />} />
+          <Route path="/sales/project" element={<Project />} />
+          <Route path="/sales/proposal" element={<Proposal />} />
+          
+
       </Routes>
+
+
+
     </Dashboard>
   );
 }

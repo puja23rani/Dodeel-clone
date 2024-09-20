@@ -184,6 +184,64 @@ module.exports = [
     ],
   },
   {
+    key: "Sales",
+    name: "Sales",
+    icon: "settings_suggest",
+    child: [
+      
+      {
+        key: "Sales_Management",
+        name: "Sales Management",
+        title: true,
+      },
+      {
+        key: "Customer",
+        name: "Customer",
+        icon: "settings_suggest",
+        link: "/app/sales/customer",
+      },
+      {
+        key: "Invoice",
+        name: "Invoice",
+        icon: "settings_suggest",
+        link: "/app/sales/invoice",
+      },
+      {
+        key: "Payments",
+        name: "Payments",
+        icon: "settings_suggest",
+        link: "/app/sales/payments",
+      },
+      {
+        key: "Project",
+        name: "Project",
+        icon: "settings_suggest",
+        link: "/app/sales/project",
+      },
+      {
+        key: "Proposal",
+        name: "Proposal",
+        icon: "settings_suggest",
+        link: "/app/sales/proposal",
+      },
+      {
+        key: "Sales_Settings",
+        name: "Sales Settings",
+        title: true,
+      },
+      {
+        key: "Bill_Tax",
+        name: "Bill Tax",
+        link: "/app/sales/bill-tax",
+        icon: "settings_suggest",
+       
+      },
+      
+     
+    ],
+  },
+  
+  {
     key: "Recruitments",
     name: "Recruitments",
     icon: "settings_suggest",
