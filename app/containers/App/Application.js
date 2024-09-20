@@ -123,6 +123,8 @@ import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
 import Product from "../Pages/AssetModule/Product";
 import Warehouse from "../Pages/AssetModule/Warehouse";
 import Warehouse_list from "../Pages/AssetModule/Warehouses/Warehouse_list";
+import JobAppView from "../Pages/Recruitment/jobview";
+import JobApplicantView from "../Pages/Recruitment/applicantview";
 
 function Application(props) {
   const { history } = props;
@@ -292,6 +294,8 @@ function Application(props) {
           <Route path="/sales/proposal" element={<Proposal />} />
           
 
+        <Route path="/jobview" element={<JobAppView />} />
+        <Route path="/applicantview" element={<JobApplicantView />} />
       </Routes>
 
 

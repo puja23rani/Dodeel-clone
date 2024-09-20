@@ -411,7 +411,13 @@ export const Channel = loadable(
     }
   );
   export const JobAppView = loadable(
-    () => import("../containers/Pages/Recruitment/JobAppView"),
+    () => import("../containers/Pages/Recruitment/jobview"),
+    {
+      fallback: <Loading />,
+    }
+  );
+  export const JobApplicantView = loadable(
+    () => import("../containers/Pages/Recruitment/applicantview"),
     {
       fallback: <Loading />,
     }

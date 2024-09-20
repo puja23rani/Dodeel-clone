@@ -333,6 +333,24 @@ function Job_Application() {
                   >
                     <InfoIcon />
                   </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/jobview", {
+                        state: {
+                          jobID: item,
+
+                         
+                        },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
+                  </IconButton>
                 </>
               ),
             }))
@@ -866,6 +884,9 @@ const handleRowsPerPageChange = (event) => {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -887,9 +908,7 @@ const handleRowsPerPageChange = (event) => {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>
