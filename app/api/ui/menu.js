@@ -178,33 +178,6 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
-      {
-        key: "Lead_Settings",
-        name: "Lead Settings",
-        title: true,
-      },
-      {
-        key: "Lead_Status",
-        name: "Lead Status",
-        link: "/app/lead/lead-status",
-        icon: "settings_suggest",
-
-      },
-      {
-        key: "Log_Notes",
-        name: "Log Notes",
-        link: "/app/lead/log-notes",
-        icon: "settings_suggest",
-
-      },
-      {
-        key: "Channel",
-        name: "Channel",
-        link: "/app/lead/channel",
-        icon: "settings_suggest",
-
-      },
-
     ],
   },
   {
