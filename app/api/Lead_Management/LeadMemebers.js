@@ -215,7 +215,7 @@ function LeadMemebers() {
         }
       )
       .then((response) => {
-        // console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
@@ -240,29 +240,21 @@ function LeadMemebers() {
                       });
                       setItemToDelete(item._id);
                       // Set state with required format
-                      //   setState({
-                      //     campaignName: item.campaignName, // Set campaign name
-                      //     membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
-                      //     employeeName: item.membersID.map((member) => ({
-                      //       title: member.employeeName,
-                      //       id: member.id,
-                      //     })), // Format employeeName as [{ title, id }]
-                      //     campaignStatus: { title: item.campaignStatus }, // Set campaignStatus as { title: 'Active' }
-                      //     channelID: item.channelID.map((channel) => channel.id), // Extract only IDs from channelID
-                      //     channelName: item.channelID.map((channel) => ({
-                      //       title: channel.channelName,
-                      //       id: channel.id,
-                      //     })), // Format channelName as [{ title, id }]
-                      //     isUpdate: true, // Set isUpdate to true for edit mode
-                      //     fieldset: item.fields.map((field) => ({
-                      //       name: field.name,
-                      //       value: field.value.toString(),
-                      //     })), // Format fieldset as [{ name, value }]
-                      //   });
+                      setState({
+                        leadName: { title: item.leadName, id: item.leadID },
+                        membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
+                        employeeName: item.membersID.map((member) => ({
+                          title: member.employeeName,
+                          id: member.id,
+                        })), // Format employeeName as [{ title, id }]
+
+                        isUpdate: true, // Set isUpdate to true for edit mode
+
+                      });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -271,7 +263,7 @@ function LeadMemebers() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -481,7 +473,7 @@ function LeadMemebers() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  //console.log(state, "sssssss");
+  console.log(state);
   return (
     <>
       <div>

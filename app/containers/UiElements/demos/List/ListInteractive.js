@@ -155,7 +155,7 @@ function ListInteractive() {
                   />
                   <ListItemSecondaryAction>
                     <IconButton aria-label="Delete" size="large">
-                      <DeleteIcon />
+                      <DeleteIcon color={"primary"} />
                     </IconButton>
                   </ListItemSecondaryAction>
                 </ListItem>,

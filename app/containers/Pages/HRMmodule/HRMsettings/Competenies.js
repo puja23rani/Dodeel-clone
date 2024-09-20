@@ -77,7 +77,6 @@ function Competenies() {
 
   const [competenies, setCompetenies] = useState([]);
   const [rowdata, setRowdata] = useState([]);
-  // console.log(rowdata);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -154,7 +153,7 @@ function Competenies() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -163,7 +162,7 @@ function Competenies() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),

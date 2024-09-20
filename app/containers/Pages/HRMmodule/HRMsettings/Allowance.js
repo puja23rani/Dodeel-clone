@@ -131,7 +131,7 @@ function Allowance() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -140,7 +140,7 @@ function Allowance() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),

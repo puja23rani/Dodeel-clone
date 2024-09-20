@@ -28,7 +28,7 @@ const actions = [
   { icon: <SaveIcon />, name: 'Save' },
   { icon: <PrintIcon />, name: 'Print' },
   { icon: <ShareIcon />, name: 'Share' },
-  { icon: <DeleteIcon />, name: 'Delete' },
+  { icon: <DeleteIcon color={"primary"} />, name: 'Delete' },
 ];
 
 function DialCustomClose() {
@@ -64,7 +64,7 @@ function DialCustomClose() {
         ariaLabel="SpeedDial openIcon example"
         className={classes.speedDial}
         hidden={hidden}
-        icon={<SpeedDialIcon openIcon={<EditIcon />} />}
+        icon={<SpeedDialIcon openIcon={<EditIcon color={"primary"} />} />}
         onBlur={handleClose}
         onClick={handleClick}
         onClose={handleClose}

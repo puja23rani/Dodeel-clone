@@ -42,7 +42,7 @@ function Cart(props) {
         />
         <ListItemSecondaryAction>
           <IconButton aria-label="Comments" onClick={() => removeItem(item)} size="large">
-            <DeleteIcon />
+            <DeleteIcon color={"primary"} />
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>

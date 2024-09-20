@@ -137,16 +137,16 @@ function Job_Application() {
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
 
-  
-    
-   
-    const [dataEditorState, setEditorState] = useState();
-  
-    const onEditorStateChange = editorStateParam => {
-      setEditorState(editorStateParam);
-    };
-  
-  
+
+
+
+  const [dataEditorState, setEditorState] = useState();
+
+  const onEditorStateChange = editorStateParam => {
+    setEditorState(editorStateParam);
+  };
+
+
 
   const columnData = [
     {
@@ -196,7 +196,7 @@ function Job_Application() {
   ];
 
   useEffect(() => {
-    
+
     table1();
   }, []);
 
@@ -233,18 +233,18 @@ function Job_Application() {
     }
   };
 
-  
 
-  
-    function fetchJobCreate(pg) {
-      axios
-        .post(
-   
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      }, {
+
+
+  function fetchJobCreate(pg) {
+    axios
+      .post(
+
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -257,11 +257,11 @@ function Job_Application() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus ,
+              createStatus: item.createStatus,
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume ,
+              resume: item.resume,
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -273,8 +273,8 @@ function Job_Application() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);   
-                      
+                      setItemToDelete(item._id);
+
                       setState({
                         id: item._id,
                         jobTitle: item.jobTitle,
@@ -283,21 +283,21 @@ function Job_Application() {
                         createStatus: {
                           title: item.createStatus
                         },
-                       
+
                         startDate: item.startDate.slice(0, 10),
                         endDate: item.endDate.slice(0, 10),
                         skills: item.skills,
                         resume: {
                           title: item.resume
                         },
-                       
+
                         customQuestionID: item.customQuestionID,
                         customQuestion: item.customQuestion, isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -306,7 +306,7 @@ function Job_Application() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -357,7 +357,7 @@ function Job_Application() {
             jobCategory: state.jobCategory,
 
             jobDescription: state.jobDescription,
-             
+
             createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
@@ -465,7 +465,7 @@ function Job_Application() {
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-      
+
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -558,39 +558,39 @@ function Job_Application() {
 
   const handleInputChange = (e) => {
     setState({
-        ...state,
-        inputSkill: e.target.value,
+      ...state,
+      inputSkill: e.target.value,
     });
-};
-const handleKeyDown = (e) => {
+  };
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-        setState({
-            ...state,
-            skills: [...state.skills, state.inputSkill.trim()],
-            inputSkill: "",
-        });
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-        setState({
-            ...state,
-            skills: state.skills.slice(0, -1),
-        });
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
     }
-};
-const handleSkillDelete = (skillToDelete) => () => {
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-        ...prevState,
-        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-};
-const handlePageChange = (event, newPage) => {
-  setPage(newPage); // Update the current page
-};
+  };
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage); // Update the current page
+  };
 
-// Handle rows per page change
-const handleRowsPerPageChange = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-  setPage(0); // Reset to first page
-};
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(0); // Reset to first page
+  };
 
   return (
     <>
@@ -796,7 +796,7 @@ const handleRowsPerPageChange = (event) => {
                         {...params}
                         variant="standard"
                         label="Custom Question"
-                        
+
                         error={!!errors.customQuestion} // Show error if it exists
                         helperText={errors.customQuestion} // Display error message
                       />
@@ -804,7 +804,7 @@ const handleRowsPerPageChange = (event) => {
                   />
                 </Grid>
 
-               
+
                 <Grid item xs={6} style={{}}>
                   <Autocomplete
                     options={[]} // Optional: Add predefined date options here if needed
@@ -864,8 +864,8 @@ const handleRowsPerPageChange = (event) => {
                       />
                     )}
                   />
-                </Grid> 
-                 {/* <Grid item xs={12}>
+                </Grid>
+                {/* <Grid item xs={12}>
   <Typography variant="subtitle1" gutterBottom>
     Job Description
   </Typography>
@@ -886,7 +886,7 @@ const handleRowsPerPageChange = (event) => {
     />
   </Paper>
 </Grid> */}
-<Grid item xs={12}>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -958,7 +958,7 @@ const handleRowsPerPageChange = (event) => {
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-      
+
 
       <AlertDialog
         open={deleteDialogOpen}

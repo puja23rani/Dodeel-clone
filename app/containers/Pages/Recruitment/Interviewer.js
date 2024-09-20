@@ -138,7 +138,7 @@ function Interviewer() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -147,7 +147,7 @@ function Interviewer() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -265,9 +265,9 @@ function Interviewer() {
       id: itemToDelete,
       interviewerName: state.interviewerName,
     };
-  
+
     console.log(requestData);
-  
+
     if (state.interviewerName === "") {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -288,13 +288,13 @@ function Interviewer() {
           if (response.status === 200) {
             // Refresh the list of interviewers
             fetchInterviewer();
-  
+
             // Scroll smoothly to the top
             window.scrollTo({
               top: 400,
               behavior: "smooth",
             });
-  
+
             // Clear the form fields and reset isUpdate to false
             setState({
               ...state,
@@ -302,7 +302,7 @@ function Interviewer() {
               id: "", // Reset the id
               isUpdate: false, // Set isUpdate to false
             });
-  
+
             // Set success message and show notification
             setMessage("Updated successfully!");
             setOpen(true);
@@ -322,13 +322,13 @@ function Interviewer() {
         });
     }
   };
-  
+
   console.log(state)
-  
-  
+
+
   return (
     <>
-    <div>
+      <div>
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
           <div className={classes.actions}>
@@ -351,7 +351,7 @@ function Interviewer() {
           maxWidth="md"
         >
           <DialogTitle>
-          Interviewer Details
+            Interviewer Details
             <IconButton
               aria-label="close"
               className={classes.closeButton}
@@ -372,22 +372,22 @@ function Interviewer() {
                 <Grid item xs={12}>
                   <div className={classes.form}>
                     <Grid container spacing={2}>
-                    <Grid item xs={8}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="interviewerName"
-                    name="interviewerName"
-                    label="Interviewer Name"
-                    value={state.interviewerName}
-                    onChange={(e) =>
-                      setState({ ...state, interviewerName: e.target.value })
-                    }
-                    error={!!errors.interviewerName}
-                    helperText={errors.interviewerName}
-                  />
-                </Grid>
-                     
+                      <Grid item xs={8}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="interviewerName"
+                          name="interviewerName"
+                          label="Interviewer Name"
+                          value={state.interviewerName}
+                          onChange={(e) =>
+                            setState({ ...state, interviewerName: e.target.value })
+                          }
+                          error={!!errors.interviewerName}
+                          helperText={errors.interviewerName}
+                        />
+                      </Grid>
+
                     </Grid>
                   </div>
                 </Grid>

@@ -150,7 +150,7 @@ function Leave() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -159,7 +159,7 @@ function Leave() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),

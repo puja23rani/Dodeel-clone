@@ -144,7 +144,7 @@ function OfficeShift() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -153,7 +153,7 @@ function OfficeShift() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),

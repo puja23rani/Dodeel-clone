@@ -60,7 +60,7 @@ function SimpleTooltips() {
           >
             <Tooltip title="Delete">
               <IconButton aria-label="Delete" size="large">
-                <DeleteIcon />
+                <DeleteIcon color={"primary"} />
               </IconButton>
             </Tooltip>
             <Tooltip title="Add">
@@ -99,7 +99,7 @@ function SimpleTooltips() {
               title="Delete"
             >
               <IconButton aria-label="Delete" size="large">
-                <DeleteIcon />
+                <DeleteIcon color={"primary"} />
               </IconButton>
             </Tooltip>
           </Grid>

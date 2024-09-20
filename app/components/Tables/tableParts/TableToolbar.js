@@ -45,7 +45,7 @@ function TableToolbar(props) {
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
             {numSelected}
-              &nbsp;selected
+            &nbsp;selected
           </Typography>
         ) : (
           <Typography variant="h6">{title}</Typography>
@@ -67,7 +67,7 @@ function TableToolbar(props) {
             </Tooltip>
             <Tooltip title="Delete">
               <IconButton aria-label="Delete" size="large">
-                <DeleteIcon />
+                <DeleteIcon color={"primary"} />
               </IconButton>
             </Tooltip>
           </div>
