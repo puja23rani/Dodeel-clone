@@ -154,6 +154,7 @@ module.exports = [
         link: "/app/lead/channel",
         icon: "settings_suggest",
       },
+
       {
         key: "Lead_Management",
         name: "Lead Management",
@@ -177,8 +178,93 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
+      {
+        key: "Lead_Settings",
+        name: "Lead Settings",
+        title: true,
+      },
+      {
+        key: "Lead_Status",
+        name: "Lead Status",
+        link: "/app/lead/lead-status",
+        icon: "settings_suggest",
+
+      },
+      {
+        key: "Log_Notes",
+        name: "Log Notes",
+        link: "/app/lead/log-notes",
+        icon: "settings_suggest",
+
+      },
+      {
+        key: "Channel",
+        name: "Channel",
+        link: "/app/lead/channel",
+        icon: "settings_suggest",
+
+      },
+
     ],
   },
+  {
+    key: "Sales",
+    name: "Sales",
+    icon: "settings_suggest",
+    child: [
+
+      {
+        key: "Sales_Management",
+        name: "Sales Management",
+        title: true,
+      },
+      {
+        key: "Customer",
+        name: "Customer",
+        icon: "settings_suggest",
+        link: "/app/sales/customer",
+      },
+      {
+        key: "Invoice",
+        name: "Invoice",
+        icon: "settings_suggest",
+        link: "/app/sales/invoice",
+      },
+      {
+        key: "Payments",
+        name: "Payments",
+        icon: "settings_suggest",
+        link: "/app/sales/payments",
+      },
+      {
+        key: "Project",
+        name: "Project",
+        icon: "settings_suggest",
+        link: "/app/sales/project",
+      },
+      {
+        key: "Proposal",
+        name: "Proposal",
+        icon: "settings_suggest",
+        link: "/app/sales/proposal",
+      },
+      {
+        key: "Sales_Settings",
+        name: "Sales Settings",
+        title: true,
+      },
+      {
+        key: "Bill_Tax",
+        name: "Bill Tax",
+        link: "/app/sales/bill-tax",
+        icon: "settings_suggest",
+
+      },
+
+
+    ],
+  },
+
   {
     key: "Recruitments",
     name: "Recruitments",

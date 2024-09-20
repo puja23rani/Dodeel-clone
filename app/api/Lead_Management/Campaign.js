@@ -9,7 +9,7 @@ import EditIcon from "@mui/icons-material/BorderColor";
 import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
 import axios from "axios";
 import TablePlayground from "../../containers/Tables/TablePlayground";
-import Popup from "../../components/Popup/Popup"
+import Popup from "../../components/Popup/Popup";
 import {
   Autocomplete,
   Dialog,
@@ -514,6 +514,28 @@ function Campaign() {
     });
   };
   //console.log(state, "sssssss");
+  const handleClear=()=>{
+    
+      setState({
+        membersID: [],
+        campaignName: "",
+        employeeName: [],
+        campaignStatus: null,
+        channelID: [],
+        channelName: [],
+        isUpdate: false,
+        fieldset: [{ name: "", value: "" }],
+      });
+      setErrors({
+        campaignName: "",
+        employeeName: "",
+        channelName: "",
+        campaignStatus: "",
+        fieldset: [{ name: "", value: "" }],
+      })
+      setOpenDialog(false);
+  
+  }
   return (
     <>
       <div>
@@ -534,17 +556,15 @@ function Campaign() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
-          <DialogTitle>
-            Campaign
-          </DialogTitle>
+          <DialogTitle>Campaign</DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -566,9 +586,12 @@ function Campaign() {
                     label="Campaign Name"
                     value={state.campaignName}
                     onChange={(e) => {
-                      const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                      if (regex.test(e.target.value)) {
-                        setState({ ...state, campaignName: e.target.value });
+                      const inputValue = e.target.value;
+
+                      // Check if input matches the regex and has no more than 100 characters
+                      const regex = /^[a-zA-Z\s]*$/;
+                      if (regex.test(inputValue) && inputValue.length <= 100) {
+                        setState({ ...state, campaignName: inputValue });
                       }
                     }}
                     error={!!errors.campaignName} // Show error if it exists
@@ -640,7 +663,7 @@ function Campaign() {
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
-                      marginTop: "-16px"
+                      marginTop: "-16px",
                     }}
                     id="highlights-demo"
                     options={[
@@ -674,7 +697,11 @@ function Campaign() {
                     container
                     spacing={2}
                     key={idx}
-                    style={{ display: "flex", alignItems: "center", marginLeft: 0 }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: 0,
+                    }}
                     xs={12}
                   >
                     <Grid item xs={6}>
@@ -686,9 +713,14 @@ function Campaign() {
                         label="Name"
                         value={el.name}
                         onChange={(e) => {
-                          const newFieldset = [...state.fieldset];
-                          newFieldset[idx].name = e.target.value;
-                          setState({ ...state, fieldset: newFieldset });
+                          const inputValue = e.target.value;
+
+                          // Allow input only if it has 50 characters or fewer
+                          if (inputValue.length <= 50) {
+                            const newFieldset = [...state.fieldset];
+                            newFieldset[idx].name = inputValue;
+                            setState({ ...state, fieldset: newFieldset });
+                          }
                         }}
                         error={!!errors[`fieldsetName${idx}`]} // Show error if it exists
                         helperText={errors[`fieldsetName${idx}`]} // Display error message
@@ -703,9 +735,15 @@ function Campaign() {
                         label="Value"
                         value={el.value}
                         onChange={(e) => {
-                          const newFieldset = [...state.fieldset];
-                          newFieldset[idx].value = e.target.value;
-                          setState({ ...state, fieldset: newFieldset });
+                          const inputValue = e.target.value;
+
+                          // Allow only digits
+                          const regex = /^[0-9]*$/;
+                          if (regex.test(inputValue)) {
+                            const newFieldset = [...state.fieldset];
+                            newFieldset[idx].value = inputValue;
+                            setState({ ...state, fieldset: newFieldset });
+                          }
                         }}
                         error={!!errors[`fieldsetValue${idx}`]} // Show error if it exists
                         helperText={errors[`fieldsetValue${idx}`]} // Display error message
@@ -715,7 +753,13 @@ function Campaign() {
                       <Grid item xs={1}>
                         <DeleteIcon
                           onClick={() => handleDeleteSection(idx)}
-                          style={{ cursor: "pointer", color: "red", width: 24, height: 24, marginTop: 8 }}
+                          style={{
+                            cursor: "pointer",
+                            color: "red",
+                            width: 24,
+                            height: 24,
+                            marginTop: 8,
+                          }}
                         />
                       </Grid>
                     )}
@@ -734,6 +778,12 @@ function Campaign() {
             </div>
           </DialogContent>
           <DialogActions>
+            <Button
+              onClick={handleClear}
+              color="secondary"
+            >
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -755,14 +805,11 @@ function Campaign() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
           </DialogActions>
         </Dialog>
       </div>
 
-      {rowdata && (
+      {rowdata && ( 
         <TablePlayground
           title="Campaign List"
           columnData={columnData}

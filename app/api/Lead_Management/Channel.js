@@ -63,12 +63,12 @@ function Channel() {
     let errors = {};
 
     if (!state.Channel.trim()) {
-      errors.Status_Name = "Status Name is required";
+      errors.Channel = "Status Name is required";
       isValid = false;
     }
 
     if (!state.ApproxBudget.trim()) {
-      errors.Description = "Description is required";
+      errors.ApproxBudget = "ApproxBudget is required";
       isValid = false;
     }
 
@@ -339,6 +339,11 @@ function Channel() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(0); // Reset to first page
   };
+  function handleClear(){
+    setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});
+    setErrors({Channel:"",ApproxBudget:""});
+    setOpenDialog(false);
+  }
   return (
     <>
       <div>
@@ -359,16 +364,16 @@ function Channel() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Lead Status
+            Channel
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -428,6 +433,9 @@ function Channel() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -449,9 +457,7 @@ function Channel() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>

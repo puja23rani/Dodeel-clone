@@ -333,16 +333,16 @@ function Log_Notes() {
 
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Lead Status
+            Log Notes
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -381,6 +381,9 @@ function Log_Notes() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -402,9 +405,7 @@ function Log_Notes() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>

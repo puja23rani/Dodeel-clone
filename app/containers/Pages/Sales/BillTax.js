@@ -6,12 +6,12 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
+
 import axios from "axios";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
+
 import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
+
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -24,6 +24,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import TablePlayground from "../../Tables/TablePlayground";
+import Popup from "../../../components/Popup/Popup";
+import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -43,33 +46,33 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Lead_Status() {
+function Bill_Tax() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
 
   const [state, setState] = useState({
-    Status_Name: "",
-    Description: "",
-    searchText: "",
+    taxType: "",
+    taxRate: "",
+    id: "",
     isUpdate: false,
   });
   const [errors, setErrors] = useState({
-    Status_Name: "",
-    Description: "",
+    taxType: "",
+    taxRate: "",
   });
 
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Status_Name.trim()) {
-      errors.Status_Name = "Status Name is required";
+    if (!state.taxType.trim()) {
+      errors.taxType = "Bill Tax is required";
       isValid = false;
     }
 
-    if (!state.Description.trim()) {
-      errors.Description = "Description is required";
+    if (!state.taxRate.trim()) {
+      errors.taxType = "Bill rate is required";
       isValid = false;
     }
 
@@ -94,27 +97,27 @@ function Lead_Status() {
       label: "Sl No",
     },
     {
-      id: "statusName",
+      id: "billtax",
       numeric: false,
       disablePadding: false,
-      label: "Status Name",
+      label: "Bill tax",
     },
     {
-      id: "description",
+      id: "billrate",
       numeric: false,
       disablePadding: false,
-      label: "Description",
+      label: "Bill Rate",
     },
     { id: "actions", label: "Action" },
   ];
 
   useEffect(() => {
-    fetchLeadStatus();
+    fetchBillTax();
   }, []);
 
-  const fetchLeadStatus = () => {
+  const fetchBillTax = () => {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllBillTax`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -123,8 +126,8 @@ function Lead_Status() {
             response.data.data.map((item) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
-              statusName: item.statusName,
-              description: item.description,
+              billtax: item.taxType,
+              billrate: item.taxRate,
               actions: (
                 <>
                   <IconButton
@@ -136,14 +139,14 @@ function Lead_Status() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        Status_Name: item.statusName,
-                        Description: item.description,
+                        taxType: item.taxType,
+                        taxRate: item.taxRate,
                         isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon color={"primary"} />
+                    <EditIcon />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -152,7 +155,7 @@ function Lead_Status() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon color={"primary"} />
+                    <DeleteIcon />
                   </IconButton>
                 </>
               ),
@@ -165,26 +168,21 @@ function Lead_Status() {
       });
   };
 
-  const handleCreateLeadStatus = async () => {
+  const handleCreateBillTax = async () => {
     if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
+      
       return;
     }
     try {
       const data = {
-        statusName: state.Status_Name,
-        description: state.Description,
+        taxType: state.taxType,
+        taxRate: state.taxRate
       };
 
-      if (!state.Status_Name || !state.Description) {
-        toast.error("Fill all the information", { position: "top-center" });
-        return;
-      }
+      
 
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadStatus`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createBillTax`,
         {
           method: "POST",
           headers: {
@@ -197,18 +195,18 @@ function Lead_Status() {
 
       const result = await response.json();
       if (result.status === 200) {
-        fetchLeadStatus();
+        fetchBillTax();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         setState({
-          Status_Name: "",
-          Description: "",
-          id: "",
-          searchText: "",
-          isUpdate: false,
-        });
+            taxType: "",
+            taxRate:"",
+            id: "",
+         
+            isUpdate: false,
+          });
         setMessage("Saved successfully!");
         setOpen(true);
         setSeverity("success");
@@ -226,11 +224,11 @@ function Lead_Status() {
     }
   };
 
-  const handleLeadStatusDelete = async () => {
+  const handleBillTaxDelete = async () => {
     try {
-      const data = { id: itemToDelete };
+      const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadStatus`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteBillTax`,
         {
           method: "DELETE",
           headers: {
@@ -244,12 +242,12 @@ function Lead_Status() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLeadStatus();
+        fetchBillTax();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
       } else {
-        setMessage(actualData.message);
+        setMessage(result.message);
         setOpen(true);
         setSeverity("error");
       }
@@ -264,7 +262,8 @@ function Lead_Status() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleUpdateLeadStatus = async () => {
+  const handleUpdateBillTax = async () => {
+    if(!validate()){return;}
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -275,41 +274,34 @@ function Lead_Status() {
         loginHeaders.append("Authorization", `Bearer ${token}`);
       }
       const data = {
-        id: itemToDelete,
-        statusName: state.Status_Name,
-        description: state.Description,
+        id: parseInt(itemToDelete),
+        taxType: state.taxType,
+        taxRate: state.taxRate
       };
 
-      if (state.Status_Name == "" || state.Description == "") {
-        setMessage("Please fill all required fields");
-        setOpen(true);
-        setSeverity("warning");
-        return;
-      } else {
+      
         const requestOptions = {
           method: "PUT",
           headers: loginHeaders,
           body: JSON.stringify(data),
         };
         const res = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadStatus`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateBillTax`,
           requestOptions
         );
-
         const actualData = await res.json();
         //console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
-          fetchLeadStatus();
+          fetchBillTax();
           window.scrollTo({
             top: 400,
             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
           });
           setState({
-            Status_Name: "",
-            Description: "",
+            taxType: "",
             id: "",
-            searchText: "",
+            taxRate: "",
             isUpdate: false,
           });
           setMessage("Updated successfully!");
@@ -322,7 +314,7 @@ function Lead_Status() {
           setOpen(true);
           setSeverity("error");
         }
-      }
+      
     } catch (err) {
       //console.log(err);
       // toast.error("Failed to save. Please try again.", {
@@ -349,39 +341,41 @@ function Lead_Status() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Lead Status
+                <AddIcon /> Add Bill Tax
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose= {() =>{ 
+          onClose={() => {
             setState({
-              Status_Name: "",
-              Description: "",
+              taxRate: "",
+              taxType: "",
               id: "",
-              searchText: "",
+
               isUpdate: false,
-            })
-            setOpenDialog(false)}}
+            });
+            setOpenDialog(false);
+          }}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Lead Status
+            Bill Tax
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() =>{ 
+              onClick={() => {
                 setState({
-                  Status_Name: "",
-                  Description: "",
+                  taxRate: "",
+                  taxType: "",
                   id: "",
-                  searchText: "",
+
                   isUpdate: false,
-                })
-                setOpenDialog(false)}}
+                });
+                setOpenDialog(false);
+              }}
             >
               <CloseIcon />
             </IconButton>
@@ -402,36 +396,54 @@ function Lead_Status() {
                         <TextField
                           fullWidth
                           variant="standard"
-                          id="Status"
-                          name="Status"
-                          label="Status"
-                          value={state.Status_Name}
+                          id="Tax Type"
+                          name="Tax Type"
+                          label="Tax Type"
+                          value={state.taxType}
                           onChange={(e) => {
                             const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
                             if (regex.test(e.target.value)) {
                               setState({
                                 ...state,
-                                Status_Name: e.target.value,
+                                taxType: e.target.value,
                               });
                             }
                           }}
-                          error={!!errors.Status_Name}
-                          helperText={errors.Status_Name}
+                          error={!!errors.taxType}
+                          helperText={errors.taxType}
                         />
                       </Grid>
                       <Grid item xs={6}>
                         <TextField
                           fullWidth
                           variant="standard"
-                          id="Description"
-                          name="Description"
-                          label="Description"
-                          value={state.Description}
-                          onChange={(e) =>
-                            setState({ ...state, Description: e.target.value })
-                          }
-                          error={!!errors.Description}
-                          helperText={errors.Description}
+                          id="TaxRate"
+                          name="TaxRate"
+                          label="Tax Rate"
+                          value={state.taxRate}
+                          onChange={(e) => {
+                            const input = e.target.value;
+                            setState({ ...state, taxRate: input }); // Allow typing any input initially
+                          }}
+                          onBlur={() => {
+                            const input = state.taxRate.trim();
+
+                            // Regular expression to match percentage values (e.g., "4%", "10%", etc.)
+                            const percentageRegex = /^([1-9][0-9]?|100)%$/;
+
+                            // Validate that the input matches the required format and is not more than 100%
+                            if (!percentageRegex.test(input)) {
+                              setErrors({
+                                ...errors,
+                                taxRate:
+                                  "Tax rate must be between 1% and 100% and end with %.", // Set error message if invalid
+                              });
+                            } else {
+                              setErrors({ ...errors, taxRate: "" }); // Clear error if valid
+                            }
+                          }}
+                          error={!!errors.taxRate}
+                          helperText={errors.taxRate}
                         />
                       </Grid>
                     </Grid>
@@ -441,16 +453,19 @@ function Lead_Status() {
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick=
-          {() =>{ 
+            <Button
+              onClick={() => {
                 setState({
-                  Status_Name: "",
-                  Description: "",
+                  taxRate: "",
+                  taxType: "",
                   id: "",
-                  searchText: "",
+
                   isUpdate: false,
-                })
-                setOpenDialog(false)}} color="secondary">
+                });
+                setOpenDialog(false);
+              }}
+              color="secondary"
+            >
               Close
             </Button>
             {state.isUpdate ? (
@@ -458,7 +473,7 @@ function Lead_Status() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLeadStatus}
+                  onClick={handleUpdateBillTax}
                 >
                   Update
                 </Button>
@@ -468,13 +483,12 @@ function Lead_Status() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLeadStatus}
+                  onClick={handleCreateBillTax}
                 >
                   Create
                 </Button>
               </>
             )}
-            
           </DialogActions>
         </Dialog>
       </div>
@@ -494,7 +508,7 @@ function Lead_Status() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleLeadStatusDelete}
+        onDelete={handleBillTaxDelete}
       />
       <Popup
         open={open}
@@ -506,4 +520,4 @@ function Lead_Status() {
   );
 }
 
-export default Lead_Status;
+export default Bill_Tax;

@@ -6,12 +6,14 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
+
 import axios from "axios";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
+
 import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
+import TablePlayground from "../../Tables/TablePlayground";
+import Popup from "../../../components/Popup/Popup";
+import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -43,7 +45,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Lead_Status() {
+function Payments() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -143,7 +145,7 @@ function Lead_Status() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon color={"primary"} />
+                    <EditIcon />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -152,7 +154,7 @@ function Lead_Status() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon color={"primary"} />
+                    <DeleteIcon />
                   </IconButton>
                 </>
               ),
@@ -506,4 +508,4 @@ function Lead_Status() {
   );
 }
 
-export default Lead_Status;
+export default Payments;
