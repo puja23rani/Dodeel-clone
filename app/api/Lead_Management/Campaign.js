@@ -515,7 +515,7 @@ function Campaign() {
   };
   //console.log(state, "sssssss");
   const handleClear=()=>{
-    () => {
+    
       setState({
         membersID: [],
         campaignName: "",
@@ -534,7 +534,7 @@ function Campaign() {
         fieldset: [{ name: "", value: "" }],
       })
       setOpenDialog(false);
-    }
+  
   }
   return (
     <>

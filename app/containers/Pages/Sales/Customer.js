@@ -390,7 +390,7 @@ function Customer() {
       const data = {
         clientCompanyName: state.Company_Name,
         clientName: state.Customer_Name,
-        clientPhoneNumber: state.Phone_Number.trim(),
+        clientPhoneNumber: state.Phone_Number,
         clientEmail: state.Email,
         clientFromLeadID: state.Lead_Name.id,
         clientCreatorID: state.Employee_Name.id,
@@ -456,78 +456,83 @@ function Customer() {
     }
   };
   console.log(state,"sssssss");
-//   const handleUpdateLead = async () => {
-//     if (!validate()) {
-//       setMessage("Please fill all required fields");
-//       setOpen(true);
-//       setSeverity("warning");
-//       return;
-//     }
-//     console.log("p1");
-//     try {
-//       // Prepare the data to match the required request body format
-//       const data = {
-//         id: parseInt(itemToDelete),
-//         leadName: state.Name,
-//         email: state.Email,
-//         campaignID: state.Campaign.id, // campaignName from state
-//         channelID: state.Channel.id,
-//         leadStatusID: state.Lead_Status.id,
+  const handleUpdateLead = async () => { 
+    console.log("update")  ;
+    if (!validate()) {      
+      return;
+    }  
+    try {
+      console.log("update")  ;
+      // Prepare the data to match the required request body format
+      const data = {
+        id:parseInt(itemToDelete),
+        clientCompanyName: state.Company_Name,
+        clientName: state.Customer_Name,
+        clientPhoneNumber: state.Phone_Number,
+        clientEmail: state.Email,
+        clientFromLeadID: state.Lead_Name.id,
+        clientCreatorID: state.Employee_Name.id,
 
-//         contactNumber: parseInt(state.Phone_Number),
-//         notes: state.Description,
-//       };
-//       console.log("p2");
-//       const response = await fetch(
-//         `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//           body: JSON.stringify(data),
-//         }
-//       );
-//       console.log("p3");
-//       const result = await response.json();
-//       if (result.status === 200) {
-//         fetchLead();
-//         window.scrollTo({
-//           top: 400,
-//           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-//         });
-//         // Reset the state after successful creation
-//         setState({
-//           Name: "",
-//           Phone_Number: "",
-//           Email: "",
-//           Campaign: "",
-//           Campaign_Id: "",
-//           Channel: "",
-//           Channel_Id: "",
-//           Lead_Status: "",
-//           Lead_Status_Id: "",
-//           Description: "",
-
-//           isUpdate: false,
-//         });
-//         setOpenDialog(false);
-//         setMessage("Saved successfully!");
-//         setOpen(true);
-//         setSeverity("success");
-//       } else {
-//         setMessage(result.message);
-//         setOpen(true);
-//         setSeverity("error");
-//       }
-//     } catch (err) {
-//       console.log(err);
-//       setMessage(err.message);
-//       setOpen(true);
-//       setSeverity("error");
-//     }
-//   };
+        clientDescription: state.Description,
+        clientBillingAddress: state.Billing_Address,
+        clientShippingAddress: state.Shipping_Address,
+       
+      };    
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/updateCustomer`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      console.log("p3");
+      const result = await response.json();
+      if (result.status === 200) {
+        fetchCustomer(page);
+        window.scrollTo({
+          top: 400,
+          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+        });
+        // Reset the state after successful creation
+        setState({
+            Id: "",
+            Company_Name: "",
+            Customer_Name: "",
+            Phone_Number: "",
+            Email: "",
+            Lead_Name: "",
+            Lead_Id: "",
+            Employee_Name: "",
+            Employee_Id: "",
+           
+            Billing_Address: "",
+            Shipping_Address: "",
+            Status: "",
+            
+            isUpdate: false,
+        
+            toggle: false,
+        });
+        setOpenDialog(false);
+        setMessage("Updated successfully!");
+        setOpen(true);
+        setSeverity("success");
+      } else {
+        setMessage(result.message);
+        setOpen(true);
+        setSeverity("error");
+      }
+    } catch (err) {
+      console.log(err);
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
+    }
+  };
   const handleCustomerDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
@@ -869,7 +874,7 @@ function Customer() {
                         if(!state.switch){
                             setState({ ...state, switch: !state.switch,Shipping_Address:state.Billing_Address })
                         }else{
-                      setState({ ...state, switch: !state.switch });}}
+                      setState({ ...state, switch: !state.switch,Shipping_Address:""});}}
                     }
                   />If the Billing address is same as Shipping address
                 </Grid>
@@ -903,7 +908,7 @@ function Customer() {
                 <Button
                   color="primary"
                   variant="contained"
-                  //onClick={handleUpdateLead}
+                 onClick={handleUpdateLead}
                 >
                   Update
                 </Button>
