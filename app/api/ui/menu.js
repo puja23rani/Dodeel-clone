@@ -256,13 +256,13 @@ module.exports = [
         icon: "settings_suggest",
         badge: "Hot",
       },
-      {
-        key: "Material Finance Panning",
-        name: "Material Finance Panning",
-        link: "/app/Job_Application",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
+      // {
+      //   key: "Material Finance Panning",
+      //   name: "Material Finance Panning",
+      //   link: "/app/Job_Application",
+      //   icon: "settings_suggest",
+      //   badge: "Hot",
+      // },
       {
         key: "Warehouses",
         name: "warehouses",
@@ -271,7 +271,7 @@ module.exports = [
       {
         key: "Warehouse",
         name: "Warehouse",
-        link: "/app/Job_Application",
+        link: "/app/Warehouse",
         icon: "settings_suggest",
         badge: "Hot",
       },

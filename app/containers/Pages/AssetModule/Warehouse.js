@@ -24,7 +24,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { Close as CloseIcon, Token } from "@mui/icons-material";
+import { Close as CloseIcon, Token, Warehouse } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
@@ -54,35 +54,33 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Product() {
+function Warehouse() {
   const { classes } = useStyles();
 
   const [state, setState] = useState({
     id: "",
-    productName: "",
-    supplierName: "",
-    supplierID: "",
-    categoryName: "",
-    categoryID: "",
-    unitOfMeasurement: "",
-    stockExpireDate: "",
-    tax: "",
-    barCode: "",
-    photo: "",
-    productDescription: "",
+    warehouseName: "",
+    warehouseCode: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    accountSupervisorName: "",
+    accountSupervisor: "",
+    dispatchSupervisorName: "",
+    dispatchSupervisor: "",
+    inductionDate: "",
     isUpdate: false,
   });
 
   const [errors, setErrors] = useState({
-    productName: "",
-    supplierName: "",
-    categoryName: "",
-    unitOfMeasurement: "",
-    stockExpireDate: "",
-    tax: "",
-    barCode: "",
-    photo: "",
-    productDescription: "",
+    warehouseName: "",
+    warehouseCode: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    accountSupervisorName: "",
+    dispatchSupervisorName: "",
+    inductionDate: "",
   });
 
   const validate = () => {
@@ -90,30 +88,30 @@ function Product() {
     let errors = {};
 
     if (!String(state.supplierName).trim()) {
-      errors.supplierName = "Supplier Name is required";
+      errors.warehouseName = "Warehouse name is required";
       isValid = false;
     }
 
     // For categoryName
-    if (!String(state.categoryName).trim()) {
-      errors.categoryName = "Select the Category.";
+    if (!String(state.address).trim()) {
+      errors.address = "Address is required.";
       isValid = false;
     }
-    if (!state.productName.trim()) {
-      errors.productName = "Product Name is required.";
+    if (!state.latitude.trim()) {
+      errors.latitude = "Latitude is required.";
       isValid = false;
     }
-    if (!String(state.unitOfMeasurement).trim()) {
-      errors.unitOfMeasurement = "unit of measurement required.";
+    if (!String(state.longitude).trim()) {
+      errors.longitude = "Longitude is required.";
       isValid = false;
     }
-    if (!state.stockExpireDate.trim()) {
-      errors.stockExpireDate = "Stock expire date is required.";
+    if (!state.accountSupervisorName.trim()) {
+      errors.accountSupervisorName = "Account Supervisor Name is required.";
       isValid = false;
     }
 
-    if (!String(state.tax).trim()) {
-      errors.tax = "Select the Tax rate.";
+    if (!String(state.dispatchSupervisorName).trim()) {
+      errors.dispatchSupervisorName = "Dispatch Supervisor Name is required.";
       isValid = false;
     }
 
@@ -121,8 +119,8 @@ function Product() {
     //   errors.productDescription = "Product description is required";
     //   isValid = false;
     // }
-    if (!state.photo.trim()) {
-      errors.photo = "Product Image is required";
+    if (!state.inductionDate.trim()) {
+      errors.inductionDate = "Induction Date is required";
       isValid = false;
     }
 
@@ -147,33 +145,33 @@ function Product() {
       label: "Sl No",
     },
     {
-      id: "productName",
+      id: "warehouseName",
       numeric: false,
       disablePadding: false,
-      label: "Product Name",
+      label: "Warehouse Name",
     },
     {
-      id: "photo",
+      id: "warehouseCode",
       numeric: false,
       disablePadding: false,
-      label: "Product Image",
+      label: "Warehouse Code",
     },
     {
-      id: "categoryName",
+      id: "address",
       numeric: false,
       disablePadding: false,
-      label: "Category",
+      label: "Address",
     },
     {
-      id: "tax",
+      id: "inductionDate",
       numeric: false,
       disablePadding: false,
-      label: "Tax",
+      label: "Induction Date",
     },
     { id: "actions", label: "Action" },
   ];
 
-  const getProductList = async () => {
+  const getWHList = async () => {
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -189,7 +187,7 @@ function Product() {
         headers: loginHeaders,
       };
       const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllProducts`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllWarehouses`,
         requestOptions
       );
       const actualData = await res.json();
@@ -765,11 +763,11 @@ function Product() {
               variant="standard"
               id="unitOfMeasurement"
               name="unitOfMeasurement"
-              label="Unit of Measurement"
+              label="unit Of Measurement"
               value={state.unitOfMeasurement}
               onChange={(e) => {
                 const value = e.target.value;
-                const regex = /^[0-9]*$/; // Allow only numbers
+                const regex = /^[a-zA-Z0-9\s]*$/; // Allow letters, numbers, and spaces
                 const maxValue = 50;
                 if (regex.test(value) && value.length <= maxValue) {
                   setState({ ...state, unitOfMeasurement: value });
@@ -778,7 +776,6 @@ function Product() {
               error={!!errors.unitOfMeasurement} // Show error if it exists
               helperText={errors.unitOfMeasurement} // Display error message
             />
-
             {/* stock Expire Date */}
             <Grid item xs={6} sx={{ width: "100%" }}>
               <TextField
@@ -926,4 +923,4 @@ function Product() {
   );
 }
 
-export default Product;
+export default Warehouse;

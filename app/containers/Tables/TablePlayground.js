@@ -75,7 +75,7 @@ function TablePlayground(props) {
       <TableCell
         align="left"
         key={index.toString()}
-        style={{ paddingLeft: "20px" }}
+       
       >
         {dataArray[itemCell.id]}
       </TableCell>
