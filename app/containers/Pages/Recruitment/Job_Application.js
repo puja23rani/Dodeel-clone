@@ -11,21 +11,27 @@ import { PapperBlock } from "enl-components";
 import { toast } from "react-toastify";
 import TablePlayground from "../../Tables/TablePlayground";
 import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
-import Autocomplete from '@mui/material/Autocomplete';
-import parse from 'autosuggest-highlight/parse';
-import match from 'autosuggest-highlight/match';
+import Autocomplete from "@mui/material/Autocomplete";
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
 import Popup from "../../../components/Popup/Popup";
-import { Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
+import {
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Paper,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { DialogContent } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import { Editor, EditorState } from 'react-draft-wysiwyg';
+import { Editor, EditorState } from "react-draft-wysiwyg";
 import { convertToRaw } from "draft-js";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import { Navigate, useNavigate } from "react-router-dom";
-
-
-
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -67,12 +73,11 @@ function Job_Application() {
     customQuestionID: [],
     customQuestion: [],
   });
-  console.log(errors)
+  console.log(errors);
 
   const validate = () => {
     let isValid = true;
     let errors = {};
-
 
     if (!state.jobTitle) {
       errors.jobTitle = "Job Title is required";
@@ -112,7 +117,7 @@ function Job_Application() {
     }
 
     setErrors(errors);
-    console.log(isValid)
+    console.log(isValid);
     return isValid;
   };
 
@@ -142,16 +147,12 @@ function Job_Application() {
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
   const navigate = useNavigate();
-  
-    
-   
-    const [dataEditorState, setEditorState] = useState();
-  
-    const onEditorStateChange = editorStateParam => {
-      setEditorState(editorStateParam);
-    };
-  
-  
+
+  const [dataEditorState, setEditorState] = useState();
+
+  const onEditorStateChange = (editorStateParam) => {
+    setEditorState(editorStateParam);
+  };
 
   const columnData = [
     {
@@ -201,7 +202,6 @@ function Job_Application() {
   ];
 
   useEffect(() => {
-    
     table1();
   }, []);
 
@@ -238,23 +238,20 @@ function Job_Application() {
     }
   };
 
-  
-
-  
-    function fetchJobCreate(pg) {
-      axios
-        .post(
-   
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+  function fetchJobCreate(pg) {
+    axios
+      .post(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
         if (response.data.data) {
-
           setRowdata(
             response.data.data.map((item) => ({
               slNo: response.data.data.indexOf(item) + 1,
@@ -262,11 +259,11 @@ function Job_Application() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus ,
+              createStatus: item.createStatus,
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume ,
+              resume: item.resume,
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -278,30 +275,32 @@ function Job_Application() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);   
-                      
+                      setItemToDelete(item._id);
+
                       setState({
                         id: item._id,
                         jobTitle: item.jobTitle,
                         jobCategory: item.jobCategory,
                         jobDescription: item.jobDescription,
                         createStatus: {
-                          title: item.createStatus
+                          title: item.createStatus,
                         },
-                       
+
                         startDate: item.startDate.slice(0, 10),
                         endDate: item.endDate.slice(0, 10),
                         skills: item.skills,
                         resume: {
-                          title: item.resume
+                          title: item.resume,
                         },
-                        customQuestionID: item.customQuestionID.map((cus) => cus._id),
+                        customQuestionID: item.customQuestionID.map(
+                          (cus) => cus._id
+                        ),
                         customQuestion: item.customQuestionID.map((cus) => ({
                           title: cus.customQuestion,
                           id: cus.id,
                         })), // Format employeeName as [{ title, id }]
                         // customQuestionID: item.customQuestionID,
-                        // customQuestion: item.customQuestion, 
+                        // customQuestion: item.customQuestion,
                         isUpdate: true,
                       });
                       setOpenDialog(true);
@@ -343,8 +342,6 @@ function Job_Application() {
                       navigate("/app/jobview", {
                         state: {
                           jobID: item,
-
-                         
                         },
                       });
                     }}
@@ -362,7 +359,7 @@ function Job_Application() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  };
+  }
 
   useEffect(() => {
     fetchJobCreate(page);
@@ -374,13 +371,11 @@ function Job_Application() {
       setOpen(true);
       setSeverity("warning");
       return;
-    }
-   else {
+    } else {
       axios
         .post(
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
           {
-
             jobTitle: state.jobTitle,
             jobCategory: state.jobCategory,
             jobDescription: state.jobDescription,
@@ -392,7 +387,6 @@ function Job_Application() {
             resume: state.resume.title,
             customQuestionID: state.customQuestionID,
             // customQuestion: state.customQuestion,
-
           },
           {
             headers: {
@@ -427,7 +421,6 @@ function Job_Application() {
             setOpen(true);
             setSeverity("success");
             setOpenDialog(false);
-
           } else {
             setMessage(result.message);
             setOpen(true);
@@ -441,7 +434,6 @@ function Job_Application() {
         });
     }
   };
-
 
   const handleJobsDelete = async () => {
     try {
@@ -484,14 +476,13 @@ function Job_Application() {
     setOpen(false);
   };
 
-
   const handleUpdateJobs = () => {
     const requestData = {
       id: itemToDelete,
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-      
+
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -499,7 +490,6 @@ function Job_Application() {
       skills: state.skills.join(","),
       resume: state.resume.title,
       customQuestionID: state.customQuestionID,
-     
     };
 
     console.log(requestData);
@@ -572,49 +562,47 @@ function Job_Application() {
     }
   };
 
-  console.log(state)
+  console.log(state);
 
   const handleInputChange = (e) => {
     setState({
-        ...state,
-        inputSkill: e.target.value,
+      ...state,
+      inputSkill: e.target.value,
     });
-};
-const handleKeyDown = (e) => {
+  };
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-        setState({
-            ...state,
-            skills: [...state.skills, state.inputSkill.trim()],
-            inputSkill: "",
-        });
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-        setState({
-            ...state,
-            skills: state.skills.slice(0, -1),
-        });
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
     }
-};
-const handleSkillDelete = (skillToDelete) => () => {
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-        ...prevState,
-        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-};
+  };
 
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage); // Update the current page
+  };
 
-const handlePageChange = (event, newPage) => {
-  setPage(newPage); // Update the current page
-};
-
-// Handle rows per page change
-const handleRowsPerPageChange = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-  setPage(0); // Reset to first page
-};
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(0); // Reset to first page
+  };
 
   return (
     <>
-
       <div>
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
@@ -637,9 +625,7 @@ const handleRowsPerPageChange = (event) => {
           fullWidth
           maxWidth="md"
         >
-          <DialogTitle>
-            Job Details
-          </DialogTitle>
+          <DialogTitle>Job Details</DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
@@ -708,14 +694,10 @@ const handleRowsPerPageChange = (event) => {
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
-                      marginTop: "-16px"
+                      marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={[
-                      { title: "Active" },
-                      { title: "Inactive" },
-
-                    ]}
+                    options={[{ title: "Active" }, { title: "Inactive" }]}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     value={state.createStatus} // Ensure value is an object or null
                     onChange={(e, v) => {
@@ -739,14 +721,10 @@ const handleRowsPerPageChange = (event) => {
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
-                      marginTop: "-16px"
+                      marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={[
-                      { title: "Required" },
-                      { title: "Not required" },
-
-                    ]}
+                    options={[{ title: "Required" }, { title: "Not required" }]}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     value={state.resume} // Ensure value is an object or null
                     onChange={(e, v) => {
@@ -785,7 +763,6 @@ const handleRowsPerPageChange = (event) => {
                         label={skill}
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
-
                         error={!!errors.skills} // Show error if it exists
                         helperText={errors.skills}
                       />
@@ -803,7 +780,9 @@ const handleRowsPerPageChange = (event) => {
                     //   option.id === value.id
                     // }
                     onChange={(e, v) => {
-                      const selectedCustomquestionIds = v.map((item) => item.id);
+                      const selectedCustomquestionIds = v.map(
+                        (item) => item.id
+                      );
                       setState({
                         ...state,
                         customQuestion: v, // Store selected objects
@@ -816,7 +795,6 @@ const handleRowsPerPageChange = (event) => {
                         {...params}
                         variant="standard"
                         label="Custom Question"
-                        
                         error={!!errors.customQuestion} // Show error if it exists
                         helperText={errors.customQuestion} // Display error message
                       />
@@ -824,7 +802,6 @@ const handleRowsPerPageChange = (event) => {
                   />
                 </Grid>
 
-               
                 <Grid item xs={6} sx={{ width: "100%" }}>
                   <TextField
                     id="date"
@@ -836,7 +813,9 @@ const handleRowsPerPageChange = (event) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange={(e) => setState({ ...state, startDate: e.target.value })}
+                    onChange={(e) =>
+                      setState({ ...state, startDate: e.target.value })
+                    }
                   />
                 </Grid>
 
@@ -851,11 +830,13 @@ const handleRowsPerPageChange = (event) => {
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    onChange={(e) => setState({ ...state, endDate: e.target.value })}
+                    onChange={(e) =>
+                      setState({ ...state, endDate: e.target.value })
+                    }
                   />
-                </Grid> 
-                 
-<Grid item xs={12}>
+                </Grid>
+
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -879,12 +860,11 @@ const handleRowsPerPageChange = (event) => {
                     helperText={errors.jobDescription} // Display error message
                   />
                 </Grid>
-
               </Grid>
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -908,11 +888,9 @@ const handleRowsPerPageChange = (event) => {
                 </Button>
               </>
             )}
-           
           </DialogActions>
         </Dialog>
       </div>
-
 
       {rowdata && (
         <TablePlayground
@@ -928,7 +906,6 @@ const handleRowsPerPageChange = (event) => {
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-      
 
       <AlertDialog
         open={deleteDialogOpen}
@@ -943,6 +920,6 @@ const handleRowsPerPageChange = (event) => {
       />
     </>
   );
-};
+}
 
 export default Job_Application;

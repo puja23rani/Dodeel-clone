@@ -529,3 +529,9 @@ export const Warehouse_list = loadable(
     fallback: <Loading />,
   }
 );
+export const WarehouseStock = loadable(
+  () => import("../containers/Pages/AssetModule/Warehouses/WarehouseStock"),
+  {
+    fallback: <Loading />,
+  }
+);

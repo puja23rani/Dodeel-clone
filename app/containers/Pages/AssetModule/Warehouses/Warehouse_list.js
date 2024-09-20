@@ -35,6 +35,7 @@ import TablePlayground from "../../../Tables/TablePlayground";
 
 
 
+
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -242,16 +243,22 @@ function Warehouse_list() {
              
               actions: (
                 <>
-                  
+                  <Tooltip title="View Warehouse Stock">
                   <IconButton
-                    aria-label="Delete"
-                    onClick={() => {
-                      setItemToDelete(item._id);
-                      setDeleteDialogOpen(true);
+                    aria-label="View Stock"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/WarehouseStock", {
+                        state: { warehouseID: item._id },
+                      });
                     }}
                   >
-                    <DeleteIcon />
+                    <InfoIcon />
                   </IconButton>
+                  </Tooltip>
                 </>
               ),
             }))
