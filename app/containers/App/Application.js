@@ -117,6 +117,9 @@ import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
 import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
 import JobAppView from "../Pages/Recruitment/jobview";
 import JobApplicantView from "../Pages/Recruitment/applicantview";
+import Requirement from "../Pages/Procurement/requirement";
+import Quotation from "../Pages/Procurement/quotation";
+import Billing from "../Pages/Procurement/billing";
 
 function Application(props) {
   const { history } = props;
@@ -276,6 +279,13 @@ function Application(props) {
           <Route path="/sales/payments" element={<Payments />} />
           <Route path="/sales/project" element={<Project />} />
           <Route path="/sales/proposal" element={<Proposal />} />
+
+
+          {/* Procurement Pages */}
+          <Route path="/requirement" element={<Requirement />} />
+          <Route path="/quotation" element={<Quotation />} />
+          <Route path="/billing" element={<Billing />} />
+         
           
 
       </Routes>

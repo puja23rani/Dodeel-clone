@@ -17,7 +17,7 @@ import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
 import { Avatar, Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
 import { DialogContent } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Close as CloseIcon, Visibility } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
@@ -59,16 +59,24 @@ function Applicantlist() {
   // };
 
   const [errors, setErrors] = useState({
-    // jobTitle: "",
-    // jobCategory: "",
+    jobID: "",
+    jobTitle: "",
+    applicantName: "",
+
     // jobDescription: EditorState.createEmpty(),
-    // createStatus: "",
-    // startDate: "",
-    // endDate: "",
-    // skills: [],
-    // resume: "",
-    // customQuestionID: [],
-    // customQuestion: [],
+    phoneNumber: "",
+    email: "",
+    recentCertification: "",
+    resume: "",
+    customQuestionID: [],
+    customQuestion: [],
+    answers: {},
+    interviewerID: "",
+    interviewerName: "",
+    startDate: "",
+    endDate: "",
+    interviewStatus: "",
+    feedback: "",
 
   });
 
@@ -88,10 +96,7 @@ function Applicantlist() {
       errors.applicantName = "Applicant Name is required";
       isValid = false;
     }
-    if (!state.phoneNumber) {
-      errors.phoneNumber = "Phone Number is required";
-      isValid = false;
-    } else if (state.phoneNumber.length !== 10) {
+    if (!state.phoneNumber && state.phoneNumber.length !== 10) {
       errors.phoneNumber = "Phone Number must be 10 digits";
       isValid = false;
     }
@@ -243,9 +248,9 @@ function Applicantlist() {
   ];
 
   useEffect(() => {
-
+    table2();
     table1();
-    // table2();
+
   }, []);
 
   const [interviewerList, setInterviewerList] = React.useState([]);
@@ -281,56 +286,55 @@ function Applicantlist() {
     }
   };
   const [customQuestionList, setCustomQuestionList] = React.useState([]);
-  // const table2 = async () => {
-  //   try {
-  //     const loginHeaders = new Headers();
-  //     loginHeaders.append("Content-Type", "application/json");
-
-  //     // Assuming you have an authorization token stored in localStorage
-  //     const authToken = localStorage.getItem("token");
-  //     if (authToken) {
-  //       loginHeaders.append("Authorization", `Bearer ${authToken}`);
-  //     }
-
-  //     const requestOptions = {
-  //       method: "GET",
-  //       headers: loginHeaders,
-  //     };
-  //     const res = await fetch(
-  //       `${process.env.REACT_APP_BASE_URL}/api/auth/getRecruitments`,
-  //       requestOptions
-  //     );
-  //     const actualData = await res.json();
-  //     if (Array.isArray(actualData.recruitments)) {
-  //       const newobj = actualData.recruitments.map((item) => ({
-  //         title: item.customQuestion, // Set the title from channelName
-  //         id: item._id, // Set the id from _id
-  //       }));
-  //       setCustomQuestionList(newobj);
-  //     }
-  //   } catch (err) {
-  //     //console.log(err);
-  //   }
-  // };
+  const table2 = () => {
+    axios
+      .post(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getJobById`,
+        { id: jobID },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setCustomQuestionList(
+            response.data.data.customQuestionID,
+          );
+        } else {
+          toast.error("Failed to save. Please try again.", {
+            position: "top-center",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        toast.error("An error occurred. Please try again.", {
+          position: "top-center",
+        });
+      });
+  };
 
   const [isLoading, setisLoading] = useState(false)
   const handleFilesChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
-        setisLoading(true);
-        const imageRef = ref(storage, `/photo/${file.name}`);
-        uploadBytes(imageRef, file).then(() => {
-            getDownloadURL(imageRef).then(url => {
-                // console.log(url);
-                setState(prevState => ({
-                    ...prevState,
-                    [field]: url
-                }));
-                setisLoading(false);
-            });
+      setisLoading(true);
+      const imageRef = ref(storage, `/photo/${file.name}`);
+      uploadBytes(imageRef, file).then(() => {
+        getDownloadURL(imageRef).then(url => {
+          // console.log(url);
+          setState(prevState => ({
+            ...prevState,
+            [field]: url
+          }));
+          setisLoading(false);
         });
+      });
     }
-};
+  };
 
   function fetchJobApp(pg) {
     axios
@@ -346,7 +350,7 @@ function Applicantlist() {
       })
       .then((response) => {
         if (response.data.data) {
-          setState({...state,jobTitle:response.data.job.jobTitle ?? 'No job title'})
+          setState({ ...state, jobTitle: response.data.job.jobTitle ?? 'No job title' })
 
           setRowdata(
             response.data.data.map((item) => ({
@@ -385,7 +389,7 @@ function Applicantlist() {
                         answers: item.customQuestion.answer,
                         startDate: item.interviewerDetails.startDate.slice(0, 10),
                         endDate: item.interviewerDetails.endDate.slice(0, 10),
-                        interviewerName: {title:item.interviewerDetails.interviewerName},
+                        interviewerName: { title: item.interviewerDetails.interviewerName },
                         interviewStatus: {
                           title: item.interviewerDetails.interviewStatus
                         },
@@ -393,6 +397,7 @@ function Applicantlist() {
                         feedback: item.interviewerDetails.feedback,
                         isUpdate: true,
                       });
+                      setCustomQuestionList(item.customQuestion ? item.customQuestion : customQuestionList)
                       setOpenDialog(true);
                     }}
                   >
@@ -417,7 +422,7 @@ function Applicantlist() {
                       });
                     }}
                   >
-                    <InfoIcon />
+                    <Visibility />
                   </IconButton>
                 </>
               ),
@@ -464,7 +469,7 @@ function Applicantlist() {
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJobApplication`,
 
           {
-          
+
             jobID: jobID,
             applicantData: {
               applicantName: state.applicantName,
@@ -475,10 +480,10 @@ function Applicantlist() {
               recentCertification:
                 state.recentCertification,
             },
-            customQuestion: state.customQuestion?.map((question) => ({
-              customQuestionID: question._id,
-              answer: question.answer,
-            })),
+            // customQuestion: state.customQuestion?.map((question) => ({
+            //   customQuestionID: question._id,
+            //   answer: question.answer,
+            // })),
             interviewerDetails: {
               interviewerID: state.interviewerID,
               startDate: state.startDate,
@@ -593,31 +598,31 @@ function Applicantlist() {
   const handleUpdateJobApp = () => {
     const requestData = {
       id: itemToDelete,
-      
-        jobID: state.jobID,
-        applicantData: {
-          applicantName: state.applicantName,
-          resume:
-          state.resume,
-          phoneNumber: parseInt(state.phoneNumber),
-          email: state.email,
-          recentCertification:
-          state.recentCertification,
-        },
-        // customQuestion: transformedQuestions,
-        // customQuestion: state.customQuestion?.map((question) => ({
-        //   customQuestionID: question.customQuestionID,
-        //   answer: question.answer,
-        // })),
-        interviewerDetails: {
-          interviewerID: state.interviewerID,
-          startDate: state.startDate,
-          endDate: state.endDate,
-          interviewStatus: state.interviewStatus.title,
 
-          feedback: state.feedback,
-          
-        },
+      jobID: state.jobID,
+      applicantData: {
+        applicantName: state.applicantName,
+        resume:
+          state.resume,
+        phoneNumber: parseInt(state.phoneNumber),
+        email: state.email,
+        recentCertification:
+          state.recentCertification,
+      },
+      // customQuestion: transformedQuestions,
+      customQuestion: customQuestionList?.map((question) => ({
+        customQuestionID: question.customQuestionID,
+        answer: question.answer,
+      })),
+      interviewerDetails: {
+        interviewerID: state.interviewerID,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        interviewStatus: state.interviewStatus.title,
+
+        feedback: state.feedback,
+
+      },
     };
 
     console.log(requestData);
@@ -634,7 +639,7 @@ function Applicantlist() {
     //   setOpen(true);
     //   setSeverity("warning");
     // }
-     else {
+    else {
       axios
         .put(
           `${process.env.REACT_APP_BASE_URL}/api/auth/updateJobApplication`,
@@ -658,25 +663,25 @@ function Applicantlist() {
             });
 
             // Clear the form fields and reset isUpdate to false
-            
-              setState((prevState) => ({
-                ...prevState,
-                applicantName: "",
-      
-                // jobDescription: EditorState.createEmpty(),
-                phoneNumber: "",
-                email: "",
-                recentCertification: "",
-                resume: "",
-                customQuestionID: [],
-                customQuestion: [],
-                answer: {},
-                interviewerID: "",
-                interviewerName: "",
-                startDate: "",
-                endDate: "",
-                interviewStatus: "",
-                feedback: "",
+
+            setState((prevState) => ({
+              ...prevState,
+              applicantName: "",
+
+              // jobDescription: EditorState.createEmpty(),
+              phoneNumber: "",
+              email: "",
+              recentCertification: "",
+              resume: "",
+              // customQuestionID: [],
+              // customQuestion: [],
+              answer: {},
+              interviewerID: "",
+              interviewerName: "",
+              startDate: "",
+              endDate: "",
+              interviewStatus: "",
+              feedback: "",
               id: "", // Reset the id
               isUpdate: false, // Set isUpdate to false
             }));
@@ -702,7 +707,7 @@ function Applicantlist() {
 
   console.log(state)
 
-  
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage); // Update the current page
   };
@@ -712,6 +717,50 @@ function Applicantlist() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(0); // Reset to first page
   };
+
+
+  const handleClear = () => {
+
+    setState({
+      jobID: "",
+      jobTitle: "",
+      applicantName: "",
+      phoneNumber: "",
+      email: "",
+      recentCertification: "",
+      resume: "",
+      customQuestionID: [],
+      customQuestion: [],
+      answers: {},
+      interviewerID: "",
+      interviewerName: "",
+      startDate: "",
+      endDate: "",
+      interviewStatus: "",
+      feedback: "",
+      isUpdate: false,
+    });
+    setErrors({
+      jobID: "",
+      jobTitle: "",
+      applicantName: "",
+      phoneNumber: "",
+      email: "",
+      recentCertification: "",
+      resume: "",
+      customQuestionID: [],
+      customQuestion: [],
+      answers: {},
+      interviewerID: "",
+      interviewerName: "",
+      startDate: "",
+      endDate: "",
+      interviewStatus: "",
+      feedback: "",
+    })
+    setOpenDialog(false);
+
+  }
 
   return (
     <>
@@ -734,7 +783,7 @@ function Applicantlist() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -744,7 +793,7 @@ function Applicantlist() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -848,10 +897,10 @@ function Applicantlist() {
                     helperText={errors.email} // Display error message
                   />
                 </Grid>
-                
 
 
-               
+
+
 
                 <Grid item xs={6} sx={{ width: "100%" }}>
                   <TextField
@@ -1036,91 +1085,110 @@ function Applicantlist() {
 
 
                 <Grid item md={6} xs={12}>
-                        <div style={{ display: "flex", gap: "20px" }}>
-                            <Grid sx={{ width: "50%", paddingTop: "28px" }}>
-                                <Typography variant="body2">Education Certificate</Typography>
-                            </Grid>
-                            <Grid sx={{ paddingTop: "28px" }}>
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                    <label
-                                        style={{
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            width: '100%',
-                                            overflow: 'hidden',
-                                            borderRadius: '0.75rem', // Equivalent to rounded-xl
-                                            border: '1px solid #27282C',
-                                            backgroundColor: 'white',
-                                            fontWeight: '500', // Equivalent to font-medium
-                                            color: '#27282C',
-                                            fontSize: "12px",
-                                            padding: "10px"
-                                        }}
-                                    >
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleFilesChange(e, "recentCertification")}
-                                            style={{
-                                                display: 'none', // Equivalent to hidden
-                                            }}
-                                        />
-                                        Click to upload photo
-                                    </label>
-                                    {state.recentCertification && (
-                                        <img src={state.recentCertification} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
-                                    )}
-                                </div>
-                            </Grid>
-                        </div>
-                        </Grid>
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                      <Typography variant="body2">Education Certificate</Typography>
+                    </Grid>
+                    <Grid sx={{ paddingTop: "28px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        <label
+                          style={{
+                            cursor: 'pointer',
+                            position: 'relative',
+                            width: '100%',
+                            overflow: 'hidden',
+                            borderRadius: '0.75rem', // Equivalent to rounded-xl
+                            border: '1px solid #27282C',
+                            backgroundColor: 'white',
+                            fontWeight: '500', // Equivalent to font-medium
+                            color: '#27282C',
+                            fontSize: "12px",
+                            padding: "10px"
+                          }}
+                        >
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFilesChange(e, "recentCertification")}
+                            style={{
+                              display: 'none', // Equivalent to hidden
+                            }}
+                          />
+                          Click to upload photo
+                        </label>
+                        {state.recentCertification && (
+                          <img src={state.recentCertification} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
+                        )}
+                      </div>
+                    </Grid>
+                  </div>
+                </Grid>
                 <Grid item md={6} xs={12}>
-                        <div style={{ display: "flex", gap: "20px" }}>
-                            <Grid sx={{ width: "50%", paddingTop: "28px" }}>
-                                <Typography variant="body2">Resume File</Typography>
-                            </Grid>
-                            <Grid sx={{ paddingTop: "28px" }}>
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                    <label
-                                        style={{
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            width: '100%',
-                                            overflow: 'hidden',
-                                            borderRadius: '0.75rem', // Equivalent to rounded-xl
-                                            border: '1px solid #27282C',
-                                            backgroundColor: 'white',
-                                            fontWeight: '500', // Equivalent to font-medium
-                                            color: '#27282C',
-                                            fontSize: "12px",
-                                            padding: "10px"
-                                        }}
-                                    >
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleFilesChange(e, "resume")}
-                                            style={{
-                                                display: 'none', // Equivalent to hidden
-                                            }}
-                                        />
-                                        Click to upload photo
-                                    </label>
-                                    {state.resume && (
-                                        <img src={state.resume} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
-                                    )}
-                                </div>
-                            </Grid>
-                        </div>
-                        </Grid>
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                      <Typography variant="body2">Resume File</Typography>
+                    </Grid>
+                    <Grid sx={{ paddingTop: "28px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        <label
+                          style={{
+                            cursor: 'pointer',
+                            position: 'relative',
+                            width: '100%',
+                            overflow: 'hidden',
+                            borderRadius: '0.75rem', // Equivalent to rounded-xl
+                            border: '1px solid #27282C',
+                            backgroundColor: 'white',
+                            fontWeight: '500', // Equivalent to font-medium
+                            color: '#27282C',
+                            fontSize: "12px",
+                            padding: "10px"
+                          }}
+                        >
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFilesChange(e, "resume")}
+                            style={{
+                              display: 'none', // Equivalent to hidden
+                            }}
+                          />
+                          Click to upload photo
+                        </label>
+                        {state.resume && (
+                          <img src={state.resume} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
+                        )}
+                      </div>
+                    </Grid>
+                  </div>
+                </Grid>
 
-                       
-                
+                {state.isUpdate && customQuestionList && (
+                  customQuestionList?.map((ch, idx) => (
+                    <Grid item xs={6} key={idx} style={{display: "flex" , flexDirection: "column"}}>
+                      
+                      <TextField
+                       variant="standard"
+                      label={`${idx + 1}. ${ch.customQuestion}`}
+                        value={ch.answer ?? ''}
+                        onChange={(e) => {
+
+                          setCustomQuestionList((prev) => {
+                            var temp = prev;
+                            temp[idx].answer = e.target.value;
+                            return [...temp];
+                          })
+                        }}
+                      />
+                    </Grid>
+                  ))
+                )}
+
               </Grid>
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={handleClear} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -1128,7 +1196,7 @@ function Applicantlist() {
                 <Button
                   color="primary"
                   variant="contained"
-                onClick={handleUpdateJobApp}
+                  onClick={handleUpdateJobApp}
                 >
                   Update
                 </Button>
@@ -1144,7 +1212,7 @@ function Applicantlist() {
                 </Button>
               </>
             )}
-           
+
           </DialogActions>
         </Dialog>
       </div>
@@ -1152,7 +1220,7 @@ function Applicantlist() {
 
       {rowdata && (
         <TablePlayground
-          title="Job List"
+          title="Applicant List"
           columnData={columnData}
           rowData={rowdata}
           pagination={pagination}

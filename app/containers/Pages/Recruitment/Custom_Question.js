@@ -339,6 +339,21 @@ function Custom_Question() {
   };
   console.log(state)
 
+  const handleClear=()=>{
+ 
+    setState({
+      Custom_Question: "",
+      Required_or_Not: "",
+      isUpdate: false,
+    });
+    setErrors({
+      Custom_Question: "",
+      Required_or_Not: "",
+    })
+    setOpenDialog(false);
+  
+}
+
   return (
     <>
      <div>
@@ -359,7 +374,7 @@ function Custom_Question() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -368,7 +383,13 @@ function Custom_Question() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={handleClear}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
               <CloseIcon />
             </IconButton>
@@ -459,6 +480,9 @@ function Custom_Question() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={handleClear} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -480,15 +504,14 @@ function Custom_Question() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+            
           </DialogActions>
         </Dialog>
       </div>
      
       {rowdata && (
         <TablePlayground
+        title="Custom Question List"
           columnData={columnData}
           rowData={rowdata}
           page={page}

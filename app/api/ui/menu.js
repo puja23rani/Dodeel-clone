@@ -274,4 +274,30 @@ module.exports = [
       // },
     ],
   },
+  {
+    key: "Procurement",
+    name: "Procurement",
+    icon: "settings_suggest",
+    child: [
+      {
+        key: "Requirement",
+        name: "Requirement",
+        link: "/app/requirement",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Quotation",
+        name: "Quotation",
+        link: "/app/quotation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Billing",
+        name: "Billing",
+        link: "/app/billing",
+        icon: "settings_suggest",
+      },
+      
+    ],
+  },
 ];

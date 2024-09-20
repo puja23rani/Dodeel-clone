@@ -422,6 +422,24 @@ export const Channel = loadable(
       fallback: <Loading />,
     }
   );
+  export const Requirement = loadable(
+    () => import("../containers/Pages/Procurement/requirement"),
+    {
+      fallback: <Loading />,
+    }
+  );
+  export const Quotation = loadable(
+    () => import("../containers/Pages/Procurement/quotation"),
+    {
+      fallback: <Loading />,
+    }
+  );
+  export const Billing = loadable(
+    () => import("../containers/Pages/Procurement/billing"),
+    {
+      fallback: <Loading />,
+    }
+  );
  
   
   // ---------------------------------------------------------------

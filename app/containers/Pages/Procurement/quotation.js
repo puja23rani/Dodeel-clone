@@ -46,7 +46,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Job_Application() {
+function Quotation() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -662,7 +662,7 @@ const handleClear=()=>{
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Job
+                <AddIcon /> Create Quotation
               </Button>
             </Tooltip>
           </div>
@@ -674,7 +674,7 @@ const handleClear=()=>{
           maxWidth="md"
         >
           <DialogTitle>
-            Job Details
+            Quotation Details
           </DialogTitle>
           <IconButton
             aria-label="close"
@@ -941,7 +941,7 @@ const handleClear=()=>{
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={handleClear} color="secondary">
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -973,7 +973,7 @@ const handleClear=()=>{
 
       {rowdata && (
         <TablePlayground
-          title="Job List"
+          title="Quotation List"
           columnData={columnData}
           rowData={rowdata}
           pagination={pagination}
@@ -1002,4 +1002,4 @@ const handleClear=()=>{
   );
 };
 
-export default Job_Application;
+export default Quotation;

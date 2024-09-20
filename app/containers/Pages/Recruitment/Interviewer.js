@@ -324,6 +324,18 @@ function Interviewer() {
   };
   
   console.log(state)
+
+  const handleClear=()=>{
+ 
+    setState({
+      interviewerName: "",
+      isUpdate: false,
+    });
+    setErrors({
+      interviewerName: "",
+    })
+    setOpenDialog(false);
+  }
   
   
   return (
@@ -346,7 +358,7 @@ function Interviewer() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -355,7 +367,13 @@ function Interviewer() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={handleClear}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
               <CloseIcon />
             </IconButton>
@@ -395,6 +413,9 @@ function Interviewer() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={handleClear} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -416,15 +437,15 @@ function Interviewer() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+            
           </DialogActions>
         </Dialog>
       </div>
 
       {rowdata && (
         <TablePlayground
+        title="Interviewer List"
+
           columnData={columnData}
           rowData={rowdata}
           page={page}
