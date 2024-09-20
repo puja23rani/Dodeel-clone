@@ -6,15 +6,18 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
+
 import axios from "axios";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
+
 import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
+
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import DeleteIcons from "@mui/icons-material/Delete";
+import TablePlayground from "../../Tables/TablePlayground";
+import Popup from "../../../components/Popup/Popup";
+import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import {
   Autocomplete,
   Dialog,
@@ -24,8 +27,9 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
+  Switch,
 } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Close as CloseIcon, Description } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -37,7 +41,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { Buttons } from "../../containers/pageListAsync";
+
 import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles()((theme) => ({
@@ -59,43 +63,56 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function New_lead() {
+function Customer() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [state, setState] = React.useState({
-    Name: "",
+    Id: "",
+    Company_Name: "",
+    Customer_Name: "",
     Phone_Number: "",
     Email: "",
-    Campaign: "",
-    Campaign_Id: "",
-    Channel: "",
-    Channel_Id: "",
-    Lead_Status: "",
-    Lead_Status_Id: "",
-    Description: "",
+    Lead_Name: "",
+    Lead_Id: "",
+    Employee_Name: "",
+    Employee_Id: "",
+    Description:"",
+    Billing_Address: "",
+    Shipping_Address: "",
+    Status: "",   
     isUpdate: false,
+    toggle: false,    
   });
   const [errors, setErrors] = useState({
-    Name: "",
+    Id: "",
+    Company_Name: "",
+    Customer_Name: "",
     Phone_Number: "",
     Email: "",
-    Campaign: "",
-    Campaign_Id: "",
-    Channel: "",
-    Channel_Id: "",
-    Lead_Status: "",
-    Lead_Status_Id: "",
-    Description: "",
+    Lead_Name: "",
+    Lead_Id: "",
+    Employee_Name: "",
+    Employee_Id: "",
+   
+    Billing_Address: "",
+    Shipping_Address: "",
+    Status: "",   
+    toggle: false,
+    
   });
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Name.trim()) {
-      errors.Name = "Name is required";
+    if (!state.Customer_Name.trim()) {
+      errors.Name = "Customer Name is required";
       isValid = false;
+    }
+    if (!state.Company_Name.trim()) {
+        errors.Name = "Name is required";
+        isValid = false;
     }
 
     if (!state.Phone_Number.toString().trim()) {
@@ -114,25 +131,26 @@ function New_lead() {
       isValid = false;
     }
 
-    if (!state.Campaign.id) {
-      errors.Campaign = "Campaign is required";
+    if (!state.Lead_Name.id) {
+      errors.Lead_Name = "Campaign is required";
       isValid = false;
     }
 
-    if (!state.Channel.id) {
-      errors.Channel = "Channel is required";
+    if (!state.Employee_Name.id) {
+      errors.Employee_Name = "Channel is required";
       isValid = false;
+    }
+    if (!state.Billing_Address.trim()) {
+        errors.Billing_Address = "Billing Address is required";
+        isValid = false;
+    }
+    if (!state.Shipping_Address.trim()) {
+        errors.Shipping_Address = "Shipping Address is required";
+        isValid = false;
     }
 
-    if (!state.Lead_Status.id) {
-      errors.Lead_Status = "Lead Status is required";
-      isValid = false;
-    }
 
-    if (!state.Description.trim()) {
-      errors.Description = "Description is required";
-      isValid = false;
-    }
+    
     console.log(errors);
     console.log(isValid);
     setErrors(errors);
@@ -159,42 +177,23 @@ function New_lead() {
       label: "Sl No",
     },
     {
-      id: "leadName",
+      id: "name",
       numeric: false,
       disablePadding: false,
-      label: "Lead Name",
+      label: "Customer Name",
     },
     {
-      id: "contactNumber",
+      id: "companyname",
       numeric: true,
       disablePadding: false,
-      label: "Contact Number",
+      label: "Company Name",
     },
     {
       id: "email",
       numeric: true,
       disablePadding: false,
       label: "Email",
-    },
-    {
-      id: "campaignName",
-      numeric: false,
-      disablePadding: false,
-      label: "Campaign Name",
-    },
-    {
-      id: "channelName",
-      numeric: false,
-      disablePadding: false,
-      label: "Channel Name",
-    },
-    {
-      id: "status",
-      numeric: false,
-      disablePadding: false,
-      label: "Status",
-    },
-
+    }, 
     { id: "actions", label: "Action" },
   ];
   const [empList, setEmpList] = React.useState([]);
@@ -223,14 +222,15 @@ function New_lead() {
           title: item.personalDetails.employeeName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
-        setEmpList(newobj);
+        setEmpList(actualData.employees);
       }
     } catch (err) {
       //console.log(err);
     }
   };
-  const [channelList, setChannelList] = React.useState([]);
-  const table4 = async () => {
+  
+  const [leadList, setleadList] = React.useState([]);
+  const lead_all = async () => {
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -247,7 +247,7 @@ function New_lead() {
       };
 
       const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllChannels`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
         requestOptions
       );
 
@@ -261,13 +261,13 @@ function New_lead() {
       if (Array.isArray(actualData.data)) {
         // Map the data to an array of objects with 'title' and 'id'
         const newobj = actualData.data.map((item) => ({
-          title: item.channelName, // Set the title from channelName
+          title: item.leadName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
         //console.log(newobj, "neee");
         // Update state with the new array of objects
-        setChannelList(actualData.data);
-        // setChannelList(actualData.data);
+        setleadList(newobj);
+        // setleadList(actualData.data);
         // Return the array if needed
         return newobj;
       } else {
@@ -277,66 +277,17 @@ function New_lead() {
       //console.log(err);
     }
   };
-  const [campaignList, setCampaignList] = React.useState([]);
-  function table2() {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllCampaigns`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // Handle the response
-        setCampaignList(response.data.data);
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error("Error fetching data:", error);
-      });
-  }
-  const [leadStatusList, setLeadStatusList] = React.useState([]);
-  function table1() {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // Handle the response
-        setLeadStatusList(response.data.data);
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error("Error fetching data:", error);
-      });
-  }
 
-  useEffect(() => {
-    table1();
-    table2();
-    table3();
-    table4();
+  useEffect(() => {   
+    table3();   
+    lead_all();
+    fetchCustomer();
   }, []);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
-
-  const handleMenuClick = (event, employee) => {
-    setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
-    setSelectedEmployee(employee); // Set the selected employee
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null); // Reset anchorEl to null to close the menu
-    setSelectedEmployee(null); // Reset selected employee
-  };
-
-  function fetchLead(pg) {
+ 
+  function fetchCustomer(pg) {
     axios
       .post(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllCustomers`,
         {
           pageNumber: pg,
           pageSize: rowsPerPage,
@@ -354,12 +305,10 @@ function New_lead() {
             response.data.data.map((item, index) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
-              leadName: item.leadName || "N/A",
-              contactNumber: item.contactNumber || "N/A",
-              email: item.email || "N/A",
-              campaignName: item.campaignID?.campaignName || "N/A",
-              channelName: item.channelID?.channelName || "N/A",
-              status: item.leadStatusID?.StatusName || "N/A",
+              name: item.clientName || "N/A",
+              companyname: item.clientCompanyName || "N/A",
+              contactNumber: item.clientPhoneNumber || "N/A",
+              email: item.clientEmail || "N/A",              
               actions: (
                 <>
                   <IconButton
@@ -371,22 +320,22 @@ function New_lead() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        Name: item.leadName,
-                        Phone_Number: item.contactNumber,
-                        Email: item.email,
-                        Campaign: {
-                          id: item.campaignID?.id,
-                          title: item.campaignID?.campaignName,
+                        Customer_Name: item.clientName,
+                        Company_Name:item.clientCompanyName,
+                        Phone_Number: item.clientPhoneNumber,
+                        Email: item.clientEmail,
+                        Lead_Name: {
+                          id: item.clientFromLeadID?.id,
+                          title: item.clientFromLeadID?.leadName,
+                        },                      
+                        Employee_Name: {
+                          id: item.clientCreatorID?.id,
+                          title: item.clientCreatorID?.employeeName,
                         },
-                        Channel: {
-                          id: item.channelID?.id,
-                          title: item.channelID?.channelName,
-                        },
-                        Lead_Status: {
-                          id: item.leadStatusID?.id,
-                          title: item.leadStatusID?.StatusName,
-                        },
-                        Description: item.notes,
+                        Billing_Address:item.clientBillingAddress,
+                        Shipping_Address:item.clientShippingAddress,
+                        Description:item.clientDescription,
+                        switch:item.clientBillingAddress===item.clientShippingAddress,
                         isUpdate: true,
                       });
                       setOpenDialog(true);
@@ -404,7 +353,7 @@ function New_lead() {
                     <DeleteIcon />
                   </IconButton>
                   <IconButton
-                    aria-label="Delete"
+                    aria-label="Info"
                     // onClick={() => {
                     //   setItemToDelete(item._id);
                     //   setDeleteDialogOpen(true);
@@ -421,7 +370,7 @@ function New_lead() {
               ),
             }))
           );
-          setLength(response.data.totalItems);
+          setLength(response.data.totalCustomers);
           setPagination(true);
         }
       })
@@ -430,31 +379,29 @@ function New_lead() {
       });
   }
   useEffect(() => {
-    fetchLead(page);
+    fetchCustomer(page);
   }, [page, rowsPerPage]);
-  const handleCreateLead = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
+  const handleCreateCustomer = async () => {
+    if (!validate()) {      
       return;
-    }
-    console.log("p1");
+    }  
     try {
       // Prepare the data to match the required request body format
       const data = {
-        leadName: state.Name,
-        email: state.Email,
-        campaignID: state.Campaign.id, // campaignName from state
-        channelID: state.Channel.id,
-        leadStatusID: state.Lead_Status.id,
+        clientCompanyName: state.Company_Name,
+        clientName: state.Customer_Name,
+        clientPhoneNumber: state.Phone_Number.trim(),
+        clientEmail: state.Email,
+        clientFromLeadID: state.Lead_Name.id,
+        clientCreatorID: state.Employee_Name.id,
 
-        contactNumber: parseInt(state.Phone_Number),
-        notes: state.Description,
-      };
-      console.log("p2");
+        clientDescription: state.Description,
+        clientBillingAddress: state.Billing_Address,
+        clientShippingAddress: state.Shipping_Address,
+       
+      };    
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadDetail`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createCustomer`,
         {
           method: "POST",
           headers: {
@@ -467,25 +414,30 @@ function New_lead() {
       console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
-        fetchLead();
+        fetchCustomer(page);
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         // Reset the state after successful creation
         setState({
-          Name: "",
-          Phone_Number: "",
-          Email: "",
-          Campaign: "",
-          Campaign_Id: "",
-          Channel: "",
-          Channel_Id: "",
-          Lead_Status: "",
-          Lead_Status_Id: "",
-          Description: "",
-
-          isUpdate: false,
+            Id: "",
+            Company_Name: "",
+            Customer_Name: "",
+            Phone_Number: "",
+            Email: "",
+            Lead_Name: "",
+            Lead_Id: "",
+            Employee_Name: "",
+            Employee_Id: "",
+           
+            Billing_Address: "",
+            Shipping_Address: "",
+            Status: "",
+            
+            isUpdate: false,
+        
+            toggle: false,
         });
         setOpenDialog(false);
         setMessage("Saved successfully!");
@@ -503,83 +455,84 @@ function New_lead() {
       setSeverity("error");
     }
   };
-  const handleUpdateLead = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
-      return;
-    }
-    console.log("p1");
-    try {
-      // Prepare the data to match the required request body format
-      const data = {
-        id: parseInt(itemToDelete),
-        leadName: state.Name,
-        email: state.Email,
-        campaignID: state.Campaign.id, // campaignName from state
-        channelID: state.Channel.id,
-        leadStatusID: state.Lead_Status.id,
+  console.log(state,"sssssss");
+//   const handleUpdateLead = async () => {
+//     if (!validate()) {
+//       setMessage("Please fill all required fields");
+//       setOpen(true);
+//       setSeverity("warning");
+//       return;
+//     }
+//     console.log("p1");
+//     try {
+//       // Prepare the data to match the required request body format
+//       const data = {
+//         id: parseInt(itemToDelete),
+//         leadName: state.Name,
+//         email: state.Email,
+//         campaignID: state.Campaign.id, // campaignName from state
+//         channelID: state.Channel.id,
+//         leadStatusID: state.Lead_Status.id,
 
-        contactNumber: parseInt(state.Phone_Number),
-        notes: state.Description,
-      };
-      console.log("p2");
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      console.log("p3");
-      const result = await response.json();
-      if (result.status === 200) {
-        fetchLead();
-        window.scrollTo({
-          top: 400,
-          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-        });
-        // Reset the state after successful creation
-        setState({
-          Name: "",
-          Phone_Number: "",
-          Email: "",
-          Campaign: "",
-          Campaign_Id: "",
-          Channel: "",
-          Channel_Id: "",
-          Lead_Status: "",
-          Lead_Status_Id: "",
-          Description: "",
+//         contactNumber: parseInt(state.Phone_Number),
+//         notes: state.Description,
+//       };
+//       console.log("p2");
+//       const response = await fetch(
+//         `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
+//         {
+//           method: "PUT",
+//           headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${token}`,
+//           },
+//           body: JSON.stringify(data),
+//         }
+//       );
+//       console.log("p3");
+//       const result = await response.json();
+//       if (result.status === 200) {
+//         fetchLead();
+//         window.scrollTo({
+//           top: 400,
+//           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+//         });
+//         // Reset the state after successful creation
+//         setState({
+//           Name: "",
+//           Phone_Number: "",
+//           Email: "",
+//           Campaign: "",
+//           Campaign_Id: "",
+//           Channel: "",
+//           Channel_Id: "",
+//           Lead_Status: "",
+//           Lead_Status_Id: "",
+//           Description: "",
 
-          isUpdate: false,
-        });
-        setOpenDialog(false);
-        setMessage("Updated successfully!");
-        setOpen(true);
-        setSeverity("success");
-      } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-      }
-    } catch (err) {
-      console.log(err);
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
-    }
-  };
-  const handleCampaignDelete = async () => {
+//           isUpdate: false,
+//         });
+//         setOpenDialog(false);
+//         setMessage("Saved successfully!");
+//         setOpen(true);
+//         setSeverity("success");
+//       } else {
+//         setMessage(result.message);
+//         setOpen(true);
+//         setSeverity("error");
+//       }
+//     } catch (err) {
+//       console.log(err);
+//       setMessage(err.message);
+//       setOpen(true);
+//       setSeverity("error");
+//     }
+//   };
+  const handleCustomerDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadDetail`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCustomer`,
         {
           method: "DELETE",
           headers: {
@@ -593,13 +546,13 @@ function New_lead() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLead();
+        fetchCustomer(page);
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
         setItemToDelete(null);
       } else {
-        setMessage(actualData.message);
+        setMessage(result.message);
         setOpen(true);
         setSeverity("error");
         setItemToDelete(null);
@@ -633,12 +586,45 @@ function New_lead() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(1); // Reset to first page
   };
-  const handleAddSection = () => {
+ const handleClear=()=>{
     setState({
-      ...state,
-      fieldset: [...state.fieldset, { name: "", value: "" }],
-    });
-  };
+        Company_Name: "",
+    Customer_Name: "",
+    Phone_Number: "",
+    Email: "",
+    Lead_Name: "",
+    Lead_Id: "",
+    Employee_Name: "",
+    Employee_Id: "",
+   Description:"",
+    Billing_Address: "",
+    Shipping_Address: "",
+    Status: "",
+    searchText: "",
+    isUpdate: false,
+
+    toggle: false,
+      });
+      setErrors({
+        Company_Name: "",
+    Customer_Name: "",
+    Phone_Number: "",
+    Email: "",
+    Lead_Name: "",
+    Lead_Id: "",
+    Employee_Name: "",
+    Employee_Id: "",
+   
+    Billing_Address: "",
+    Shipping_Address: "",
+    Status: "",
+    
+    isUpdate: false,
+
+    toggle: false,
+      })
+      setOpenDialog(false);
+ }
 
   // Delete a section by index
   return (
@@ -654,52 +640,22 @@ function New_lead() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Lead
+                <AddIcon /> Add Customer
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => {
-            setState({
-              Name: "",
-              Phone_Number: "",
-              Email: "",
-              Campaign: "",
-              Campaign_Id: "",
-              Channel: "",
-              Channel_Id: "",
-              Lead_Status: "",
-              Lead_Status_Id: "",
-              Description: "",
-              isUpdate: false,
-            });
-            setOpenDialog(false);
-          }}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
-          <DialogTitle>New lead</DialogTitle>
+          <DialogTitle>Customer</DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => {
-              setState({
-                Name: "",
-                Phone_Number: "",
-                Email: "",
-                Campaign: "",
-                Campaign_Id: "",
-                Channel: "",
-                Channel_Id: "",
-                Lead_Status: "",
-                Lead_Status_Id: "",
-                Description: "",
-                isUpdate: false,
-              });
-              setOpenDialog(false);
-            }}
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -719,22 +675,37 @@ function New_lead() {
                     id="Name"
                     name="Name"
                     label="Name"
-                    value={state.Name}
+                    value={state.Customer_Name}
                     onChange={(e) => {
                       const input = e.target.value;
-
-                      // Remove any non-alphabetic characters and limit to 70 characters
-                      const validInput = input
-                        .replace(/[^a-zA-Z\s]/g, "")
-                        .slice(0, 70);
-
+                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
                       setState({
                         ...state,
-                        Name: validInput,
+                        Customer_Name: validInput,
                       });
                     }}
-                    error={!!errors.Name} // Show error if it exists
-                    helperText={errors.Name} // Display error message
+                    error={!!errors.Customer_Name} // Show error if it exists
+                    helperText={errors.Customer_Name} // Display error message
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="CompanyName"
+                    name="CompanyName"
+                    label="Company Name"
+                    value={state.Company_Name}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
+                      setState({
+                        ...state,
+                        Company_Name: validInput,
+                      });
+                    }}
+                    error={!!errors.Company_Name} // Show error if it exists
+                    helperText={errors.Company_Name} // Display error message
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -767,28 +738,12 @@ function New_lead() {
                     label="Email"
                     fullWidth
                     value={state.Email}
-                    onChange={(e) => {
-                      const input = e.target.value;
-
-                      // Regular expression to validate proper email format for specific domains
-                      const validEmailRegex =
-                        /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|rediffmail\.com)$/;
-
+                    onChange={(e) =>
                       setState({
                         ...state,
-                        Email: input,
-                      });
-
-                      // Check if the email matches the regex pattern
-                      if (!validEmailRegex.test(input)) {
-                        setErrors({
-                          ...errors,
-                          Email: "Invalid email address or domain",
-                        });
-                      } else {
-                        setErrors({ ...errors, Email: "" });
-                      }
-                    }}
+                        Email: e.target.value,
+                      })
+                    }
                     error={!!errors.Email} // Show error if it exists
                     helperText={errors.Email} // Display error message
                   />
@@ -799,42 +754,23 @@ function New_lead() {
                       marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={campaignList.map((item) => {
-                      return { id: item._id, title: item.campaignName };
-                    })}
+                    options={leadList}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    value={state.Campaign}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Campaign: "",
-                          Campaign_Id: "",
-                        });
-                      } else {
-                        const selectedCampaign = campaignList.find(
-                          (item) => item.campaignName === v
-                        );
-                        setState({
-                          ...state,
-                          Campaign: v,
-                          Campaign_Id: selectedCampaign
-                            ? selectedCampaign._id
-                            : null,
-                        });
-                      }
+                    value={state.Lead_Name} // Ensure value is an object or null
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        Lead_Name: v ? v : null, // Set leadName to the selected object or null
+                      });
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Campaign"
+                        label="Lead Name"
                         margin="normal"
                         variant="standard"
-                        error={!!errors.Campaign} // Show error if it exists
-                        helperText={errors.Campaign} // Display error message
+                        error={!!errors.Lead_Name} // Show error if it exists
+                        helperText={errors.Lead_Name} // Display error message
                       />
                     )}
                   />
@@ -845,131 +781,119 @@ function New_lead() {
                       marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={channelList.map((item) => {
-                      return { id: item._id, title: item.channelName };
-                    })}
+                    options={
+                      empList.map((item) => {
+                        return {
+                          id: item._id,
+                          title: item.personalDetails.employeeName,
+                        };
+                      }) || []
+                    }
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
+                      value && value.id ? option.id === value.id : false
                     }
-                    value={state.Channel}
+                    value={state.Employee_Name}
                     onChange={(e, v, reason) => {
                       if (reason === "clear") {
                         setState({
                           ...state,
-                          Channel: "",
-                          Channel_Id: "",
+                          Employee_Name: "",
                         });
                       } else {
-                        const selectedChannel = channelList.find(
-                          (item) => item.channelName === v
-                        );
+                        // const selectedLeadStatus = MemberList.find(
+                        //   (item) => item.personalDetails.employeeName === v
+                        // );
                         setState({
                           ...state,
-                          Channel: v,
-                          Channel_Id: selectedChannel
-                            ? selectedChannel._id
-                            : null,
+                          Employee_Name: v,
                         });
                       }
                     }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Channel"
+                        label="Employee Name"
                         margin="normal"
                         variant="standard"
-                        error={!!errors.Channel} // Show error if it exists
-                        helperText={errors.Channel} // Display error message
+                        name="employeeName"
+                        error={!!errors.Employee_Name} // Show error if it exists
+                        helperText={errors.Employee_Name} // Display error message
                       />
                     )}
                   />
                 </Grid>
+               
                 <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px",
-                    }}
-                    id="highlights-demo"
-                    options={leadStatusList.map((item) => {
-                      return { id: item._id, title: item.statusName };
-                    })}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
+                  <TextField
+                    variant="standard"
+                    id="BillingAddress"
+                    name="BillingAddress"
+                    label="Billing Address"
+                    fullWidth
+                    value={state.Billing_Address}
+                    onChange={(e) =>
+                      setState({
+                        ...state,
+                        Billing_Address: e.target.value,
+                      })
                     }
-                    value={state.Lead_Status}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Lead_Status: "",
-                          Lead_Status_Id: "",
-                        });
-                      } else {
-                        const selectedLeadStatus = leadStatusList.find(
-                          (item) => item.statusName === v
-                        );
-                        setState({
-                          ...state,
-                          Lead_Status: v,
-                          Lead_Status_Id: selectedLeadStatus
-                            ? selectedLeadStatus._id
-                            : null,
-                        });
-                      }
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Lead Status"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.Lead_Status} // Show error if it exists
-                        helperText={errors.Lead_Status} // Display error message
-                      />
-                    )}
+                    error={!!errors.Billing_Address} // Show error if it exists
+                    helperText={errors.Billing_Address} // Display error message
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
                     variant="standard"
-                    id="Description"
-                    name="Description"
-                    label="Description"
+                    id="ShippingAddress"
+                    name="ShippingAddress"
+                    label="Shipping Address"
                     fullWidth
-                    value={state.Description}
+                    value={state.Shipping_Address}
                     onChange={(e) =>
                       setState({
                         ...state,
-                        Description: e.target.value,
+                        Shipping_Address: e.target.value,
                       })
                     }
-                    error={!!errors.Description} // Show error if it exists
-                    helperText={errors.Description} // Display error message
+                    error={!!errors.Shipping_Address} // Show error if it exists
+                    helperText={errors.Shipping_Address} // Display error message
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <Switch
+                    id="switch"
+                    name="If the Billing address is same as Shipping address"
+                    checked={state.switch}
+                    onChange={(e) =>{
+                        if(!state.switch){
+                            setState({ ...state, switch: !state.switch,Shipping_Address:state.Billing_Address })
+                        }else{
+                      setState({ ...state, switch: !state.switch });}}
+                    }
+                  />If the Billing address is same as Shipping address
+                </Grid>
+                <Grid item xs={12}>
+                <TextField
+            fullWidth
+            multiline
+            variant="standard"
+            rows={4}
+            id="textarea"
+            name="textarea"
+            label="Description"
+            value={state.Description}
+            onChange={(e)=>{
+                setState({...state,Description:e.target.value});
+            }}
+          />
                 </Grid>
               </Grid>
             </div>
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => {
-                setState({
-                  Name: "",
-                  Phone_Number: "",
-                  Email: "",
-                  Campaign: "",
-                  Campaign_Id: "",
-                  Channel: "",
-                  Channel_Id: "",
-                  Lead_Status: "",
-                  Lead_Status_Id: "",
-                  Description: "",
-                  isUpdate: false,
-                });
-                setOpenDialog(false);
-              }}
+              onClick={handleClear}
               color="secondary"
             >
               Close
@@ -979,7 +903,7 @@ function New_lead() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLead}
+                  //onClick={handleUpdateLead}
                 >
                   Update
                 </Button>
@@ -989,7 +913,7 @@ function New_lead() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLead}
+                  onClick={handleCreateCustomer}
                 >
                   Create
                 </Button>
@@ -1001,7 +925,7 @@ function New_lead() {
 
       {rowdata && (
         <TablePlayground
-          title="Lead List"
+          title="Customer List"
           columnData={columnData}
           rowData={rowdata}
           component="div"
@@ -1017,7 +941,7 @@ function New_lead() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCampaignDelete}
+        onDelete={handleCustomerDelete}
       />
       <Popup
         open={open}
@@ -1029,4 +953,4 @@ function New_lead() {
   );
 }
 
-export default New_lead;
+export default Customer;

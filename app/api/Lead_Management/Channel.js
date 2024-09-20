@@ -359,16 +359,16 @@ function Channel() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Lead Status
+            Channel
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => setOpenDialog(false)}
+              onClick={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -428,6 +428,9 @@ function Channel() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -449,9 +452,7 @@ function Channel() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>

@@ -240,16 +240,17 @@ function LeadMemebers() {
                       });
                       setItemToDelete(item._id);
                       // Set state with required format
-                      setState({
-                        membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
-                        employeeName: item.membersID.map((member) => ({
-                          title: member.employeeName,
-                          id: member.id,
-                        })), // Format employeeName as [{ title, id }]
-                        leadName: { title: item.leadName, id: item.leadID }, // Set leadName as { title: 'Active' }
-
-                        isUpdate: true, // Set isUpdate to true for edit mode
-                      });
+                        setState({
+                          leadName: {title:item.leadName,id:item.leadID},
+                          membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
+                          employeeName: item.membersID.map((member) => ({
+                            title: member.employeeName,
+                            id: member.id,
+                          })), // Format employeeName as [{ title, id }]
+                         
+                          isUpdate: true, // Set isUpdate to true for edit mode
+                         
+                        });
                       setOpenDialog(true);
                     }}
                   >

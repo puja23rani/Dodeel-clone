@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "tss-react/mui";
 import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
+
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
+
 import axios from "axios";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
+import TablePlayground from "../../Tables/TablePlayground";
+import Popup from "../../../components/Popup/Popup";
+import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
+
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-
+import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Dialog,
@@ -43,27 +45,36 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Log_Notes() {
+function Proposal() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
 
-  const [state, setState] = React.useState({
-    Notes: "",
+  const [state, setState] = useState({
+    Status_Name: "",
+    Description: "",
+    searchText: "",
     isUpdate: false,
   });
   const [errors, setErrors] = useState({
-    Notes: "",
+    Status_Name: "",
+    Description: "",
   });
 
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Notes.trim()) {
-      errors.Notes = "Notes is required";
+    if (!state.Status_Name.trim()) {
+      errors.Status_Name = "Status Name is required";
       isValid = false;
     }
+
+    if (!state.Description.trim()) {
+      errors.Description = "Description is required";
+      isValid = false;
+    }
+
     setErrors(errors);
     return isValid;
   };
@@ -76,6 +87,7 @@ function Log_Notes() {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
+
   const columnData = [
     {
       id: "slNo",
@@ -84,12 +96,17 @@ function Log_Notes() {
       label: "Sl No",
     },
     {
-      id: "notes",
+      id: "statusName",
       numeric: false,
       disablePadding: false,
-      label: "Notes",
+      label: "Status Name",
     },
-
+    {
+      id: "description",
+      numeric: false,
+      disablePadding: false,
+      label: "Description",
+    },
     { id: "actions", label: "Action" },
   ];
 
@@ -99,7 +116,7 @@ function Log_Notes() {
 
   const fetchLeadStatus = () => {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllNotes`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -108,7 +125,8 @@ function Log_Notes() {
             response.data.data.map((item) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
-              notes: item.noteDescription,
+              statusName: item.statusName,
+              description: item.description,
               actions: (
                 <>
                   <IconButton
@@ -118,13 +136,13 @@ function Log_Notes() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setOpenDialog(true);
                       setItemToDelete(item._id);
                       setState({
-                        Notes: item.noteDescription,
-
+                        Status_Name: item.statusName,
+                        Description: item.description,
                         isUpdate: true,
                       });
+                      setOpenDialog(true);
                     }}
                   >
                     <EditIcon />
@@ -158,11 +176,17 @@ function Log_Notes() {
     }
     try {
       const data = {
-        noteDescription: state.Notes,
+        statusName: state.Status_Name,
+        description: state.Description,
       };
 
+      if (!state.Status_Name || !state.Description) {
+        toast.error("Fill all the information", { position: "top-center" });
+        return;
+      }
+
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createNote`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadStatus`,
         {
           method: "POST",
           headers: {
@@ -181,16 +205,16 @@ function Log_Notes() {
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         setState({
-          Notes: "",
-
+          Status_Name: "",
+          Description: "",
           id: "",
-
+          searchText: "",
           isUpdate: false,
         });
         setMessage("Saved successfully!");
         setOpen(true);
-        setOpenDialog(false);
         setSeverity("success");
+        setOpenDialog(false);
       } else {
         setMessage(result.message);
         setOpen(true);
@@ -208,7 +232,7 @@ function Log_Notes() {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteNote`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadStatus`,
         {
           method: "DELETE",
           headers: {
@@ -254,14 +278,14 @@ function Log_Notes() {
       }
       const data = {
         id: itemToDelete,
-        noteDescription: state.Notes,
+        statusName: state.Status_Name,
+        description: state.Description,
       };
 
-      if (state.noteDescription == "") {
+      if (state.Status_Name == "" || state.Description == "") {
         setMessage("Please fill all required fields");
         setOpen(true);
         setSeverity("warning");
-
         return;
       } else {
         const requestOptions = {
@@ -270,7 +294,7 @@ function Log_Notes() {
           body: JSON.stringify(data),
         };
         const res = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateNote`,
+          `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadStatus`,
           requestOptions
         );
 
@@ -284,8 +308,10 @@ function Log_Notes() {
             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
           });
           setState({
-            Notes: "",
-
+            Status_Name: "",
+            Description: "",
+            id: "",
+            searchText: "",
             isUpdate: false,
           });
           setMessage("Updated successfully!");
@@ -325,24 +351,39 @@ function Log_Notes() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Log Note
+                <AddIcon /> Add Lead Status
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
-
         <Dialog
           open={openDialog}
-          onClose={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
+          onClose= {() =>{ 
+            setState({
+              Status_Name: "",
+              Description: "",
+              id: "",
+              searchText: "",
+              isUpdate: false,
+            })
+            setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Log Notes
+            Lead Status
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
+              onClick={() =>{ 
+                setState({
+                  Status_Name: "",
+                  Description: "",
+                  id: "",
+                  searchText: "",
+                  isUpdate: false,
+                })
+                setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -363,15 +404,36 @@ function Log_Notes() {
                         <TextField
                           fullWidth
                           variant="standard"
-                          id="Notes"
-                          name="Notes"
-                          label="Notes"
-                          value={state.Notes}
+                          id="Status"
+                          name="Status"
+                          label="Status"
+                          value={state.Status_Name}
+                          onChange={(e) => {
+                            const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
+                            if (regex.test(e.target.value)) {
+                              setState({
+                                ...state,
+                                Status_Name: e.target.value,
+                              });
+                            }
+                          }}
+                          error={!!errors.Status_Name}
+                          helperText={errors.Status_Name}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="Description"
+                          name="Description"
+                          label="Description"
+                          value={state.Description}
                           onChange={(e) =>
-                            setState({ ...state, Notes: e.target.value })
+                            setState({ ...state, Description: e.target.value })
                           }
-                          error={!!errors.Notes}
-                          helperText={errors.Notes}
+                          error={!!errors.Description}
+                          helperText={errors.Description}
                         />
                       </Grid>
                     </Grid>
@@ -381,7 +443,16 @@ function Log_Notes() {
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}} color="secondary">
+          <Button onClick=
+          {() =>{ 
+                setState({
+                  Status_Name: "",
+                  Description: "",
+                  id: "",
+                  searchText: "",
+                  isUpdate: false,
+                })
+                setOpenDialog(false)}} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -405,14 +476,14 @@ function Log_Notes() {
                 </Button>
               </>
             )}
-           
+            
           </DialogActions>
         </Dialog>
       </div>
 
       {rowdata && (
         <TablePlayground
-          title="Log Notes List"
+          title="Lead Status List"
           columnData={columnData}
           rowData={rowdata}
           page={page}
@@ -437,4 +508,4 @@ function Log_Notes() {
   );
 }
 
-export default Log_Notes;
+export default Proposal;
