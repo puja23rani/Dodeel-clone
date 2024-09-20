@@ -46,7 +46,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Job_Application() {
+function Quotation() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -105,18 +105,18 @@ function Job_Application() {
       errors.resume = "Resume is required";
       isValid = false;
     }
-    if (state.customQuestion.length == 0) {
+    if (state.customQuestion.length==0) {
       errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
-
+    
 
     setErrors(errors);
     console.log(isValid)
-
+    
     return isValid;
   };
-
+ 
 
 
   const [state, setState] = useState({
@@ -145,16 +145,16 @@ function Job_Application() {
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
   const navigate = useNavigate();
-
-
-
-  const [dataEditorState, setEditorState] = useState();
-
-  const onEditorStateChange = editorStateParam => {
-    setEditorState(editorStateParam);
-  };
-
-
+  
+    
+   
+    const [dataEditorState, setEditorState] = useState();
+  
+    const onEditorStateChange = editorStateParam => {
+      setEditorState(editorStateParam);
+    };
+  
+  
 
   const columnData = [
     {
@@ -204,7 +204,7 @@ function Job_Application() {
   ];
 
   useEffect(() => {
-
+    
     table1();
   }, []);
 
@@ -241,18 +241,18 @@ function Job_Application() {
     }
   };
 
+  
 
-
-
-  function fetchJobCreate(pg) {
-    axios
-      .post(
-
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-        {
-          pageNumber: pg,
-          pageSize: rowsPerPage,
-        }, {
+  
+    function fetchJobCreate(pg) {
+      axios
+        .post(
+   
+      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
+      {
+        pageNumber: pg,
+        pageSize: rowsPerPage,
+      }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -265,11 +265,11 @@ function Job_Application() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus,
+              createStatus: item.createStatus ,
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume,
+              resume: item.resume ,
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -281,8 +281,8 @@ function Job_Application() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);
-
+                      setItemToDelete(item._id);   
+                      
                       setState({
                         id: item._id,
                         jobTitle: item.jobTitle,
@@ -291,7 +291,7 @@ function Job_Application() {
                         createStatus: {
                           title: item.createStatus
                         },
-
+                       
                         startDate: item.startDate.slice(0, 10),
                         endDate: item.endDate.slice(0, 10),
                         skills: item.skills,
@@ -310,7 +310,7 @@ function Job_Application() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon color={"primary"} />
+                    <EditIcon />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -320,7 +320,7 @@ function Job_Application() {
                       setSelectedJob(job);
                     }}
                   >
-                    <DeleteIcon color={"primary"} />
+                    <DeleteIcon />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -347,7 +347,7 @@ function Job_Application() {
                         state: {
                           jobID: item,
 
-
+                         
                         },
                       });
                     }}
@@ -378,7 +378,7 @@ function Job_Application() {
       setSeverity("warning");
       return;
     }
-    else {
+   else {
       axios
         .post(
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
@@ -388,7 +388,7 @@ function Job_Application() {
             jobCategory: state.jobCategory,
 
             jobDescription: state.jobDescription,
-
+             
             createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
@@ -496,7 +496,7 @@ function Job_Application() {
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-
+      
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -504,7 +504,7 @@ function Job_Application() {
       skills: state.skills.join(","),
       resume: state.resume.title,
       customQuestionID: state.customQuestionID,
-
+     
     };
 
     console.log(requestData);
@@ -581,44 +581,44 @@ function Job_Application() {
 
   const handleInputChange = (e) => {
     setState({
-      ...state,
-      inputSkill: e.target.value,
+        ...state,
+        inputSkill: e.target.value,
     });
-  };
-  const handleKeyDown = (e) => {
+};
+const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-      setState({
-        ...state,
-        skills: [...state.skills, state.inputSkill.trim()],
-        inputSkill: "",
-      });
+        setState({
+            ...state,
+            skills: [...state.skills, state.inputSkill.trim()],
+            inputSkill: "",
+        });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-      setState({
-        ...state,
-        skills: state.skills.slice(0, -1),
-      });
+        setState({
+            ...state,
+            skills: state.skills.slice(0, -1),
+        });
     }
-  };
-  const handleSkillDelete = (skillToDelete) => () => {
+};
+const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-      ...prevState,
-      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+        ...prevState,
+        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-  };
+};
 
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage); // Update the current page
-  };
+const handlePageChange = (event, newPage) => {
+  setPage(newPage); // Update the current page
+};
 
-  // Handle rows per page change
-  const handleRowsPerPageChange = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-    setPage(0); // Reset to first page
-  };
+// Handle rows per page change
+const handleRowsPerPageChange = (event) => {
+  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+  setPage(0); // Reset to first page
+};
 
-  const handleClear = () => {
-
+const handleClear=()=>{
+ 
     setState({
       jobTitle: "",
       jobCategory: "",
@@ -634,19 +634,19 @@ function Job_Application() {
     });
     setErrors({
       jobTitle: "",
-      jobCategory: "",
-      jobDescription: "",
-      createStatus: "",
-      startDate: "",
-      endDate: "",
-      skills: "",
-      resume: "",
-      customQuestionID: "",
-      customQuestion: "",
+    jobCategory: "",
+    jobDescription: "",
+    createStatus: "",
+    startDate: "",
+    endDate: "",
+    skills: "",
+    resume: "",
+    customQuestionID: "",
+    customQuestion: "",
     })
     setOpenDialog(false);
-
-  }
+  
+}
 
   return (
     <>
@@ -662,25 +662,25 @@ function Job_Application() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Job
+                <AddIcon /> Create Quotation
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={handleClear}
+           onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Job Details
+            Quotation Details
           </DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-
-            onClick={handleClear}
+           
+              onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -853,7 +853,7 @@ function Job_Application() {
                         {...params}
                         variant="standard"
                         label="Custom Question"
-
+                        
                         error={!!errors.customQuestion} // Show error if it exists
                         helperText={errors.customQuestion} // Display error message
                       />
@@ -861,7 +861,7 @@ function Job_Application() {
                   />
                 </Grid>
 
-
+               
                 <Grid item xs={6} sx={{ width: "100%" }}>
                   <TextField
                     id="date"
@@ -891,7 +891,7 @@ function Job_Application() {
                     onChange={(e) => setState({ ...state, endDate: e.target.value })}
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
+                 {/* <Grid item xs={12}>
   <Typography variant="subtitle1" gutterBottom>
     Job Description
   </Typography>
@@ -912,7 +912,7 @@ function Job_Application() {
     />
   </Paper>
 </Grid> */}
-                <Grid item xs={12}>
+<Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -941,7 +941,7 @@ function Job_Application() {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClear} color="secondary">
+          <Button onClick={() => setOpenDialog(false)} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -965,7 +965,7 @@ function Job_Application() {
                 </Button>
               </>
             )}
-
+           
           </DialogActions>
         </Dialog>
       </div>
@@ -973,7 +973,7 @@ function Job_Application() {
 
       {rowdata && (
         <TablePlayground
-          title="Job List"
+          title="Quotation List"
           columnData={columnData}
           rowData={rowdata}
           pagination={pagination}
@@ -985,7 +985,7 @@ function Job_Application() {
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-
+      
 
       <AlertDialog
         open={deleteDialogOpen}
@@ -1002,4 +1002,4 @@ function Job_Application() {
   );
 };
 
-export default Job_Application;
+export default Quotation;

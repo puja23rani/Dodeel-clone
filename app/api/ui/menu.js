@@ -131,29 +131,6 @@ module.exports = [
     name: "Lead",
     icon: "settings_suggest",
     child: [
-      {
-        key: "Lead_Settings",
-        name: "Lead Settings",
-        title: true,
-      },
-      {
-        key: "Lead_Status",
-        name: "Lead Status",
-        link: "/app/lead/lead-status",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Log_Notes",
-        name: "Log Notes",
-        link: "/app/lead/log-notes",
-        icon: "settings_suggest",
-      },
-      {
-        key: "Channel",
-        name: "Channel",
-        link: "/app/lead/channel",
-        icon: "settings_suggest",
-      },
 
       {
         key: "Lead_Management",
@@ -178,6 +155,33 @@ module.exports = [
         icon: "settings_suggest",
         link: "/app/lead/lead-members",
       },
+      {
+        key: "Lead_Settings",
+        name: "Lead Settings",
+        title: true,
+      },
+      {
+        key: "Lead_Status",
+        name: "Lead Status",
+        link: "/app/lead/lead-status",
+        icon: "settings_suggest",
+
+      },
+      {
+        key: "Log_Notes",
+        name: "Log Notes",
+        link: "/app/lead/log-notes",
+        icon: "settings_suggest",
+
+      },
+      {
+        key: "Channel",
+        name: "Channel",
+        link: "/app/lead/channel",
+        icon: "settings_suggest",
+
+      },
+
     ],
   },
   {
@@ -261,6 +265,39 @@ module.exports = [
         link: "/app/Job_Application",
         icon: "settings_suggest",
       },
+      // {
+      //   key: "applicantlist",
+      //   name: "Applicant List",
+      //   link: "/app/applicantlist",
+      //   icon: "settings_suggest",
+      //   badge: "Hot",
+      // },
+    ],
+  },
+  {
+    key: "Procurement",
+    name: "Procurement",
+    icon: "settings_suggest",
+    child: [
+      {
+        key: "Requirement",
+        name: "Requirement",
+        link: "/app/requirement",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Quotation",
+        name: "Quotation",
+        link: "/app/quotation",
+        icon: "settings_suggest",
+      },
+      {
+        key: "Billing",
+        name: "Billing",
+        link: "/app/billing",
+        icon: "settings_suggest",
+      },
+
     ],
   },
 ];

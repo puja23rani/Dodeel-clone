@@ -103,7 +103,7 @@ import {
   Proposal,
   Customer,
   InvoiceView,
- 
+
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -124,6 +124,11 @@ import Holidays from "../Pages/HRMmodule/HRMmanagement/Holidays";
 import Payroll from "../Pages/HRMmodule/HRMmanagement/Payroll";
 import Appraisal from "../Pages/HRMmodule/HRMmanagement/Appraisal";
 import AppraisalList from "../Pages/HRMmodule/HRMmanagement/AppraisalList";
+import JobAppView from "../Pages/Recruitment/jobview";
+import JobApplicantView from "../Pages/Recruitment/applicantview";
+import Requirement from "../Pages/Procurement/requirement";
+import Quotation from "../Pages/Procurement/quotation";
+import Billing from "../Pages/Procurement/billing";
 
 function Application(props) {
   const { history } = props;
@@ -281,17 +286,26 @@ function Application(props) {
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
+        <Route path="/jobview" element={<JobAppView />} />
+        <Route path="/applicantview" element={<JobApplicantView />} />
 
-          {/* Sales Pages */}
-          <Route path="/sales/bill-tax" element={<BillTax />} />
-          <Route path="/sales/customer" element={<Customer />} />
-          
-          <Route path="/sales/invoice" element={<Invoice />} />
-          <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
-          <Route path="/sales/payments" element={<Payments />} />
-          <Route path="/sales/project" element={<Project />} />
-          <Route path="/sales/proposal" element={<Proposal />} />
-          
+        {/* Sales Pages */}
+        <Route path="/sales/bill-tax" element={<BillTax />} />
+        <Route path="/sales/customer" element={<Customer />} />
+
+        <Route path="/sales/invoice" element={<Invoice />} />
+        <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
+        <Route path="/sales/payments" element={<Payments />} />
+        <Route path="/sales/project" element={<Project />} />
+        <Route path="/sales/proposal" element={<Proposal />} />
+
+
+        {/* Procurement Pages */}
+        <Route path="/requirement" element={<Requirement />} />
+        <Route path="/quotation" element={<Quotation />} />
+        <Route path="/billing" element={<Billing />} />
+
+
 
       </Routes>
 
