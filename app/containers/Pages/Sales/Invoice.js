@@ -474,11 +474,12 @@ function Invoice() {
 
           toggle: false,
         });
-        setOpenDialog(false);
-        setMessage("Saved successfully!");
-        setOpen(true);
-        setSeverity("success");
-      } else {
+        // setOpenDialog(false);
+        // setMessage("Saved successfully!");
+        // setOpen(true);
+        // setSeverity("success");
+        navigate("/app/sales/invoice/invoice-view",{state:{ InvoiceID: result._id },})
+      } else { 
         setMessage(result.message);
         setOpen(true);
         setSeverity("error");

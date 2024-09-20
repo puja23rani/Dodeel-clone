@@ -32,6 +32,7 @@ import Popup from "../../../components/Popup/Popup";
 import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Editor } from "draft-js";
+import { useLocation } from "react-router-dom";
 const useStyles = makeStyles()((theme) => ({
     textEditor: {
         // optional padding for better spacing
@@ -208,8 +209,8 @@ function InvoiceView() {
         console.error("Error fetching data:", error);
       });
   };
-
-  const { InvoiceID } = 85;
+  const location = useLocation();
+  const { InvoiceID } =location.state || {};
   const { classes } = useStyles();
   const token = localStorage.getItem("token");
   const [list, setList] = useState([]);
@@ -274,14 +275,14 @@ function InvoiceView() {
       if (authToken) {
         loginHeaders.append("Authorization", `Bearer ${authToken}`);
       }
-      const data = { id: InvoiceID };
+      const data = { id:InvoiceID };
       const requestOptions = {
         method: "POST",
         headers: loginHeaders,
         body: JSON.stringify(data),
       };
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/getInvoiceById`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getInvoiceById`,
         requestOptions
       );
       const actualData = await res.json();
@@ -625,16 +626,7 @@ function InvoiceView() {
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
           <div className={classes.actions}>
-            <Tooltip title="Add Item">
-              <Button
-                variant="contained"
-                onClick={() => setOpenDialog(true)}
-                color="primary"
-                className={classes.button}
-              >
-                <AddIcon /> Add Bill Tax
-              </Button>
-            </Tooltip>
+            
           </div>
         </Toolbar>
         <div className={classes.contentSection}>
@@ -1202,18 +1194,7 @@ function InvoiceView() {
                 })
               }
             /> */}
-              {/* <Editor
-                editorState={state.billNote}
-                editorClassName={classes.textEditor}
-                toolbarClassName={classes.toolbarEditor}
-                onEditorStateChange={(editorStateParam) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    billNote: editorStateParam, // Directly setting the editorState into billNote
-                  }))
-                }
-                placeholder="Bill Notes"
-              /> */}
+             
             </Grid>
           </Paper>
 
