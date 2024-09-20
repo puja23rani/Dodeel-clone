@@ -14,6 +14,7 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import messages from "./messages";
 import useStyles from "./user-jss";
 import { DoddleLogo } from "../../../Assets";
+import Popup from "../Popup/Popup";
 
 function LoginForm(props) {
   const { classes, cx } = useStyles();
@@ -22,7 +23,40 @@ function LoginForm(props) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
 
+  const validate = () => {
+    let isValid = true;
+    let errors = {};
+  
+    // Email validation
+    if (!state.email.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(state.email)) {
+      errors.email = "Email is invalid";
+      isValid = false;
+    }
+  
+    // Password validation: must be between 6 to 10 characters
+    if (!state.password.toString().trim()) {
+      errors.password = "Password is required";
+      isValid = false;
+    } else if (state.password.toString().length < 6 || state.password.toString().length > 10) {
+      errors.password = "Password must be between 6 to 10 characters";
+      isValid = false;
+    }
+  
+    setErrors(errors);
+    return isValid;
+  };
+  
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
   const navigate = useNavigate();
   const [state, setState] = useState({
     email: "",
@@ -30,6 +64,7 @@ function LoginForm(props) {
   });
 
   const handleLogin = async () => {
+    if(!validate()){return;}
     const loginHeaders = new Headers();
     loginHeaders.append("Content-Type", "application/json");
 
@@ -53,9 +88,15 @@ function LoginForm(props) {
         window.localStorage.setItem("role", actualData.role);
         navigate("/app");
       }
+    }else{
+      setMessage(actualData.message);
+      setOpen(true);
+      setSeverity("error");
     }
   };
-
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <section style={{ backgroundColor: "#fff", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
       <div style={{ width: "100%", maxWidth: "350px" }}>
@@ -72,6 +113,8 @@ function LoginForm(props) {
               value={state.email}
               onChange={(e) => setState({ ...state, email: e.target.value })}
               className={classes.field}
+              error={!!errors.email} // Show error if it exists
+              helperText={errors.email} // Display error message
               fullWidth
             />
           </FormControl>
@@ -100,6 +143,8 @@ function LoginForm(props) {
                 ),
               }}
               fullWidth
+              error={!!errors.password} // Show error if it exists
+              helperText={errors.password} // Display error message
             />
           </FormControl>
         </div>
@@ -122,6 +167,12 @@ function LoginForm(props) {
             )}
           </Button>
         </div>
+        <Popup
+        open={open}
+        message={message}
+        onClose={handleClose}
+        severity={severity} // You can change this to "error", "warning", etc.
+      />
       </div>
     </section>
   );

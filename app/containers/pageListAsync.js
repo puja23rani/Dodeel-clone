@@ -444,33 +444,81 @@ export const LeadDetails = loadable(
     fallback: <Loading />,
   }
 );
+export const  Invoice = loadable(
+  () => import("../containers/Pages/Sales/Invoice"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const BillTax = loadable(
+  () => import("../containers/Pages/Sales/BillTax"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Proposal = loadable(
+  () => import("../containers/Pages/Sales/Proposal"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Customer = loadable(
+  () => import("../containers/Pages/Sales/Customer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Payments = loadable(
+  () => import("../containers/Pages/Sales/Payments"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Project = loadable(
+  () => import("../containers/Pages/Sales/Project"),
+  {
+    fallback: <Loading />,
+  }
+);
+// ------------------------------------------------
 // Asset management
+// ------------------------------------------------
 export const Contractor = loadable(
   () => import("../containers/Pages/AssetModule/Contractor"),
   {
     fallback: <Loading />,
   }
 );
+
 export const Category = loadable(
   () => import("../containers/Pages/AssetModule/Category"),
   {
     fallback: <Loading />,
   }
 );
+
 export const Supplier = loadable(
   () => import("../containers/Pages/AssetModule/Supplier"),
   {
     fallback: <Loading />,
   }
 );
+
 export const Product = loadable(
   () => import("../containers/Pages/AssetModule/Product"),
   {
     fallback: <Loading />,
   }
 );
+
 export const Warehouse = loadable(
   () => import("../containers/Pages/AssetModule/Warehouse"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Warehouse_list = loadable(
+  () => import("../containers/Pages/AssetModule/Warehouses/Warehouse_list"),
   {
     fallback: <Loading />,
   }

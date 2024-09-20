@@ -95,6 +95,14 @@ import {
   LeadMembers,
   LeadDetails,
   Applicantlist,
+  BillTax,
+  Proposal_Template,
+  Invoice,
+  Payments,
+  Project,
+  Proposal,
+  Customer,
+ 
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -114,6 +122,7 @@ import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
 import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
 import Product from "../Pages/AssetModule/Product";
 import Warehouse from "../Pages/AssetModule/Warehouse";
+import Warehouse_list from "../Pages/AssetModule/Warehouses/Warehouse_list";
 
 function Application(props) {
   const { history } = props;
@@ -271,7 +280,22 @@ function Application(props) {
         <Route path="/Supplier" element={<Supplier />} />
         <Route path="/Product" element={<Product />} />
         <Route path="/Warehouse" element={<Warehouse />} />
+        <Route path="/Warehouse_list" element={<Warehouse_list />} />
+
+          {/* Sales Pages */}
+          <Route path="/sales/bill-tax" element={<BillTax />} />
+          <Route path="/sales/customer" element={<Customer />} />
+          
+          <Route path="/sales/invoice" element={<Invoice />} />
+          <Route path="/sales/payments" element={<Payments />} />
+          <Route path="/sales/project" element={<Project />} />
+          <Route path="/sales/proposal" element={<Proposal />} />
+          
+
       </Routes>
+
+
+
     </Dashboard>
   );
 }

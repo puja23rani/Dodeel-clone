@@ -28,12 +28,12 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
-import Popup from "../../../components/Popup/Popup";
-import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
-import TablePlayground from "../../Tables/TablePlayground";
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
-import AdapterMoment from "@mui/x-date-pickers/AdapterMoment";
-import moment from "moment";
+import Popup from "../../../../components/Popup/Popup";
+import AlertDialog from "../../../UiElements/demos/DialogModal/AlertDialog";
+import TablePlayground from "../../../Tables/TablePlayground";
+
+
+
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function Warehouse() {
+function Warehouse_list() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -175,69 +175,46 @@ function Warehouse() {
       disablePadding: false,
       label: "Warehouse Code",
     },
-    {
-      id: "address",
-      numeric: true,
-      disablePadding: false,
-      label: "Address",
-    },
-    {
-      id: "inductionDate",
-      numeric: false,
-      disablePadding: false,
-      label: "Induction Date",
-    },
-
+ 
     { id: "actions", label: "Action" },
   ];
-  const [empList, setEmpList] = React.useState([]);
-  const table3 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
+//   const [empList, setEmpList] = React.useState([]);
+//   const table3 = async () => {
+//     try {
+//       const loginHeaders = new Headers();
+//       loginHeaders.append("Content-Type", "application/json");
 
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
+//       // Assuming you have an authorization token stored in localStorage
+//       const authToken = localStorage.getItem("token");
+//       if (authToken) {
+//         loginHeaders.append("Authorization", `Bearer ${authToken}`);
+//       }
 
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      if (Array.isArray(actualData.employees)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setEmpList(actualData.employees);
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-  };
+//       const requestOptions = {
+//         method: "GET",
+//         headers: loginHeaders,
+//       };
+//       const res = await fetch(
+//         `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
+//         requestOptions
+//       );
+//       const actualData = await res.json();
+//       if (Array.isArray(actualData.employees)) {
+//         const newobj = actualData.employees.map((item) => ({
+//           title: item.personalDetails.employeeName, // Set the title from channelName
+//           id: item._id, // Set the id from _id
+//         }));
+//         setEmpList(actualData.employees);
+//       }
+//     } catch (err) {
+//       //console.log(err);
+//     }
+//   };
 
-  useEffect(() => {
-    table3();
-  }, []);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
-
-  const handleMenuClick = (event, employee) => {
-    setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
-    setSelectedEmployee(employee); // Set the selected employee
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null); // Reset anchorEl to null to close the menu
-    setSelectedEmployee(null); // Reset selected employee
-  };
+//   useEffect(() => {
+//     table3();
+//   }, []);
+ 
   console.log(state, "stateware");
   function fetchWH(pg) {
     axios
@@ -262,48 +239,10 @@ function Warehouse() {
               id: item._id,
               warehouseName: item.warehouseName || "N/A",
               warehouseCode: item.warehouseCode || "N/A",
-              address: item.address || "N/A",
-              inductionDate: item.inductionDate.slice(0, 10) || "N/A",
+             
               actions: (
                 <>
-                  <IconButton
-                    aria-label="Edit"
-                    onClick={(e) => {
-                      window.scrollTo({
-                        top: 0,
-                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-                      });
-                      setItemToDelete(item._id);
-                      setState({
-                        warehouseName: item.warehouseName,
-                        warehouseCode: item.warehouseCode,
-                        address: item.address,
-                        latitude: item.latitude,
-                        longitude: item.longitude,
-                        accountSupervisorName: item.accountSupervisorName,
-                        // accountSupervisor: item.accountSupervisor,
-                        dispatchSupervisorName: item.dispatchSupervisorName,
-                        // dispatchSupervisor: item.dispatchSupervisor,
-                        inductionDate: item.inductionDate.slice(0,10),
-                        dispatchSupervisorName: {
-                          id: item.dispatchSupervisor,
-                          title: item.dispatchSupervisorName,
-                        },
-                        accountSupervisorName: {
-                          id: item.accountSupervisor,
-                          title: item.dispatchSupervisorName,
-                        },
-                        // Lead_Status: {
-                        //   id: item.leadStatusID?.id,
-                        //   title: item.leadStatusID?.StatusName,
-                        // },
-                        isUpdate: true,
-                      });
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
+                  
                   <IconButton
                     aria-label="Delete"
                     onClick={() => {
@@ -328,193 +267,9 @@ function Warehouse() {
   useEffect(() => {
     fetchWH(page);
   }, [page, rowsPerPage]);
-  const handleCreateWH = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
-      return;
-    }
-    console.log("p1");
-    try {
-      // Prepare the data to match the required request body format
-      const data = {
-        warehouseName: state.warehouseName,
-        warehouseCode: state.warehouseCode,
-        address: state.address, // campaignName from state
-        latitude: state.latitude,
-        longitude: state.longitude,
-        accountSupervisor: state.accountSupervisorName.id,
-        accountSupervisorName: state.accountSupervisorName.title,
-        // accountSupervisor: state.accountSupervisor.id,
-        // dispatchSupervisor: state.dispatchSupervisor.id,
-        dispatchSupervisor: state.dispatchSupervisorName.id,
-        dispatchSupervisorName: state.dispatchSupervisorName.title,
-        inductionDate: state.inductionDate,
-      };
-      console.log("p2");
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createWarehouse`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      console.log("p3");
-      const result = await response.json();
-      if (result.status === 200) {
-        fetchWH();
-        window.scrollTo({
-          top: 400,
-          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-        });
-        // Reset the state after successful creation
-        setState({
-          warehouseName: "",
-          warehouseCode: "",
-          address: "",
-          latitude: "",
-          longitude: "",
-          accountSupervisorName: "",
-          accountSupervisor: "",
-          dispatchSupervisorName: "",
-          dispatchSupervisor: "",
-          inductionDate: "",
-          isUpdate: false,
-        });
-        setOpenDialog(false);
-        setMessage("Saved successfully!");
-        setOpen(true);
-        setSeverity("success");
-      } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-      }
-    } catch (err) {
-      console.log(err);
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
-    }
-  };
-  const handleUpdateWH = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
-      return;
-    }
-    console.log("p1");
-    try {
-      // Prepare the data to match the required request body format
-      const data = {
-        id: parseInt(itemToDelete),
-        // campaignID: state.Campaign.id, // campaignName from state
-        // channelID: state.Channel.id,
-        warehouseName: state.warehouseName,
-        warehouseCode: state.warehouseCode,
-        address: state.address, // campaignName from state
-        latitude: state.latitude,
-        longitude: state.longitude,
-        accountSupervisor: state.accountSupervisorName.id,
-        accountSupervisorName: state.accountSupervisorName.title,
-        // accountSupervisor: state.accountSupervisor.id,
-        // dispatchSupervisor: state.dispatchSupervisor.id,
-        dispatchSupervisor: state.dispatchSupervisorName.id,
-        dispatchSupervisorName: state.dispatchSupervisorName.title,
-        inductionDate: state.inductionDate,
-      };
-      console.log("p2");
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/updateWarehouse`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      console.log("p3");
-      const result = await response.json();
-      if (result.status === 200) {
-        fetchWH();
-        window.scrollTo({
-          top: 400,
-          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-        });
-        // Reset the state after successful creation
-        setState({
-          warehouseName: "",
-          warehouseCode: "",
-          address: "",
-          latitude: "",
-          longitude: "",
-          accountSupervisorName: "",
-          accountSupervisor: "",
-          dispatchSupervisorName: "",
-          dispatchSupervisor: "",
-          inductionDate: "",
-          isUpdate: false,
-        });
-        setOpenDialog(false);
-        setMessage("Updated successfully!");
-        setOpen(true);
-        setSeverity("success");
-      } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-      }
-    } catch (err) {
-      console.log(err);
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
-    }
-  };
-  const handleCampaignDelete = async () => {
-    try {
-      const data = { id: parseInt(itemToDelete) };
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadDetail`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const result = await response.json();
-      if (result.status === 200) {
-        setDeleteDialogOpen(false);
-        fetchWH();
-        setMessage("Deleted successfully!");
-        setOpen(true);
-        setSeverity("success");
-        setItemToDelete(null);
-      } else {
-        setMessage(actualData.message);
-        setOpen(true);
-        setSeverity("error");
-        setItemToDelete(null);
-      }
-    } catch (err) {
-      //console.log(err);
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
-    }
-  };
+  
+  
+  
 
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
@@ -545,7 +300,7 @@ function Warehouse() {
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
           <div className={classes.actions}>
-            <Tooltip title="Add Item">
+            {/* <Tooltip title="Add Item">
               <Button
                 variant="contained"
                 onClick={() => setOpenDialog(true)}
@@ -554,10 +309,10 @@ function Warehouse() {
               >
                 <AddIcon /> Add Warehouse
               </Button>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </Toolbar>
-        <Dialog
+        {/* <Dialog
           open={openDialog}
           onClose={() => {
             setState({
@@ -900,7 +655,7 @@ function Warehouse() {
               </>
             )}
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
 
       {rowdata && (
@@ -921,7 +676,7 @@ function Warehouse() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCampaignDelete}
+        // onDelete={handleCampaignDelete}
       />
       <Popup
         open={open}
@@ -933,4 +688,4 @@ function Warehouse() {
   );
 }
 
-export default Warehouse;
+export default Warehouse_list;
