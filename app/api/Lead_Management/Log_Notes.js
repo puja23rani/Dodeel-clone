@@ -127,7 +127,7 @@ function Log_Notes() {
                       });
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -136,7 +136,7 @@ function Log_Notes() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),

@@ -401,7 +401,7 @@ function Applicantlist() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -410,7 +410,7 @@ function Applicantlist() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -707,7 +707,32 @@ function Applicantlist() {
 
   console.log(state)
 
-
+  const handleInputChange = (e) => {
+    setState({
+      ...state,
+      inputSkill: e.target.value,
+    });
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && state.inputSkill.trim()) {
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
+    } else if (e.key === "Backspace" && !state.inputSkill) {
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
+    }
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
+    setState((prevState) => ({
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+    }));
+  };
   const handlePageChange = (event, newPage) => {
     setPage(newPage); // Update the current page
   };
@@ -1020,7 +1045,7 @@ function Applicantlist() {
                         {...params}
                         variant="standard"
                         label="Custom Question"
-                        
+
                         error={!!errors.customQuestion} // Show error if it exists
                         helperText={errors.customQuestion} // Display error message
                       />

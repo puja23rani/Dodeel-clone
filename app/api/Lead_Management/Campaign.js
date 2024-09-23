@@ -280,7 +280,7 @@ function Campaign() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -289,7 +289,7 @@ function Campaign() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -515,7 +515,7 @@ function Campaign() {
   };
   //console.log(state, "sssssss");
   const handleClear=()=>{
-    () => {
+    
       setState({
         membersID: [],
         campaignName: "",
@@ -534,7 +534,7 @@ function Campaign() {
         fieldset: [{ name: "", value: "" }],
       })
       setOpenDialog(false);
-    }
+  
   }
   return (
     <>

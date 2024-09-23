@@ -14,7 +14,9 @@ import { toast } from "react-toastify";
 import Popup from "../../components/Popup/Popup";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Autocomplete,
   Dialog,
@@ -166,17 +168,17 @@ function LeadDetails() {
     Phone_Number: "",
     Description: "",
   });
-  
+
   const validate = () => {
     let isValid = true;
     let errors = {};
-  
+
     // Validate Name (leadName)
     if (!state.Name.trim()) {
       errors.Name = "Lead Name is required";
       isValid = false;
     }
-  
+
     // Validate Email
     if (!state.Email.trim()) {
       errors.Email = "Email is required";
@@ -185,25 +187,25 @@ function LeadDetails() {
       errors.Email = "Invalid email format";
       isValid = false;
     }
-  
+
     // Validate Campaign ID
     if (!state.Campaign || !state.Campaign.id) {
       errors.Campaign = "Campaign selection is required";
       isValid = false;
     }
-  
+
     // Validate Channel ID
     if (!state.Channel || !state.Channel.id) {
       errors.Channel = "Channel selection is required";
       isValid = false;
     }
-  
+
     // Validate Lead Status ID
     if (!state.Lead_Status || !state.Lead_Status.id) {
       errors.Lead_Status = "Lead Status selection is required";
       isValid = false;
     }
-  
+
     // Validate Phone Number
     if (!state.Phone_Number.toString().trim()) {
       errors.Phone_Number = "Phone number is required";
@@ -212,17 +214,17 @@ function LeadDetails() {
       errors.Phone_Number = "Phone number must be a valid 10-digit number";
       isValid = false;
     }
-  
+
     // Validate Description (notes)
     if (!state.Description.trim()) {
       errors.Description = "Description is required";
       isValid = false;
     }
-  
+
     setErrors(errors);
     return isValid;
   };
-  
+
   const [errorsfollow, setErrorsfollow] = useState({
     leadName: "",
     employeeName: "",
@@ -231,26 +233,26 @@ function LeadDetails() {
     reminderNote: "",
     reminderDate: "",
   });
-  
+
   const validateFieldsfollow = () => {
     let isValid = true;
     let errorsfollow = {};
-  
+
     if (!statefollow.Name.trim()) {
       errorsfollow.leadName = "Lead Name is required";
       isValid = false;
     }
-  
+
     if (!statefollow.employeeName || statefollow.employeeName.length === 0) {
       errorsfollow.employeeName = "At least one Employee Name is required";
       isValid = false;
     }
-  
+
     if (!statefollow.time.trim()) {
       errorsfollow.followupTime = "Follow-up Time is required";
       isValid = false;
     }
-  
+
     if (!statefollow.minuteBeforeReminder.trim()) {
       errorsfollow.minuteBeforeReminder = "Minute Before Reminder is required";
       isValid = false;
@@ -261,21 +263,21 @@ function LeadDetails() {
       errorsfollow.minuteBeforeReminder = "Value must be between 1 and 59 minutes";
       isValid = false;
     }
-  
+
     if (!statefollow.reminderNote.trim()) {
       errorsfollow.reminderNote = "Reminder Note is required";
       isValid = false;
     }
-  
+
     if (!statefollow.date.trim()) {
       errorsfollow.reminderDate = "Reminder Date is required";
       isValid = false;
     }
-  
+
     setErrorsfollow(errorsfollow);
     return isValid;
   };
-  
+
   const [rowdata, setRowdata] = useState([]);
   const [mainlist, setMainList] = useState([]);
   const [page, setPage] = useState(0);
@@ -571,49 +573,49 @@ function LeadDetails() {
     employeeName: "",
     noteID: "",
   });
-  
+
   // Validation function for the log
   const validateLog = () => {
     let isValid = true;
     let errors = {};
-  
+
     if (!leadId) {
       errors.leadID = "Lead ID is required";
       isValid = false;
     }
-  
+
     if (!statelog.Lead_Status?.id) {
       errors.leadStatusID = "Lead Status is required";
       isValid = false;
     }
-  
+
     if (!statelog.date?.trim()) {
       errors.date = "Date is required";
       isValid = false;
     }
-  
+
     if (!statelog.time?.trim()) {
       errors.time = "Time is required";
       isValid = false;
     }
-  
+
     if (!statelog.employeeName?.id) {
       errors.employeeName = "Employee Name is required";
       isValid = false;
     }
-  
+
     if (!statelog.notes?.id) {
       errors.noteID = "Note is required";
       isValid = false;
     }
-  
+
     setErrorsLog(errors);
     return isValid;
   };
-  
+
 
   const handleUpdateNewLead = async () => {
-    if(!validate()){return;}
+    if (!validate()) { return; }
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -699,7 +701,7 @@ function LeadDetails() {
   }
   console.log(state);
   const handleCreateLeadlog = async () => {
-   if(!validateLog()){return;}
+    if (!validateLog()) { return; }
 
     try {
       const loginHeaders = new Headers();
@@ -778,7 +780,7 @@ function LeadDetails() {
 
   // Test examples
   const handleUpdateLeadlog = async () => {
-    if(!validateLog()){return;}
+    if (!validateLog()) { return; }
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -1054,8 +1056,8 @@ function LeadDetails() {
                               Name: validInput,
                             });
                           }}
-                          // error={!!errors.Name} // Show error if it exists
-                          // helperText={errors.Name} // Display error message
+                        // error={!!errors.Name} // Show error if it exists
+                        // helperText={errors.Name} // Display error message
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -1279,7 +1281,7 @@ function LeadDetails() {
                       <Button
                         color="primary"
                         variant="contained"
-                        // onClick={handleCreatemembers}
+                      // onClick={handleCreatemembers}
                       >
                         Create
                       </Button>
@@ -1546,8 +1548,8 @@ function LeadDetails() {
                             label="Name"
                             value={statelog.Name}
                             InputProps={{ readOnly: true }}
-                            // error={!!errors.Name} // Show error if it exists
-                            // helperText={errors.Name} // Display error message
+                          // error={!!errors.Name} // Show error if it exists
+                          // helperText={errors.Name} // Display error message
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -1565,8 +1567,8 @@ function LeadDetails() {
                             }
                             sx={{ width: 414 }}
                             InputLabelProps={{ shrink: true }}
-                              error={!!errorsLog.date} // Show error if it exists
-                              helperText={errorsLog.date} // Display error message
+                            error={!!errorsLog.date} // Show error if it exists
+                            helperText={errorsLog.date} // Display error message
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -1597,8 +1599,8 @@ function LeadDetails() {
                               step: 300, // 5 min
                             }}
                             sx={{ width: 414 }}
-                              error={!!errorsLog.time} // Show error if it exists
-                              helperText={errorsLog.time} // Display error message
+                            error={!!errorsLog.time} // Show error if it exists
+                            helperText={errorsLog.time} // Display error message
                           />
                         </Grid>
 
@@ -1646,8 +1648,8 @@ function LeadDetails() {
                                 margin="normal"
                                 variant="standard"
                                 name="notes"
-                                error={!!errorsLog.noteID } // Show error if it exists
-                                helperText={errorsLog.noteID } // Display error message
+                                error={!!errorsLog.noteID} // Show error if it exists
+                                helperText={errorsLog.noteID} // Display error message
                               />
                             )}
                           />
@@ -1693,8 +1695,8 @@ function LeadDetails() {
                                 margin="normal"
                                 variant="standard"
                                 name="leadStatus"
-                                error={!!errorsLog.leadStatusID } // Show error if it exists
-                                helperText={errorsLog.leadStatusID } // Display error message
+                                error={!!errorsLog.leadStatusID} // Show error if it exists
+                                helperText={errorsLog.leadStatusID} // Display error message
                               />
                             )}
                           />
@@ -1739,8 +1741,8 @@ function LeadDetails() {
                                 margin="normal"
                                 variant="standard"
                                 name="employeeName"
-                                error={!!errorsLog.employeeName } // Show error if it exists
-                                helperText={errorsLog.employeeName } // Display error message
+                                error={!!errorsLog.employeeName} // Show error if it exists
+                                helperText={errorsLog.employeeName} // Display error message
                               />
                             )}
                           />
@@ -1915,8 +1917,8 @@ function LeadDetails() {
                           label="Name"
                           value={statefollow.Name}
                           InputProps={{ readOnly: true }}
-                          // error={!!errors.Name} // Show error if it exists
-                          // helperText={errors.Name} // Display error message
+                        // error={!!errors.Name} // Show error if it exists
+                        // helperText={errors.Name} // Display error message
                         />
                       </Grid>
 
@@ -1948,8 +1950,8 @@ function LeadDetails() {
                             step: 300, // 5 min
                           }}
                           sx={{ width: 414 }}
-                            error={!!errorsfollow.followupTime} // Show error if it exists
-                            helperText={errorsfollow.followupTime} // Display error message
+                          error={!!errorsfollow.followupTime} // Show error if it exists
+                          helperText={errorsfollow.followupTime} // Display error message
                         />
                       </Grid>
 
@@ -2004,7 +2006,7 @@ function LeadDetails() {
                           sx={{ width: 414 }}
                           InputLabelProps={{ shrink: true }}
                           error={!!errorsfollow.reminderDate} // Show error if it exists
-                        helperText={errorsfollow.reminderDate} // Display error message
+                          helperText={errorsfollow.reminderDate} // Display error message
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -2036,7 +2038,7 @@ function LeadDetails() {
                           }}
                           error={!!errorsfollow.minuteBeforeReminder} // Show error if it exists
                           helperText={errorsfollow.minuteBeforeReminder} // Display error message
-                          
+
                         />
                       </Grid>
 

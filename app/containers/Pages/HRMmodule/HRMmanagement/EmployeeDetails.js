@@ -129,7 +129,7 @@ function EmployeeDetails() {
                                             });
                                         }}
                                     >
-                                        <EditIcon />
+                                        <EditIcon color={"primary"} />
                                     </IconButton>
                                     <IconButton
                                         aria-label="Delete"
@@ -138,7 +138,7 @@ function EmployeeDetails() {
                                             setIdToDelete(item._id);
                                         }}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon color={"primary"} />
                                     </IconButton>
                                 </>
                             ),
@@ -233,7 +233,7 @@ function EmployeeDetails() {
                                 color="primary"
                                 className={classes.button}
                             >
-                                <AddIcon /> Add Contact Details
+                                <AddIcon /> Add Employee
                             </Button>
                         </Tooltip>
                     </div>
@@ -242,7 +242,7 @@ function EmployeeDetails() {
 
             {rowdata && (
                 <TablePlayground
-                    title="Contact Details List"
+                    title="Employee List"
                     columnData={columnData}
                     rowData={rowdata}
                     component="div"

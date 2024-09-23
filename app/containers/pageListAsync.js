@@ -481,6 +481,12 @@ export const  Invoice = loadable(
     fallback: <Loading />,
   }
 );
+export const  InvoiceView = loadable(
+  () => import("../containers/Pages/Sales/InvoiceView"),
+  {
+    fallback: <Loading />,
+  }
+);
 export const Payments = loadable(
   () => import("../containers/Pages/Sales/Payments"),
   {

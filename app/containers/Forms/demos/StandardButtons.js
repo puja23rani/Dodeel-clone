@@ -160,7 +160,7 @@ function StandardButtons() {
             Icon buttons are commonly found in app bars and toolbars.
           </Typography>
           <IconButton className={classes.button} aria-label="Delete" size="large">
-            <DeleteIcon />
+            <DeleteIcon color={"primary"} />
           </IconButton>
           <IconButton
             className={classes.button}
@@ -168,7 +168,7 @@ function StandardButtons() {
             disabled
             color="primary"
             size="large">
-            <DeleteIcon />
+            <DeleteIcon color={"primary"} />
           </IconButton>
           <IconButton
             color="secondary"

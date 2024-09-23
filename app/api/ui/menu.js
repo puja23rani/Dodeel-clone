@@ -25,43 +25,43 @@ module.exports = [
       {
         key: "Timesheet",
         name: "Timesheet",
-        link: "/app/hrm-setting/designation",
+        link: "/app/hrm-setting/timeSheet",
         icon: "settings_suggest",
       },
       {
         key: "Attendance",
         name: "Attendance",
-        link: "/app/hrm-setting/designation",
+        link: "/app/hrm-setting/attendance",
         icon: "settings_suggest",
       },
       {
         key: "Leave_Request",
         name: "Leave Request",
-        link: "/app/hrm-setting/leave",
+        link: "/app/hrm-setting/leave-request",
         icon: "settings_suggest",
       },
       {
         key: "Task",
         name: "Task",
-        link: "/app/hrm-setting/allowance",
+        link: "/app/hrm-setting/task",
         icon: "settings_suggest",
       },
       {
         key: "Holidays",
         name: "Holidays",
-        link: "/app/hrm-setting/performance",
+        link: "/app/hrm-setting/holidays",
         icon: "settings_suggest",
       },
       {
         key: "Payroll",
         name: "Payroll",
-        link: "/app/hrm-setting/compentency-type",
+        link: "/app/hrm-setting/payroll",
         icon: "settings_suggest",
       },
       {
         key: "Appraisal",
         name: "Appraisal",
-        link: "/app/hrm-setting/competenies",
+        link: "/app/hrm-setting/appraisal",
         icon: "settings_suggest",
       },
       {
@@ -165,21 +165,21 @@ module.exports = [
         name: "Lead Status",
         link: "/app/lead/lead-status",
         icon: "settings_suggest",
-       
+
       },
       {
         key: "Log_Notes",
         name: "Log Notes",
         link: "/app/lead/log-notes",
         icon: "settings_suggest",
-       
+
       },
       {
         key: "Channel",
         name: "Channel",
         link: "/app/lead/channel",
         icon: "settings_suggest",
-       
+
       },
 
     ],
@@ -189,7 +189,7 @@ module.exports = [
     name: "Sales",
     icon: "settings_suggest",
     child: [
-      
+
       {
         key: "Sales_Management",
         name: "Sales Management",
@@ -235,13 +235,13 @@ module.exports = [
         name: "Bill Tax",
         link: "/app/sales/bill-tax",
         icon: "settings_suggest",
-       
+
       },
-      
-     
+
+
     ],
   },
-  
+
   {
     key: "Recruitments",
     name: "Recruitments",

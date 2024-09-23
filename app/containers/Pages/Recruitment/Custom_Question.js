@@ -150,7 +150,7 @@ function Custom_Question() {
 
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -159,7 +159,7 @@ function Custom_Question() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -215,15 +215,16 @@ function Custom_Question() {
               isUpdate: false,
             });
             setMessage("Saved successfully!");
-        setOpen(true);
-        setSeverity("success");
-        setOpenDialog(false);
+            setOpen(true);
+            setSeverity("success");
+            setOpenDialog(false);
 
-      } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-      }})
+          } else {
+            setMessage(result.message);
+            setOpen(true);
+            setSeverity("error");
+          }
+        })
         .catch((error) => {
           setMessage(err.message);
           setOpen(true);
@@ -328,7 +329,7 @@ function Custom_Question() {
             setOpen(true);
             setSeverity("error");
           }
-        
+
         })
         .catch((error) => {
           setMessage(err.message);
@@ -356,7 +357,7 @@ function Custom_Question() {
 
   return (
     <>
-     <div>
+      <div>
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
           <div className={classes.actions}>
@@ -379,7 +380,7 @@ function Custom_Question() {
           maxWidth="md"
         >
           <DialogTitle>
-          Custom Question Details
+            Custom Question Details
             <IconButton
               aria-label="close"
               className={classes.closeButton}
@@ -406,73 +407,73 @@ function Custom_Question() {
                 <Grid item xs={12}>
                   <div className={classes.form}>
                     <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="Custom_Question"
-                    name="Custom_Question"
-                    label="Custom Question"
-                    value={state.Custom_Question}
-                    onChange={(e) =>
-                      setState({ ...state, Custom_Question: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    id="highlights-demo"
-                    options={[
-                      { title: "Required" },
-                      { title: "Not Required" }
-                    ]}
-                    value={state.Required_or_Not}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Required_or_Not: null, // Set it to null when cleared
-                        });
-                      } else {
-                        setState({
-                          ...state,
-                          Required_or_Not: v, // Set the selected object
-                        });
-                      }
-                    }}
-                    getOptionLabel={(option) => option.title || ""} // Safely handle undefined option
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Requirement"
-                        // margin="normal"
-                        variant="standard"
-                      />
-                    )}
-                    renderOption={(props, option, { inputValue }) => {
-                      const matches = match(option.title, inputValue, { insideWords: true });
-                      const parts = parse(option.title, matches);
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          variant="standard"
+                          id="Custom_Question"
+                          name="Custom_Question"
+                          label="Custom Question"
+                          value={state.Custom_Question}
+                          onChange={(e) =>
+                            setState({ ...state, Custom_Question: e.target.value })
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Autocomplete
+                          id="highlights-demo"
+                          options={[
+                            { title: "Required" },
+                            { title: "Not Required" }
+                          ]}
+                          value={state.Required_or_Not}
+                          onChange={(e, v, reason) => {
+                            if (reason === "clear") {
+                              setState({
+                                ...state,
+                                Required_or_Not: null, // Set it to null when cleared
+                              });
+                            } else {
+                              setState({
+                                ...state,
+                                Required_or_Not: v, // Set the selected object
+                              });
+                            }
+                          }}
+                          getOptionLabel={(option) => option.title || ""} // Safely handle undefined option
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Requirement"
+                              // margin="normal"
+                              variant="standard"
+                            />
+                          )}
+                          renderOption={(props, option, { inputValue }) => {
+                            const matches = match(option.title, inputValue, { insideWords: true });
+                            const parts = parse(option.title, matches);
 
-                      return (
-                        <li {...props}>
-                          <div>
-                            {parts.map((part, index) => (
-                              <span
-                                key={index}
-                                style={{
-                                  fontWeight: part.highlight ? 700 : 400,
-                                }}
-                              >
-                                {part.text}
-                              </span>
-                            ))}
-                          </div>
-                        </li>
-                      );
-                    }}
-                  />
-                </Grid>
-                     
+                            return (
+                              <li {...props}>
+                                <div>
+                                  {parts.map((part, index) => (
+                                    <span
+                                      key={index}
+                                      style={{
+                                        fontWeight: part.highlight ? 700 : 400,
+                                      }}
+                                    >
+                                      {part.text}
+                                    </span>
+                                  ))}
+                                </div>
+                              </li>
+                            );
+                          }}
+                        />
+                      </Grid>
+
                     </Grid>
                   </div>
                 </Grid>
@@ -508,7 +509,7 @@ function Custom_Question() {
           </DialogActions>
         </Dialog>
       </div>
-     
+
       {rowdata && (
         <TablePlayground
         title="Custom Question List"

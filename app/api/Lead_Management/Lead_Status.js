@@ -143,7 +143,7 @@ function Lead_Status() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -152,7 +152,7 @@ function Lead_Status() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),

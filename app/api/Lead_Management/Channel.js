@@ -63,12 +63,12 @@ function Channel() {
     let errors = {};
 
     if (!state.Channel.trim()) {
-      errors.Status_Name = "Status Name is required";
+      errors.Channel = "Status Name is required";
       isValid = false;
     }
 
     if (!state.ApproxBudget.trim()) {
-      errors.Description = "Description is required";
+      errors.ApproxBudget = "ApproxBudget is required";
       isValid = false;
     }
 
@@ -141,7 +141,7 @@ function Channel() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -150,7 +150,7 @@ function Channel() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -339,6 +339,11 @@ function Channel() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(0); // Reset to first page
   };
+  function handleClear(){
+    setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});
+    setErrors({Channel:"",ApproxBudget:""});
+    setOpenDialog(false);
+  }
   return (
     <>
       <div>
@@ -359,7 +364,7 @@ function Channel() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >

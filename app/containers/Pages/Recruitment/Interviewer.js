@@ -138,7 +138,7 @@ function Interviewer() {
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -147,7 +147,7 @@ function Interviewer() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -265,9 +265,9 @@ function Interviewer() {
       id: itemToDelete,
       interviewerName: state.interviewerName,
     };
-  
+
     console.log(requestData);
-  
+
     if (state.interviewerName === "") {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -288,13 +288,13 @@ function Interviewer() {
           if (response.status === 200) {
             // Refresh the list of interviewers
             fetchInterviewer();
-  
+
             // Scroll smoothly to the top
             window.scrollTo({
               top: 400,
               behavior: "smooth",
             });
-  
+
             // Clear the form fields and reset isUpdate to false
             setState({
               ...state,
@@ -302,7 +302,7 @@ function Interviewer() {
               id: "", // Reset the id
               isUpdate: false, // Set isUpdate to false
             });
-  
+
             // Set success message and show notification
             setMessage("Updated successfully!");
             setOpen(true);
@@ -322,7 +322,7 @@ function Interviewer() {
         });
     }
   };
-  
+
   console.log(state)
 
   const handleClear=()=>{
@@ -340,7 +340,7 @@ function Interviewer() {
   
   return (
     <>
-    <div>
+      <div>
         <Toolbar className={classes.toolbar}>
           <div className={classes.spacer} style={{ flexGrow: 1 }} />
           <div className={classes.actions}>
@@ -363,7 +363,7 @@ function Interviewer() {
           maxWidth="md"
         >
           <DialogTitle>
-          Interviewer Details
+            Interviewer Details
             <IconButton
               aria-label="close"
               className={classes.closeButton}

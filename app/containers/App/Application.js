@@ -102,6 +102,7 @@ import {
   Project,
   Proposal,
   Customer,
+  InvoiceView,
  
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
@@ -115,11 +116,14 @@ import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
 import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
 import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
-import JobAppView from "../Pages/Recruitment/jobview";
-import JobApplicantView from "../Pages/Recruitment/applicantview";
-import Requirement from "../Pages/Procurement/requirement";
-import Quotation from "../Pages/Procurement/quotation";
-import Billing from "../Pages/Procurement/billing";
+import TimeSheet from "../Pages/HRMmodule/HRMmanagement/TimeSheet";
+import Attendance from "../Pages/HRMmodule/HRMmanagement/Attendance";
+import LeaveRequest from "../Pages/HRMmodule/HRMmanagement/LeaveRequest";
+import Task from "../Pages/HRMmodule/HRMmanagement/Task";
+import Holidays from "../Pages/HRMmodule/HRMmanagement/Holidays";
+import Payroll from "../Pages/HRMmodule/HRMmanagement/Payroll";
+import Appraisal from "../Pages/HRMmodule/HRMmanagement/Appraisal";
+import AppraisalList from "../Pages/HRMmodule/HRMmanagement/AppraisalList";
 
 function Application(props) {
   const { history } = props;
@@ -252,6 +256,15 @@ function Application(props) {
         {/* HRM Management */}
         <Route path="hrm-setting/employee-details" element={<EmployeeDetails />} />
         <Route path="hrm-setting/employee-details/create-employee-details" element={<CreateEmployee />} />
+        <Route path="hrm-setting/timeSheet" element={<TimeSheet />} />
+        <Route path="hrm-setting/attendance" element={<Attendance />} />
+        <Route path="hrm-setting/leave-request" element={<LeaveRequest />} />
+        <Route path="hrm-setting/task" element={<Task />} />
+        <Route path="hrm-setting/holidays" element={<Holidays />} />
+        <Route path="hrm-setting/payroll" element={<Payroll />} />
+        <Route path="hrm-setting/appraisal" element={<Appraisal />} />
+        <Route path="hrm-setting/appraisal-list" element={<AppraisalList />} />
+        {/* ------------------------------------------ */}
 
         {/* Lead Pages */}
         <Route path="lead/lead-status" element={<LeadStatus />} />
@@ -276,6 +289,7 @@ function Application(props) {
           <Route path="/sales/customer" element={<Customer />} />
           
           <Route path="/sales/invoice" element={<Invoice />} />
+          <Route path="/sales/invoice-view" element={<InvoiceView />} />
           <Route path="/sales/payments" element={<Payments />} />
           <Route path="/sales/project" element={<Project />} />
           <Route path="/sales/proposal" element={<Proposal />} />
