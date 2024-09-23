@@ -690,7 +690,7 @@ const handleClear=()=>{
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent className={classes.dialogContent} >
+          <DialogContent className={classes.dialogContent}  >
             <div className={classes.form}>
               <Grid container spacing={2}>
               <Grid item xs={10} sx={{ width: "100%" }}>
