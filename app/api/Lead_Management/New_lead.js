@@ -404,7 +404,7 @@ function New_lead() {
                     <DeleteIcon />
                   </IconButton>
                   <IconButton
-                    aria-label="Delete"
+                    aria-label="Info"
                     // onClick={() => {
                     //   setItemToDelete(item._id);
                     //   setDeleteDialogOpen(true);
@@ -770,9 +770,9 @@ function New_lead() {
                     onChange={(e) => {
                       const input = e.target.value;
 
-                      // Regular expression to validate proper email format for specific domains
+                      // Updated regex to ensure the email doesn't start with a digit, includes @, and ends with .com
                       const validEmailRegex =
-                        /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|rediffmail\.com)$/;
+                        /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
 
                       setState({
                         ...state,
@@ -780,10 +780,14 @@ function New_lead() {
                       });
 
                       // Check if the email matches the regex pattern
-                      if (!validEmailRegex.test(input)) {
+                      if (
+                        !validEmailRegex.test(input) ||
+                        !input.endsWith(".com")
+                      ) {
                         setErrors({
                           ...errors,
-                          Email: "Invalid email address or domain",
+                          Email:
+                            "Invalid email address. Must not start with a digit and should end with .com",
                         });
                       } else {
                         setErrors({ ...errors, Email: "" });

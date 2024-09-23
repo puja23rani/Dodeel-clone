@@ -103,6 +103,8 @@ import {
   Proposal,
   Customer,
   InvoiceView,
+  CustomerView,
+  InvoiceUpdate,
  
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
@@ -262,8 +264,10 @@ function Application(props) {
           {/* Sales Pages */}
           <Route path="/sales/bill-tax" element={<BillTax />} />
           <Route path="/sales/customer" element={<Customer />} />
+          <Route path="/sales/customer/customer-view" element={<CustomerView />} />
           
           <Route path="/sales/invoice" element={<Invoice />} />
+          <Route path="/sales/invoice/invoice-update" element={<InvoiceUpdate />} />
           <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
           <Route path="/sales/payments" element={<Payments />} />
           <Route path="/sales/project" element={<Project />} />

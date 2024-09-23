@@ -450,6 +450,12 @@ export const  Invoice = loadable(
     fallback: <Loading />,
   }
 );
+export const  InvoiceUpdate = loadable(
+  () => import("../containers/Pages/Sales/InvoiceUpdate"),
+  {
+    fallback: <Loading />,
+  }
+);
 export const  InvoiceView = loadable(
   () => import("../containers/Pages/Sales/InvoiceView"),
   {
@@ -476,6 +482,12 @@ export const Proposal = loadable(
 );
 export const Customer = loadable(
   () => import("../containers/Pages/Sales/Customer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const CustomerView = loadable(
+  () => import("../containers/Pages/Sales/CustomerView"),
   {
     fallback: <Loading />,
   }

@@ -359,8 +359,8 @@ function Customer() {
                     //   setDeleteDialogOpen(true);
                     // }}
                     onClick={(e) => {
-                      navigate("/app/lead/new-lead/lead-details", {
-                        state: { leadId: item._id },
+                      navigate("/app/sales/customer/customer-view", {
+                        state: { updateId: item._id },
                       });
                     }}
                   >
