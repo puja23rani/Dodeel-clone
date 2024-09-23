@@ -177,6 +177,7 @@ function WarehouseStock() {
    
     { id: "actions", label: "Action" },
   ];
+  console.log(warehouseID,"warehouseeeeeeee")
   const [CategoryList, setCategoryList] = React.useState([]);
   const table3 = async () => {
     try {
@@ -198,13 +199,8 @@ function WarehouseStock() {
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.categories)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setCategoryList(actualData.categories);
-      }
+      
+      setCategoryList(actualData.categories);
     } catch (err) {
       //console.log(err);
     }
@@ -230,13 +226,9 @@ function WarehouseStock() {
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.suppliers)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setSupplierList(actualData.suppliers);
-      }
+console.log(actualData,"acrtaual supp");
+    
+      setSupplierList(actualData.suppliers);
     } catch (err) {
       //console.log(err);
     }
@@ -262,13 +254,9 @@ function WarehouseStock() {
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.productDetails)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setSupplierList(actualData.productDetails);
-      }
+      
+      setProductList(actualData.productDetails);
+      console.log(actualData.productDetails,"prodetails")
     } catch (err) {
       //console.log(err);
     }
@@ -292,12 +280,12 @@ function WarehouseStock() {
 //     setSelectedEmployee(null); // Reset selected employee
 //   };
   console.log(state, "stateware");
-  function fetchWHstock(pg) {
+  function fetchWHstock() {
     axios
       .post(
         `${process.env.REACT_APP_BASE_URL}/api/auth/getAllStockByWarehouse`,
         {
-            warehouseID: warehouseID._id
+            warehouseID: warehouseID
         },
         {
           headers: {
@@ -374,8 +362,9 @@ function WarehouseStock() {
         console.error("Error fetching data:", error);
       });
   }
+  console.log(SupplierList,"listtttttttttttttsupp")
   useEffect(() => {
-    fetchWHstock(page);
+    fetchWHstock();
   }, [page, rowsPerPage]);
   const handleCreateWHstocks = async () => {
     if (!validate()) {
@@ -686,10 +675,7 @@ function WarehouseStock() {
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
-                      value={{
-                        id: state.supplierID,
-                        title: state.supplierName,
-                      }}
+                      value={state.supplierID}
                       onChange={(e, v, reason) => {
                         if (reason === "clear") {
                           setState({

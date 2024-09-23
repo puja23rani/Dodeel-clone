@@ -331,7 +331,7 @@ module.exports = [
       {
         key: "Warehouse",
         name: "Warehouse",
-        link: "/app/Warehouse_list",
+        link: "/app/Warehouse",
         icon: "settings_suggest",
         badge: "Hot",
       },
@@ -343,7 +343,7 @@ module.exports = [
       {
         key: "Warehouse Stocks",
         name: "Warehouse stocks",
-        link: "/app/Job_Application",
+        link: "/app/Warehouse_list",
         icon: "settings_suggest",
         badge: "Hot",
       },

@@ -156,7 +156,7 @@ function Warehouse_list() {
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
-
+  
   const columnData = [
     {
       id: "slNo",
