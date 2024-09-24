@@ -1,25 +1,78 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip, Checkbox, FormControlLabel, Grid, Typography, Switch, FormControl, InputLabel, Select, MenuItem, Menu } from '@mui/material';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import React, { useState } from "react";
+import { makeStyles } from "tss-react/mui";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Tooltip,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Typography,
+  Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Menu,
+  Autocomplete,
+  IconButton,
+} from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 
-import CalendarToday from '@mui/icons-material/CalendarToday';
-
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import CalendarToday from "@mui/icons-material/CalendarToday";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 // import CustomInputAndSelectField from '../../components/CustomInputAndSelectField/Index';
 // import CustomInputField from '../../components/CustomInputField/Index';
-import { convertToRaw, Editor, EditorState } from 'draft-js';
-import { toast } from 'react-toastify';
-import 'draft-js/dist/Draft.css';  // Ensure you import the Draft.js CSS
+import { convertFromRaw, EditorState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import { toast } from "react-toastify";
+import "draft-js/dist/Draft.css"; // Ensure you import the Draft.js CSS
 
-import { format } from 'date-fns';
+import { format } from "date-fns";
 // import TextField from "@mui/material/TextField";
+const useStyles = makeStyles()((theme) => ({
+  textEditor: {
+    // optional padding for better spacing
+    padding: "5px",
+    backgroundColor: "#ececec",
+    minHeight: "200px", // set a minimum height for the editor
+    border: "1px solid #ccc", // optional border for better visibility
+  },
+  toolbarEditor: {
+    // boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',  // slight shadow effect
+    // optional padding for better spacing
 
-const InvoiceButtons = ({mainlist,table}) => {
-  
+    borderRadius: "4px", // optional rounded corners
+    border: "1px solid #ececec",
+  },
+  root: {
+    flexGrow: 1,
+    padding: 30,
+  },
+  form: {
+    "& > div": {
+      marginBottom: theme.spacing(2),
+    },
+  },
+  field: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  buttonInit: {
+    margin: theme.spacing(4),
+  },
+}));
+const InvoiceButtons = ({ mainlist, table }) => {
   const navigate = useNavigate();
+  const { classes } = useStyles();
   const [openReminderPopup, setOpenReminderPopup] = useState(false);
   const [openPublishPopup, setOpenPublishPopup] = useState(false);
   const location = useLocation();
@@ -28,26 +81,27 @@ const InvoiceButtons = ({mainlist,table}) => {
   const [reminderTime, setReminderTime] = useState(null);
   const [isScheduled, setIsScheduled] = useState(false);
   const [openEmailPopup, setOpenEmailPopup] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
   const [showPaymentNote, setShowPaymentNote] = useState(false);
-  const [openRecurringSettingsPopup, setOpenRecurringSettingsPopup] = useState(false);
-  const [repeatEvery, setRepeatEvery] = useState('');
-  const [repeatUnit, setRepeatUnit] = useState('months');
-  const [cycles, setCycles] = useState('');
+  const [openRecurringSettingsPopup, setOpenRecurringSettingsPopup] =
+    useState(false);
+  const [repeatEvery, setRepeatEvery] = useState("");
+  const [repeatUnit, setRepeatUnit] = useState("months");
+  const [cycles, setCycles] = useState("");
   const [nextInvoiceDate, setNextInvoiceDate] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openStopRecurringPopup, setOpenStopRecurringPopup] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
-  
+
   console.log(mainlist);
   const [state, setState] = useState({
     paymentDate: "",
     paymentAmount: "",
     paymentTransactionID: "",
-    paymentInvoiceID:"",
+    paymentInvoiceID: "",
     paymentMode: "",
-    value:"",
+    value: "",
     paymentNotes: EditorState.createEmpty(),
     id: null,
     isUpdate: false,
@@ -72,7 +126,7 @@ const InvoiceButtons = ({mainlist,table}) => {
   const handleCheckboxChange = (event) => {
     setIsScheduled(event.target.checked);
   };
-  
+
   const handleEmailPopupOpen = () => {
     setOpenEmailPopup(true);
   };
@@ -80,12 +134,23 @@ const InvoiceButtons = ({mainlist,table}) => {
   const handleEmailPopupClose = () => {
     setOpenEmailPopup(false);
   };
-  
+
   const handlePaymentPopupOpen = () => {
     setOpenPaymentPopup(true);
   };
 
   const handlePaymentPopupClose = () => {
+    setState({
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: EditorState.createEmpty(),
+      id: null,
+      isUpdate: false,
+    })
     setOpenPaymentPopup(false);
   };
 
@@ -97,69 +162,68 @@ const InvoiceButtons = ({mainlist,table}) => {
   const handleStopRecurringClose = () => {
     setOpenStopRecurringPopup(false);
   };
-console.log("invoicebutton",InvoiceID)
+  console.log("invoicebutton", InvoiceID);
 
-const handleCreatePay = async (id) => {
-  try {
-    const loginHeaders = new Headers();
-    loginHeaders.append("Content-Type", "application/json");
+  const handleCreatePay = async (id) => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
 
-    // Assuming you have an authorization token stored in localStorage
-    const authToken = localStorage.getItem("token");
-    if (authToken) {
-      loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      // Function to format date to mm-dd-yyyy
+      const formatDate = (date) => {
+        if (!date) return ""; // Handle empty or undefined date
+        return format(new Date(date), "MM-dd-yyyy");
+      };
+
+      const data = {
+        paymentDate: formatDate(state.paymentDate),
+        paymentInvoiceID: mainlist.bill_ID,
+        paymentAmount: parseInt(state.paymentAmount),
+        paymentTransactionID: state.paymentTransactionID,
+        paymentMode: state.paymentMode,
+        paymentNotes: JSON.stringify(
+          convertToRaw(state.paymentNotes.getCurrentContent())
+        ),
+      };
+
+      const requestOptions = {
+        method: "POST",
+        headers: loginHeaders,
+        body: JSON.stringify(data),
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/auth/createPayment`,
+        requestOptions
+      );
+      const actualData = await res.json();
+
+      if (actualData.status === 200) {
+        toast.success("Create Successfully");
+
+        setState((prevState) => ({
+          ...prevState,
+          paymentDate: "",
+          paymentAmount: "",
+          paymentInvoiceID: "",
+          paymentTransactionID: "",
+          paymentMode: "",
+          paymentNotes: EditorState.createEmpty(),
+          isUpdate: false,
+        }));
+        handlePaymentPopupClose();
+      }
+      await table();
+    } catch (err) {
+      console.log(err);
     }
-
-    // Function to format date to mm-dd-yyyy
-    const formatDate = (date) => {
-      if (!date) return ""; // Handle empty or undefined date
-      return format(new Date(date), 'MM-dd-yyyy');
-    };
-
-    const data = {
-      paymentDate: formatDate(state.paymentDate),
-      paymentInvoiceID: mainlist.bill_ID,
-      paymentAmount: parseInt(state.paymentAmount),
-      paymentTransactionID: state.paymentTransactionID,
-      paymentMode: state.paymentMode,
-      paymentNotes: JSON.stringify(
-        convertToRaw(state.paymentNotes.getCurrentContent())
-      ),
-    };
-
-    const requestOptions = {
-      method: "POST",
-      headers: loginHeaders,
-      body: JSON.stringify(data),
-    };
-
-    const res = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/auth/createPayment`,
-      requestOptions
-    );
-    const actualData = await res.json();
-
-    if (actualData.status === 200) {
-      toast.success("Create Successfully");
-      
-      setState((prevState) => ({
-        ...prevState,
-        paymentDate: "",
-        paymentAmount: "",
-        paymentInvoiceID:"",
-        paymentTransactionID: "",
-        paymentMode: "",
-        paymentNotes: EditorState.createEmpty(),
-        isUpdate: false,
-      }));
-      handlePaymentPopupClose();
-     
-    }
-    await table();
-  } catch (err) {
-    console.log(err);
-  }
-};
+  };
   const handleRecurringClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -176,8 +240,8 @@ const handleCreatePay = async (id) => {
   const handleRecurringSettingsClose = () => {
     setOpenRecurringSettingsPopup(false);
   };
-   // Open Delete Confirmation Dialog
-   const handleDeletePopupOpen = () => {
+  // Open Delete Confirmation Dialog
+  const handleDeletePopupOpen = () => {
     setOpenDeletePopup(true);
   };
 
@@ -209,7 +273,6 @@ const handleCreatePay = async (id) => {
         toast.success("Successfully deleted !");
         handleDeletePopupClose();
         navigate("/Invoice_list");
-
       } else {
         toast.error("Failed to delete Invoice!");
       }
@@ -222,10 +285,10 @@ const handleCreatePay = async (id) => {
   return (
     <div
       style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        gap: '10px',
-        marginBottom: '10px',
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: "10px",
+        marginBottom: "10px",
       }}
     >
       <Tooltip title="Reminder" arrow placement="bottom">
@@ -234,7 +297,7 @@ const handleCreatePay = async (id) => {
           size="small"
           color="primary"
           onClick={handleReminderPopupOpen}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           <AccessTimeIcon />
         </Button>
@@ -246,7 +309,7 @@ const handleCreatePay = async (id) => {
           size="small"
           color="primary"
           onClick={handlePublishPopupOpen}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           {/* <MdPublishedWithChanges style={{ fontSize: '1.4rem' }} /> */}
           publish changes
@@ -259,7 +322,7 @@ const handleCreatePay = async (id) => {
           size="small"
           color="primary"
           onClick={handleEmailPopupOpen}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           {/* <HiOutlineMailOpen style={{ fontSize: '1.4rem' }} /> */}
           mail open
@@ -272,20 +335,20 @@ const handleCreatePay = async (id) => {
           size="small"
           color="primary"
           onClick={handlePaymentPopupOpen}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           {/* <MdPayment style={{ fontSize: '1.4rem' }} /> */}
           payment
         </Button>
       </Tooltip>
-       {/* Recurring Options Button */}
+      {/* Recurring Options Button */}
       <Tooltip title="Recurring Option" arrow placement="bottom">
         <Button
           variant="contained"
           size="small"
           color="primary"
           onClick={handleRecurringClick}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           {/* <GiCycle style={{ fontSize: '1.4rem' }} /> */}
           recurring
@@ -298,13 +361,12 @@ const handleCreatePay = async (id) => {
           size="small"
           color="primary"
           onClick={handleDeletePopupOpen}
-          style={{ position: 'relative' }}
+          style={{ position: "relative" }}
         >
           {/* <MdDelete style={{ fontSize: '1.4rem' }} /> */}
           delete
         </Button>
       </Tooltip>
-
 
       {/* Recurring Options Menu */}
       <Menu
@@ -325,19 +387,25 @@ const handleCreatePay = async (id) => {
       {/* Reminder Dialog */}
       <Dialog open={openReminderPopup} onClose={handleReminderPopupClose}>
         <DialogTitle>Set Reminder</DialogTitle>
-        <DialogContent style={{display:"flex" , flexDirection:"column" ,gap:"8px"}}>
+        <DialogContent
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+        >
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Reminder Date"
               value={reminderDate}
               onChange={(date) => setReminderDate(date)}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth margin="normal" />
+              )}
             />
             <TimePicker
               label="Reminder Time"
               value={reminderTime}
               onChange={(time) => setReminderTime(time)}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth margin="normal" />
+              )}
             />
           </LocalizationProvider>
         </DialogContent>
@@ -354,13 +422,14 @@ const handleCreatePay = async (id) => {
       {/* Publish Dialog */}
       <Dialog open={openPublishPopup} onClose={handlePublishPopupClose}>
         <DialogTitle>Publish Invoice</DialogTitle>
-        <DialogContent style={{display:"flex" , flexDirection:"column" ,gap:"8px"}}>
+        <DialogContent
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+        >
+          <FormControlLabel control={<Checkbox />} label="Publish Now" />
           <FormControlLabel
-            control={<Checkbox />}
-            label="Publish Now"
-          />
-          <FormControlLabel
-            control={<Checkbox checked={isScheduled} onChange={handleCheckboxChange} />}
+            control={
+              <Checkbox checked={isScheduled} onChange={handleCheckboxChange} />
+            }
             label="Scheduled"
           />
           {isScheduled && (
@@ -378,9 +447,9 @@ const handleCreatePay = async (id) => {
                     InputLabelProps={{ shrink: true }}
                     InputProps={{
                       endAdornment: <CalendarToday />,
-                      style: { fontSize: '0.875rem' }
+                      style: { fontSize: "0.875rem" },
                     }}
-                    style={{ width: '200px' }}
+                    style={{ width: "200px" }}
                   />
                 )}
               />
@@ -422,12 +491,30 @@ const handleCreatePay = async (id) => {
       {/* Payment Dialog */}
       <Dialog open={openPaymentPopup} onClose={handlePaymentPopupClose}>
         <DialogTitle>Add Payment</DialogTitle>
-        <DialogContent style={{display:"flex" , flexDirection:"column" ,gap:"8px"}}>
+        <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={handlePaymentPopupClose}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        <DialogContent
+          className={classes.dialogContent}
+        >
+         <div className={classes.form}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
+                id="date"
                 label="Payment Date"
                 type="date"
+                variant="standard"
                 value={state.paymentDate}
                 onChange={(e) =>
                   setState((prevState) => ({
@@ -436,24 +523,35 @@ const handleCreatePay = async (id) => {
                   }))
                 }
                 fullWidth
+                InputLabelProps={{ shrink: true }}
+                // error={!!errors.billDueDate} // Show error if it exists
+                // helperText={errors.billDueDate} // Display error message
               />
             </Grid>
-            <Grid item xs={12}>
+
+            <Grid item xs={6}>
               <TextField
-                label="Payment Amount"
-                type="number"
-                value={state.paymentAmount}
-                onChange={(e) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    paymentAmount: e.target.value,
-                  }))
-                }
                 fullWidth
+                variant="standard"
+                id="PaymentAmount"
+                name="PaymentAmount"
+                label="Payment Amount"
+                value={state.paymentAmount}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Remove any non-digit characters
+                  const numericValue = value.replace(/[^0-9]/g, "");
+                  setState({ ...state, paymentAmount: numericValue });
+                }}
+                // error={!!errors.ApproxBudget}
+                // helperText={errors.ApproxBudget}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
+                variant="standard"
+                id="Transaction"
+                name="Transaction"
                 label="Transaction ID"
                 value={state.paymentTransactionID}
                 onChange={(e) =>
@@ -465,21 +563,37 @@ const handleCreatePay = async (id) => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
-              {/* <CustomInputAndSelectField
-                label="Payment Mode"
+            <Grid item xs={6}>
+              <Autocomplete
+                sx={{
+                  marginTop: "-16px",
+                }}
+                id="highlights-demo"
                 options={[
-                  "Online","Cash","Bank transfer"
+                  { title: "Online" },
+                  { title: "Cash" },
+                  { title: "Bank Transfer" },
                 ]}
-                value={state.paymentMode}
-                changeCallBack={(e , v) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    paymentMode: v,
-                  }))
-                }
-                fullWidth
-              /> */}
+                getOptionLabel={(option) => option.title || ""} // Safely access title
+                value={state.paymentMode} // Ensure value is an object or null
+                onChange={(e, v) => {
+                  setState({
+                    ...state,
+                    paymentMode: v ? v : null, // Set campaignStatus to the selected object or null
+                  });
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Mode"
+                    margin="normal"
+                    variant="standard"
+                    // error={!!errors.campaignStatus} // Show error if it exists
+                    // helperText={errors.campaignStatus} // Display error message
+                  />
+                )}
+              />
+              
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
@@ -494,8 +608,15 @@ const handleCreatePay = async (id) => {
             </Grid>
             {showPaymentNote && (
               <Grid item xs={12}>
-                <div style={{border: '1px solid #ccc', padding: '10px', borderRadius: '4px', minHeight: '100px'}}>
-                  <Editor
+                <div
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "10px",
+                    borderRadius: "4px",
+                    minHeight: "100px",
+                  }}
+                >
+                  {/* <Editor
                     editorState={state.paymentNotes}
                     onChange={(editorState) =>
                       setState((prevState) => ({
@@ -504,11 +625,24 @@ const handleCreatePay = async (id) => {
                       }))
                     }
                     placeholder="Enter payment notes..."
+                  /> */}
+                   <Editor
+                    editorState={state.paymentNotes}
+                    editorClassName={classes.textEditor}
+                    toolbarClassName={classes.toolbarEditor}
+                    onEditorStateChange={(editorStateParam) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        paymentNotes: editorStateParam, // Directly setting the editorState into billNote
+                      }))
+                    }
+                    placeholder="Enter payment notes..."
                   />
                 </div>
               </Grid>
             )}
-          </Grid>
+            </Grid>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handlePaymentPopupClose} color="primary">
@@ -520,9 +654,14 @@ const handleCreatePay = async (id) => {
         </DialogActions>
       </Dialog>
       {/* Recurring Settings Dialog */}
-      <Dialog open={openRecurringSettingsPopup} onClose={handleRecurringSettingsClose}>
+      <Dialog
+        open={openRecurringSettingsPopup}
+        onClose={handleRecurringSettingsClose}
+      >
         <DialogTitle>Recurring Settings</DialogTitle>
-        <DialogContent style={{display:"flex" , flexDirection:"column" ,gap:"8px"}}>
+        <DialogContent
+          style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+        >
           <TextField
             label="Repeat Every"
             type="number"
@@ -530,7 +669,7 @@ const handleCreatePay = async (id) => {
             onChange={(e) => setRepeatEvery(e.target.value)}
             fullWidth
             margin="normal"
-          /> 
+          />
           <FormControl variant="outlined" size="small" fullWidth>
             <InputLabel id="repeat-unit-label">Unit</InputLabel>
             <Select
@@ -557,7 +696,9 @@ const handleCreatePay = async (id) => {
               label="Next Invoice Date"
               value={nextInvoiceDate}
               onChange={(date) => setNextInvoiceDate(date)}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              renderInput={(params) => (
+                <TextField {...params} fullWidth margin="normal" />
+              )}
             />
           </LocalizationProvider>
         </DialogContent>
@@ -574,7 +715,9 @@ const handleCreatePay = async (id) => {
       <Dialog open={openStopRecurringPopup} onClose={handleStopRecurringClose}>
         <DialogTitle>Stop Recurring</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">Are you sure you want to stop the recurring setting?</Typography>
+          <Typography variant="body1">
+            Are you sure you want to stop the recurring setting?
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleStopRecurringClose} color="primary">
@@ -589,7 +732,9 @@ const handleCreatePay = async (id) => {
       <Dialog open={openDeletePopup} onClose={handleDeletePopupClose}>
         <DialogTitle>Delete Invoice</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">Are you sure you want to delete this Invoice?</Typography>
+          <Typography variant="body1">
+            Are you sure you want to delete this Invoice?
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeletePopupClose} color="primary">
