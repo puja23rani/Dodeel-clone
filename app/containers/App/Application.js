@@ -126,6 +126,9 @@ import Warehouse_list from "../Pages/AssetModule/Warehouses/Warehouse_list";
 // import JobAppView from "../Pages/Recruitment/jobview";
 import JobApplicantView from "../Pages/Recruitment/applicantview";
 import WarehouseStock from "../Pages/AssetModule/Warehouses/WarehouseStock";
+import Con_Eng_list from "../Pages/AssetModule/Con_Eng_stocks/Con_Eng_list";
+import Con_Eng_Stock from "../Pages/AssetModule/Con_Eng_stocks/Con_Eng_Stock";
+import PurchaseIndent from "../Pages/AssetModule/PurchaseIndent";
 
 function Application(props) {
   const { history } = props;
@@ -285,6 +288,9 @@ function Application(props) {
         <Route path="/Warehouse" element={<Warehouse />} />
         <Route path="/Warehouse_list" element={<Warehouse_list />} />
         <Route path="/WarehouseStock" element={<WarehouseStock />} />
+        <Route path="/Con_Eng_list" element={<Con_Eng_list />} />
+        <Route path="/Contractor-Engineer-Stock" element={<Con_Eng_Stock />} />
+        <Route path="/PurchaseIndent" element={<PurchaseIndent />} />
 
           {/* Sales Pages */}
           <Route path="/sales/bill-tax" element={<BillTax />} />

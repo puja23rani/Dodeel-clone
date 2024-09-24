@@ -535,3 +535,21 @@ export const WarehouseStock = loadable(
     fallback: <Loading />,
   }
 );
+export const Con_Eng_list = loadable(
+  () => import("../containers/Pages/AssetModule/Con_Eng_stocks/Con_Eng_list"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Con_Eng_Stock = loadable(
+  () => import("../containers/Pages/AssetModule/Con_Eng_stocks/Con_Eng_Stock"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const PurchaseIndent = loadable(
+  () => import("../containers/Pages/AssetModule/PurchaseIndent"),
+  {
+    fallback: <Loading />,
+  }
+);

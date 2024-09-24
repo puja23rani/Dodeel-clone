@@ -350,14 +350,14 @@ module.exports = [
       {
         key: "Contractor / Engineer Stocks",
         name: "Contractor / Engineer Stocks",
-        link: "/app/Job_Application",
+        link: "/app/Con_Eng_list",
         icon: "settings_suggest",
         badge: "Hot",
       },
       {
         key: "Purchase Indent",
         name: "Purchase Indent",
-        link: "/app/Job_Application",
+        link: "/app/PurchaseIndent",
         icon: "settings_suggest",
         badge: "Hot",
       },

@@ -252,7 +252,7 @@ function Warehouse_list() {
                     // }}
                     onClick={(e) => {
                       navigate("/app/WarehouseStock", {
-                        state: { warehouseID: item._id },
+                        state: { warehouseID: item },
                       });
                     }}
                   >

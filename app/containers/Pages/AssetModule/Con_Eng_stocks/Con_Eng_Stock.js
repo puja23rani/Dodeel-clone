@@ -28,10 +28,10 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import { useLocation, useNavigate } from "react-router-dom";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Popup from "../../../../components/Popup/Popup";
 import AlertDialog from "../../../UiElements/demos/DialogModal/AlertDialog";
 import TablePlayground from "../../../Tables/TablePlayground";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -52,7 +52,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function WarehouseStock() {
+function Con_Eng_Stock() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
@@ -148,7 +148,7 @@ function WarehouseStock() {
   const [isUpdate, setisUpdate] = useState(true);
   const [isPrice, setisPrice] = useState(false);
   const [isQty, setisQty] = useState(false);
-  const { warehouseID } = location.state || {};
+  const { ConID } = location.state || {};
 
   const columnData = [
     {
@@ -178,155 +178,16 @@ function WarehouseStock() {
 
     { id: "actions", label: "Action" },
   ];
-  console.log(warehouseID, "warehouseeeeeeee");
-  const [CategoryList, setCategoryList] = React.useState([]);
-  const table3 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
+  console.log(ConID, "ConID");
 
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllProductCategories`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      // console.log(actualData);
-      if (Array.isArray(actualData.categories)) {
-        // Map the data to an array of objects with 'title' and 'id'
-        const newobj = actualData.categories.map((item) => ({
-          title: item.categoryName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        //console.log(newobj, "neee");
-        // Update state with the new array of objects
-        setCategoryList(newobj);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    console.log(CategoryList, " categorylst");
-  };
-
-  const [SupplierList, setSupplierList] = React.useState([]);
-
-  const table4 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
-
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllSuppliers`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      // console.log(actualData);
-      if (Array.isArray(actualData.suppliers)) {
-        // Map the data to an array of objects with 'title' and 'id'
-        const newobj = actualData.suppliers.map((item) => ({
-          title: item.supplierName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        //console.log(newobj, "neee");
-        // Update state with the new array of objects
-        setSupplierList(newobj);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const [ProductList, setProductList] = React.useState([]);
-
-  const table5 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
-
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllProducts`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      console.log(actualData, "actaulll");
-
-      // Map the data to an array of objects with 'title' and 'id'
-      const newobj = actualData.productDetails.map((item) => ({
-        title: item.productName, // Set the title from channelName
-        id: item._id, // Set the id from _id
-        supplierID: item.supplierID,
-        categoryID: item.categoryID,
-      }));
-      //console.log(newobj, "neee");
-      // Update state with the new array of objects
-      setProductList(newobj);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const [filteredProducts, setFilteredProducts] = React.useState([]);
-  React.useEffect(() => {
-    const filtered = ProductList.filter(
-      (product) =>
-        product.supplierID === state.supplierName.id && // assuming the supplierID exists in ProductList
-        product.categoryID === state.categoryName.id // assuming the categoryID exists in ProductList
-    );
-    console.log(filtered, "filtered");
-    setFilteredProducts(filtered);
-  }, [state.supplierName, state.categoryName, ProductList]);
-  console.log(ProductList, "producttttt");
-  useEffect(() => {
-    table3();
-    table4();
-    table5();
-  }, []);
-  //   const [anchorEl, setAnchorEl] = React.useState(null);
-  //   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
-
-  //   const handleMenuClick = (event, employee) => {
-  //     setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
-  //     setSelectedEmployee(employee); // Set the selected employee
-  //   };
-
-  //   const handleMenuClose = () => {
-  //     setAnchorEl(null); // Reset anchorEl to null to close the menu
-  //     setSelectedEmployee(null); // Reset selected employee
-  //   };
+ 
   console.log(state, "stateware");
   function fetchWHstock() {
     axios
       .post(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllStockByWarehouse`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getcontractorstockdetails`,
         {
-          warehouseID: warehouseID._id,
+          warehouseID: ConID._id,
         },
         {
           headers: {
@@ -449,8 +310,8 @@ function WarehouseStock() {
   }
   console.log(isPrice, "is price");
   console.log(isQty, "is qty");
-  console.log(SupplierList, "listtttttttttttttsupp");
-  console.log(CategoryList, "categorylst");
+  // console.log(SupplierList, "listtttttttttttttsupp");
+  // console.log(CategoryList, "categorylst");
   useEffect(() => {
     fetchWHstock();
   }, [page, rowsPerPage]);
@@ -1095,4 +956,4 @@ function WarehouseStock() {
   );
 }
 
-export default WarehouseStock;
+export default Con_Eng_Stock;
