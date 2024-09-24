@@ -993,7 +993,7 @@ const CreateEmployee = () => {
                                     getOptionLabel={(option) => option.title || ""} // Safely access title
                                     value={state.designationName} // Ensure value is an object or null
                                     onChange={(e, v) => {
-                                        // console.log(v);
+                                        console.log(v);
                                         setState({
                                             ...state,
                                             designationName: v ? v : null, // Set campaignStatus to the selected object or null

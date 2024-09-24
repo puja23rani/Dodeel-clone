@@ -267,16 +267,10 @@ module.exports = [
         link: "/app/Job_Application",
         icon: "settings_suggest",
         badge: "Hot",
-      },
-      // {
-      //   key: "applicantlist",
-      //   name: "Applicant List",
-      //   link: "/app/applicantlist",
-      //   icon: "settings_suggest",
-      //   badge: "Hot",
-      // },
+      }
     ],
   },
+  // Asset management
   {
     key: "Procurement",
     name: "Procurement",
@@ -303,4 +297,111 @@ module.exports = [
 
     ],
   },
+  {
+    key: "Asset",
+    name: "Asset",
+    icon: "settings_suggest",
+    child: [
+      {
+        key: "Contractor",
+        name: "Contractor",
+        link: "/app/Contractor",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Products",
+        name: "Products",
+        title: true,
+      },
+      {
+        key: "Category",
+        name: "Category",
+        link: "/app/Category",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Suppiler",
+        name: "Supplier",
+        link: "/app/Supplier",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Products",
+        name: "Products",
+        link: "/app/Product",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Warehouses",
+        name: "warehouses",
+        title: true,
+      },
+      {
+        key: "Warehouse",
+        name: "Warehouse",
+        link: "/app/Warehouse",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Invetory & Stocks",
+        name: "Invetory & Stocks",
+        title: true,
+      },
+      {
+        key: "Warehouse Stocks",
+        name: "Warehouse stocks",
+        link: "/app/Warehouse_list",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Contractor / Engineer Stocks",
+        name: "Contractor / Engineer Stocks",
+        link: "/app/Con_Eng_list",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Purchase Indent",
+        name: "Purchase Indent",
+        link: "/app/PurchaseIndent",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Transfer",
+        name: "Stock Transfer",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Transfer Indent",
+        name: "Transfer Indent",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Receive",
+        name: "Stock Receive",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+      {
+        key: "Stock Recall",
+        name: "Stock Recall",
+        link: "/app/Job_Application",
+        icon: "settings_suggest",
+        badge: "Hot",
+      },
+
+    ],
+  }
 ];

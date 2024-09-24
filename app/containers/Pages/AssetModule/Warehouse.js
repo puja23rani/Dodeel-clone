@@ -6,12 +6,8 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
-import AlertDialog from "../../containers/UiElements/demos/DialogModal/AlertDialog";
 import axios from "axios";
 import { PapperBlock } from "enl-components";
-import TablePlayground from "../../containers/Tables/TablePlayground";
-import { toast } from "react-toastify";
-import Popup from "../../components/Popup/Popup";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
 import DeleteIcons from "@mui/icons-material/Delete";
@@ -31,14 +27,13 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
-import { Buttons } from "../../containers/pageListAsync";
 import { useNavigate } from "react-router-dom";
+import Popup from "../../../components/Popup/Popup";
+import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
+import TablePlayground from "../../Tables/TablePlayground";
+import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import AdapterMoment from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -59,80 +54,90 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-function New_lead() {
+function Warehouse() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [state, setState] = React.useState({
-    Name: "",
-    Phone_Number: "",
-    Email: "",
-    Campaign: "",
-    Campaign_Id: "",
-    Channel: "",
-    Channel_Id: "",
-    Lead_Status: "",
-    Lead_Status_Id: "",
-    Description: "",
+    warehouseName: "",
+    warehouseCode: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    accountSupervisorName: "",
+    accountSupervisor: "",
+    dispatchSupervisorName: "",
+    dispatchSupervisor: "",
+    inductionDate: "",
     isUpdate: false,
   });
   const [errors, setErrors] = useState({
-    Name: "",
-    Phone_Number: "",
-    Email: "",
-    Campaign: "",
-    Campaign_Id: "",
-    Channel: "",
-    Channel_Id: "",
-    Lead_Status: "",
-    Lead_Status_Id: "",
-    Description: "",
+    warehouseName: "",
+    warehouseCode: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    accountSupervisorName: "",
+    dispatchSupervisorName: "",
+    inductionDate: "",
   });
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Name.trim()) {
-      errors.Name = "Name is required";
+    if (!state.warehouseName.trim()) {
+      errors.warehouseName = "WarehouseName is required";
+      isValid = false;
+    }
+    if (!state.warehouseCode.trim()) {
+      errors.warehouseCode = "WarehouseCode is required";
+      isValid = false;
+    }
+    if (!String(state.address).trim()) {
+      errors.address ="Address is required.";
+      isValid = false;
+    }
+    if (!String(state.latitude).trim()){
+      errors.latitude = "Latitude is required";
+      isValid = false;
+    }
+    if(!String(state.longitude).trim()) {
+      errors.longitude = "longitude is required";
+      isValid = false;
+    }
+    if (!String(state.accountSupervisorName).trim()) {
+      errors.accountSupervisor = "Account SupervisorName is required";
+      isValid = false;
+    }
+    if (!String(state.dispatchSupervisorName).trim()) {
+      errors.dispatchSupervisorName = "Dispatch Supervisor Name is required";
+      isValid = false;
+    }
+    if (!String(state.inductionDate).trim()) {
+      errors.inductionDate = "Induction date is required";
       isValid = false;
     }
 
-    if (!state.Phone_Number.toString().trim()) {
-      errors.Phone_Number = "Phone Number is required";
-      isValid = false;
-    } else if (state.Phone_Number.toString().length !== 10) {
-      errors.Phone_Number = "Phone Number must be 10 digits";
-      isValid = false;
-    }
+    // if (!state.Campaign.id) {
+    //   errors.Campaign = "Campaign is required";
+    //   isValid = false;
+    // }
 
-    if (!state.Email.trim()) {
-      errors.Email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(state.Email)) {
-      errors.Email = "Email is invalid";
-      isValid = false;
-    }
+    // if (!state.Channel.id) {
+    //   errors.Channel = "Channel is required";
+    //   isValid = false;
+    // }
 
-    if (!state.Campaign.id) {
-      errors.Campaign = "Campaign is required";
-      isValid = false;
-    }
+    // if (!state.Lead_Status.id) {
+    //   errors.Lead_Status = "Lead Status is required";
+    //   isValid = false;
+    // }
 
-    if (!state.Channel.id) {
-      errors.Channel = "Channel is required";
-      isValid = false;
-    }
-
-    if (!state.Lead_Status.id) {
-      errors.Lead_Status = "Lead Status is required";
-      isValid = false;
-    }
-
-    if (!state.Description.trim()) {
-      errors.Description = "Description is required";
-      isValid = false;
-    }
+    // if (!state.Description.trim()) {
+    //   errors.Description = "Description is required";
+    //   isValid = false;
+    // }
     console.log(errors);
     console.log(isValid);
     setErrors(errors);
@@ -159,40 +164,28 @@ function New_lead() {
       label: "Sl No",
     },
     {
-      id: "leadName",
+      id: "warehouseName",
       numeric: false,
       disablePadding: false,
-      label: "Lead Name",
+      label: "Warehouse Name",
     },
     {
-      id: "contactNumber",
+      id: "warehouseCode",
       numeric: true,
       disablePadding: false,
-      label: "Contact Number",
+      label: "Warehouse Code",
     },
     {
-      id: "email",
+      id: "address",
       numeric: true,
       disablePadding: false,
-      label: "Email",
+      label: "Address",
     },
     {
-      id: "campaignName",
+      id: "inductionDate",
       numeric: false,
       disablePadding: false,
-      label: "Campaign Name",
-    },
-    {
-      id: "channelName",
-      numeric: false,
-      disablePadding: false,
-      label: "Channel Name",
-    },
-    {
-      id: "status",
-      numeric: false,
-      disablePadding: false,
-      label: "Status",
+      label: "Induction Date",
     },
 
     { id: "actions", label: "Action" },
@@ -223,102 +216,15 @@ function New_lead() {
           title: item.personalDetails.employeeName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
-        setEmpList(newobj);
+        setEmpList(actualData.employees);
       }
     } catch (err) {
       //console.log(err);
     }
   };
-  const [channelList, setChannelList] = React.useState([]);
-  const table4 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
-
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllChannels`,
-        requestOptions
-      );
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const actualData = await res.json();
-      //console.log(actualData, "ressss");
-      // Check if actualData.data is an array
-      if (Array.isArray(actualData.data)) {
-        // Map the data to an array of objects with 'title' and 'id'
-        const newobj = actualData.data.map((item) => ({
-          title: item.channelName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        //console.log(newobj, "neee");
-        // Update state with the new array of objects
-        setChannelList(actualData.data);
-        // setChannelList(actualData.data);
-        // Return the array if needed
-        return newobj;
-      } else {
-        throw new Error("Data format is incorrect");
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-  };
-  const [campaignList, setCampaignList] = React.useState([]);
-  function table2() {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllCampaigns`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // Handle the response
-        setCampaignList(response.data.data);
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error("Error fetching data:", error);
-      });
-  }
-  const [leadStatusList, setLeadStatusList] = React.useState([]);
-  function table1() {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        // Handle the response
-        setLeadStatusList(response.data.data);
-        console.log(response.data.data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error("Error fetching data:", error);
-      });
-  }
 
   useEffect(() => {
-    table1();
-    table2();
     table3();
-    table4();
   }, []);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedEmployee, setSelectedEmployee] = React.useState(null);
@@ -332,11 +238,11 @@ function New_lead() {
     setAnchorEl(null); // Reset anchorEl to null to close the menu
     setSelectedEmployee(null); // Reset selected employee
   };
-
-  function fetchLead(pg) {
+  console.log(state, "stateware");
+  function fetchWH(pg) {
     axios
       .post(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllWarehouses`,
         {
           pageNumber: pg,
           pageSize: rowsPerPage,
@@ -354,12 +260,10 @@ function New_lead() {
             response.data.data.map((item, index) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
-              leadName: item.leadName || "N/A",
-              contactNumber: item.contactNumber || "N/A",
-              email: item.email || "N/A",
-              campaignName: item.campaignID?.campaignName || "N/A",
-              channelName: item.channelID?.channelName || "N/A",
-              status: item.leadStatusID?.StatusName || "N/A",
+              warehouseName: item.warehouseName || "N/A",
+              warehouseCode: item.warehouseCode || "N/A",
+              address: item.address || "N/A",
+              inductionDate: item.inductionDate.slice(0, 10) || "N/A",
               actions: (
                 <>
                   <IconButton
@@ -371,28 +275,34 @@ function New_lead() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        Name: item.leadName,
-                        Phone_Number: item.contactNumber,
-                        Email: item.email,
-                        Campaign: {
-                          id: item.campaignID?.id,
-                          title: item.campaignID?.campaignName,
+                        warehouseName: item.warehouseName,
+                        warehouseCode: item.warehouseCode,
+                        address: item.address,
+                        latitude: item.latitude,
+                        longitude: item.longitude,
+                        accountSupervisorName: item.accountSupervisorName,
+                        // accountSupervisor: item.accountSupervisor,
+                        dispatchSupervisorName: item.dispatchSupervisorName,
+                        // dispatchSupervisor: item.dispatchSupervisor,
+                        inductionDate: item.inductionDate.slice(0,10),
+                        dispatchSupervisorName: {
+                          id: item.dispatchSupervisor,
+                          title: item.dispatchSupervisorName,
                         },
-                        Channel: {
-                          id: item.channelID?.id,
-                          title: item.channelID?.channelName,
+                        accountSupervisorName: {
+                          id: item.accountSupervisor,
+                          title: item.dispatchSupervisorName,
                         },
-                        Lead_Status: {
-                          id: item.leadStatusID?.id,
-                          title: item.leadStatusID?.StatusName,
-                        },
-                        Description: item.notes,
+                        // Lead_Status: {
+                        //   id: item.leadStatusID?.id,
+                        //   title: item.leadStatusID?.StatusName,
+                        // },
                         isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon color={"primary"} />
+                    <EditIcon />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -401,27 +311,13 @@ function New_lead() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon color={"primary"} />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Info"
-                    // onClick={() => {
-                    //   setItemToDelete(item._id);
-                    //   setDeleteDialogOpen(true);
-                    // }}
-                    onClick={(e) => {
-                      navigate("/app/lead/new-lead/lead-details", {
-                        state: { leadId: item._id },
-                      });
-                    }}
-                  >
-                    <InfoIcon />
+                    <DeleteIcon />
                   </IconButton>
                 </>
               ),
             }))
           );
-          setLength(response.data.totalItems);
+          setLength(response.data.totalWarehouses);
           setPagination(true);
         }
       })
@@ -430,9 +326,9 @@ function New_lead() {
       });
   }
   useEffect(() => {
-    fetchLead(page);
+    fetchWH(page);
   }, [page, rowsPerPage]);
-  const handleCreateLead = async () => {
+  const handleCreateWH = async () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -443,18 +339,22 @@ function New_lead() {
     try {
       // Prepare the data to match the required request body format
       const data = {
-        leadName: state.Name,
-        email: state.Email,
-        campaignID: state.Campaign.id, // campaignName from state
-        channelID: state.Channel.id,
-        leadStatusID: state.Lead_Status.id,
-
-        contactNumber: parseInt(state.Phone_Number),
-        notes: state.Description,
+        warehouseName: state.warehouseName,
+        warehouseCode: state.warehouseCode,
+        address: state.address, // campaignName from state
+        latitude: state.latitude,
+        longitude: state.longitude,
+        accountSupervisor: state.accountSupervisorName.id,
+        accountSupervisorName: state.accountSupervisorName.title,
+        // accountSupervisor: state.accountSupervisor.id,
+        // dispatchSupervisor: state.dispatchSupervisor.id,
+        dispatchSupervisor: state.dispatchSupervisorName.id,
+        dispatchSupervisorName: state.dispatchSupervisorName.title,
+        inductionDate: state.inductionDate,
       };
       console.log("p2");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadDetail`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createWarehouse`,
         {
           method: "POST",
           headers: {
@@ -467,24 +367,23 @@ function New_lead() {
       console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
-        fetchLead();
+        fetchWH();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         // Reset the state after successful creation
         setState({
-          Name: "",
-          Phone_Number: "",
-          Email: "",
-          Campaign: "",
-          Campaign_Id: "",
-          Channel: "",
-          Channel_Id: "",
-          Lead_Status: "",
-          Lead_Status_Id: "",
-          Description: "",
-
+          warehouseName: "",
+          warehouseCode: "",
+          address: "",
+          latitude: "",
+          longitude: "",
+          accountSupervisorName: "",
+          accountSupervisor: "",
+          dispatchSupervisorName: "",
+          dispatchSupervisor: "",
+          inductionDate: "",
           isUpdate: false,
         });
         setOpenDialog(false);
@@ -503,7 +402,7 @@ function New_lead() {
       setSeverity("error");
     }
   };
-  const handleUpdateLead = async () => {
+  const handleUpdateWH = async () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -515,18 +414,24 @@ function New_lead() {
       // Prepare the data to match the required request body format
       const data = {
         id: parseInt(itemToDelete),
-        leadName: state.Name,
-        email: state.Email,
-        campaignID: state.Campaign.id, // campaignName from state
-        channelID: state.Channel.id,
-        leadStatusID: state.Lead_Status.id,
-
-        contactNumber: parseInt(state.Phone_Number),
-        notes: state.Description,
+        // campaignID: state.Campaign.id, // campaignName from state
+        // channelID: state.Channel.id,
+        warehouseName: state.warehouseName,
+        warehouseCode: state.warehouseCode,
+        address: state.address, // campaignName from state
+        latitude: state.latitude,
+        longitude: state.longitude,
+        accountSupervisor: state.accountSupervisorName.id,
+        accountSupervisorName: state.accountSupervisorName.title,
+        // accountSupervisor: state.accountSupervisor.id,
+        // dispatchSupervisor: state.dispatchSupervisor.id,
+        dispatchSupervisor: state.dispatchSupervisorName.id,
+        dispatchSupervisorName: state.dispatchSupervisorName.title,
+        inductionDate: state.inductionDate,
       };
       console.log("p2");
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/updateWarehouse`,
         {
           method: "PUT",
           headers: {
@@ -539,24 +444,23 @@ function New_lead() {
       console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
-        fetchLead();
+        fetchWH();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         // Reset the state after successful creation
         setState({
-          Name: "",
-          Phone_Number: "",
-          Email: "",
-          Campaign: "",
-          Campaign_Id: "",
-          Channel: "",
-          Channel_Id: "",
-          Lead_Status: "",
-          Lead_Status_Id: "",
-          Description: "",
-
+          warehouseName: "",
+          warehouseCode: "",
+          address: "",
+          latitude: "",
+          longitude: "",
+          accountSupervisorName: "",
+          accountSupervisor: "",
+          dispatchSupervisorName: "",
+          dispatchSupervisor: "",
+          inductionDate: "",
           isUpdate: false,
         });
         setOpenDialog(false);
@@ -593,7 +497,7 @@ function New_lead() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLead();
+        fetchWH();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -633,12 +537,6 @@ function New_lead() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(1); // Reset to first page
   };
-  const handleAddSection = () => {
-    setState({
-      ...state,
-      fieldset: [...state.fieldset, { name: "", value: "" }],
-    });
-  };
 
   // Delete a section by index
   return (
@@ -654,7 +552,7 @@ function New_lead() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Lead
+                <AddIcon /> Add Warehouse
               </Button>
             </Tooltip>
           </div>
@@ -663,16 +561,16 @@ function New_lead() {
           open={openDialog}
           onClose={() => {
             setState({
-              Name: "",
-              Phone_Number: "",
-              Email: "",
-              Campaign: "",
-              Campaign_Id: "",
-              Channel: "",
-              Channel_Id: "",
-              Lead_Status: "",
-              Lead_Status_Id: "",
-              Description: "",
+              warehouseName: "",
+              warehouseCode: "",
+              address: "",
+              latitude: "",
+              longitude: "",
+              accountSupervisorName: "",
+              accountSupervisor: "",
+              dispatchSupervisorName: "",
+              dispatchSupervisor: "",
+              inductionDate: "",
               isUpdate: false,
             });
             setOpenDialog(false);
@@ -680,22 +578,22 @@ function New_lead() {
           fullWidth
           maxWidth="md"
         >
-          <DialogTitle>New lead</DialogTitle>
+          <DialogTitle>Warehouse</DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
             onClick={() => {
               setState({
-                Name: "",
-                Phone_Number: "",
-                Email: "",
-                Campaign: "",
-                Campaign_Id: "",
-                Channel: "",
-                Channel_Id: "",
-                Lead_Status: "",
-                Lead_Status_Id: "",
-                Description: "",
+                warehouseName: "",
+                warehouseCode: "",
+                address: "",
+                latitude: "",
+                longitude: "",
+                accountSupervisorName: "",
+                accountSupervisor: "",
+                dispatchSupervisorName: "",
+                dispatchSupervisor: "",
+                inductionDate: "",
                 isUpdate: false,
               });
               setOpenDialog(false);
@@ -716,10 +614,10 @@ function New_lead() {
                   <TextField
                     fullWidth
                     variant="standard"
-                    id="Name"
-                    name="Name"
-                    label="Name"
-                    value={state.Name}
+                    id="warehouseName"
+                    name="warehouseName"
+                    label="Warehouse Name"
+                    value={state.warehouseName}
                     onChange={(e) => {
                       const input = e.target.value;
 
@@ -730,102 +628,149 @@ function New_lead() {
 
                       setState({
                         ...state,
-                        Name: validInput,
+                        warehouseName: validInput,
                       });
                     }}
-                    error={!!errors.Name} // Show error if it exists
-                    helperText={errors.Name} // Display error message
+                    error={!!errors.warehouseName} // Show error if it exists
+                    helperText={errors.warehouseName} // Display error message
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
-                    id="PhoneNumber"
-                    name="PhoneNumber"
-                    label="Phone Number"
-                    value={state.Phone_Number}
+                    id="warehouseCode"
+                    name="warehouseCode"
+                    label="Warehouse Code"
+                    value={state.warehouseCode}
                     onChange={(e) => {
                       const input = e.target.value;
+
+                      // Remove any non-alphabetic characters and limit to 70 characters
                       const validInput = input
-                        .replace(/[^0-9]/g, "")
-                        .slice(0, 10);
+                        .replace(/[^a-zA-Z0-9\s]/g, "")
+                        .slice(0, 70);
+
                       setState({
                         ...state,
-                        Phone_Number: validInput,
+                        warehouseCode: validInput,
                       });
                     }}
-                    error={!!errors.Phone_Number} // Show error if it exists
-                    helperText={errors.Phone_Number} // Display error message
+                    error={!!errors.warehouseCode} // Show error if it exists
+                    helperText={errors.warehouseCode} // Display error message
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
-                    variant="standard"
-                    id="Email"
-                    name="Email"
-                    label="Email"
                     fullWidth
-                    value={state.Email}
+                    variant="standard"
+                    id="ads"
+                    name="address"
+                    label="Address"
+                    value={state.address}
                     onChange={(e) => {
                       const input = e.target.value;
 
-                      // Updated regex to ensure the email doesn't start with a digit, includes @, and ends with .com
-                      const validEmailRegex =
-                        /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+                      // Remove any non-alphabetic characters and limit to 70 characters
+                      const validInput = input
+                        .replace(/[^a-zA-Z0-9\s]/g, "")
+                        .slice(0, 70);
 
                       setState({
                         ...state,
-                        Email: input,
+                        address: validInput,
                       });
+                    }}
+                    error={!!errors.address} // Show error if it exists
+                    helperText={errors.address} // Display error message
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    sx={{
+                      marginBottom: 2,
+                    }}
+                    variant="standard"
+                    id="latitude"
+                    name="latitude"
+                    label="Latitude"
+                    value={state.latitude}
+                    onChange={(e) => {
+                      const value = e.target.value;
 
-                      // Check if the email matches the regex pattern
-                      if (
-                        !validEmailRegex.test(input) ||
-                        !input.endsWith(".com")
-                      ) {
-                        setErrors({
-                          ...errors,
-                          Email:
-                            "Invalid email address. Must not start with a digit and should end with .com",
-                        });
-                      } else {
-                        setErrors({ ...errors, Email: "" });
+                      // Allow only numbers and one decimal point
+                      const regex = /^[0-9]*\.?[0-9]*$/;
+                      const maxLength = 15; // Limit to 15 characters, including the decimal point
+
+                      if (regex.test(value) && value.length <= maxLength) {
+                        setState({ ...state, latitude: value });
                       }
                     }}
-                    error={!!errors.Email} // Show error if it exists
-                    helperText={errors.Email} // Display error message
+                    error={!!errors.latitude} // Show error if it exists
+                    helperText={errors.latitude} // Display error message
                   />
                 </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    sx={{
+                      marginBottom: 2,
+                    }}
+                    variant="standard"
+                    id="longitude"
+                    name="longitude"
+                    label="Longitude"
+                    value={state.longitude}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      // Allow only numbers and one decimal point
+                      const regex = /^[0-9]*\.?[0-9]*$/;
+                      const maxLength = 15; // Limit to 15 characters, including the decimal point
+
+                      if (regex.test(value) && value.length <= maxLength) {
+                        setState({ ...state, longitude: value });
+                      }
+                    }}
+                    error={!!errors.longitude} // Show error if it exists
+                    helperText={errors.longitude} // Display error message
+                  />
+                </Grid>
+
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
                       marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={campaignList.map((item) => {
-                      return { id: item._id, title: item.campaignName };
+                    options={empList.map((item) => {
+                      return {
+                        id: item._id,
+                        title: item.personalDetails.employeeName,
+                      };
                     })}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
                     }
-                    value={state.Campaign}
+                    value={state.accountSupervisorName}
                     onChange={(e, v, reason) => {
                       if (reason === "clear") {
                         setState({
                           ...state,
-                          Campaign: "",
-                          Campaign_Id: "",
+                          accountSupervisorName: "",
+                          accountSupervisor: "",
                         });
                       } else {
-                        const selectedCampaign = campaignList.find(
-                          (item) => item.campaignName === v
+                        const selectedCampaign = empList.find(
+                          (item) => item.personalDetails.employeeName === v
                         );
                         setState({
                           ...state,
-                          Campaign: v,
-                          Campaign_Id: selectedCampaign
+                          accountSupervisorName: v,
+                          accountSupervisor: selectedCampaign
                             ? selectedCampaign._id
                             : null,
                         });
@@ -834,11 +779,11 @@ function New_lead() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Campaign"
+                        label="Account Supervisor"
                         margin="normal"
                         variant="standard"
-                        error={!!errors.Campaign} // Show error if it exists
-                        helperText={errors.Campaign} // Display error message
+                        error={!!errors.accountSupervisorName} // Show error if it exists
+                        helperText={errors.accountSupervisorName} // Display error message
                       />
                     )}
                   />
@@ -849,30 +794,33 @@ function New_lead() {
                       marginTop: "-16px",
                     }}
                     id="highlights-demo"
-                    options={channelList.map((item) => {
-                      return { id: item._id, title: item.channelName };
+                    options={empList.map((item) => {
+                      return {
+                        id: item._id,
+                        title: item.personalDetails.employeeName,
+                      };
                     })}
                     getOptionLabel={(option) => option.title || ""} // Safely access title
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
                     }
-                    value={state.Channel}
+                    value={state.dispatchSupervisorName}
                     onChange={(e, v, reason) => {
                       if (reason === "clear") {
                         setState({
                           ...state,
-                          Channel: "",
-                          Channel_Id: "",
+                          dispatchSupervisorName: "",
+                          dispatchSupervisor: "",
                         });
                       } else {
-                        const selectedChannel = channelList.find(
-                          (item) => item.channelName === v
+                        const selectedCampaign = empList.find(
+                          (item) => item.personalDetails.employeeName === v
                         );
                         setState({
                           ...state,
-                          Channel: v,
-                          Channel_Id: selectedChannel
-                            ? selectedChannel._id
+                          dispatchSupervisorName: v,
+                          accountSupervisor: selectedCampaign
+                            ? selectedCampaign._id
                             : null,
                         });
                       }
@@ -880,77 +828,29 @@ function New_lead() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Channel"
+                        label="Discount Supervisor"
                         margin="normal"
                         variant="standard"
-                        error={!!errors.Channel} // Show error if it exists
-                        helperText={errors.Channel} // Display error message
+                        error={!!errors.dispatchSupervisorName} // Show error if it exists
+                        helperText={errors.dispatchSupervisorName} // Display error message
                       />
                     )}
                   />
                 </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px",
-                    }}
-                    id="highlights-demo"
-                    options={leadStatusList.map((item) => {
-                      return { id: item._id, title: item.statusName };
-                    })}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    value={state.Lead_Status}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Lead_Status: "",
-                          Lead_Status_Id: "",
-                        });
-                      } else {
-                        const selectedLeadStatus = leadStatusList.find(
-                          (item) => item.statusName === v
-                        );
-                        setState({
-                          ...state,
-                          Lead_Status: v,
-                          Lead_Status_Id: selectedLeadStatus
-                            ? selectedLeadStatus._id
-                            : null,
-                        });
-                      }
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Lead Status"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.Lead_Status} // Show error if it exists
-                        helperText={errors.Lead_Status} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} sx={{ width: "100%" }}>
                   <TextField
+                    id="date"
+                    label="Induction Date"
+                    type="date"
                     variant="standard"
-                    id="Description"
-                    name="Description"
-                    label="Description"
-                    fullWidth
-                    value={state.Description}
+                    defaultValue={state.inductionDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     onChange={(e) =>
-                      setState({
-                        ...state,
-                        Description: e.target.value,
-                      })
+                      setState({ ...state, inductionDate: e.target.value })
                     }
-                    error={!!errors.Description} // Show error if it exists
-                    helperText={errors.Description} // Display error message
                   />
                 </Grid>
               </Grid>
@@ -960,16 +860,16 @@ function New_lead() {
             <Button
               onClick={() => {
                 setState({
-                  Name: "",
-                  Phone_Number: "",
-                  Email: "",
-                  Campaign: "",
-                  Campaign_Id: "",
-                  Channel: "",
-                  Channel_Id: "",
-                  Lead_Status: "",
-                  Lead_Status_Id: "",
-                  Description: "",
+                  warehouseName: "",
+                  warehouseCode: "",
+                  address: "",
+                  latitude: "",
+                  longitude: "",
+                  accountSupervisorName: "",
+                  accountSupervisor: "",
+                  dispatchSupervisorName: "",
+                  dispatchSupervisor: "",
+                  inductionDate: "",
                   isUpdate: false,
                 });
                 setOpenDialog(false);
@@ -983,7 +883,7 @@ function New_lead() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLead}
+                  onClick={handleUpdateWH}
                 >
                   Update
                 </Button>
@@ -993,7 +893,7 @@ function New_lead() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLead}
+                  onClick={handleCreateWH}
                 >
                   Create
                 </Button>
@@ -1005,7 +905,7 @@ function New_lead() {
 
       {rowdata && (
         <TablePlayground
-          title="Lead List"
+          title="Warehouse List"
           columnData={columnData}
           rowData={rowdata}
           component="div"
@@ -1033,4 +933,4 @@ function New_lead() {
   );
 }
 
-export default New_lead;
+export default Warehouse;

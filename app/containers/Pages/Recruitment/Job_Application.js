@@ -825,7 +825,7 @@ function Job_Application() {
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
 
-                       
+
                       />
                     ))}
                   </div>
