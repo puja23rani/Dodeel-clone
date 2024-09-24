@@ -85,7 +85,7 @@ function Job_Application() {
       errors.jobDescription = "Job Description is required";
       isValid = false;
     }
-    if (!state.createStatus.title) {
+    if (!state.createStatus) {
       errors.createStatus = "Create Status is required";
       isValid = false;
     }
@@ -101,7 +101,7 @@ function Job_Application() {
       errors.skills = "Skills is required";
       isValid = false;
     }
-    if (!state.resume.title) {
+    if (!state.resume) {
       errors.resume = "Resume is required";
       isValid = false;
     }
@@ -874,6 +874,8 @@ function Job_Application() {
                       shrink: true,
                     }}
                     onChange={(e) => setState({ ...state, startDate: e.target.value })}
+                    error={!!errors.startDate} // Show error if it exists
+                    helperText={errors.startDate}
                   />
                 </Grid>
 
@@ -889,6 +891,8 @@ function Job_Application() {
                       shrink: true,
                     }}
                     onChange={(e) => setState({ ...state, endDate: e.target.value })}
+                    error={!!errors.endDate} // Show error if it exists
+                    helperText={errors.endDate}
                   />
                 </Grid>
                 {/* <Grid item xs={12}>

@@ -112,7 +112,7 @@ function Applicantlist() {
       errors.feedback = "Feedback is required";
       isValid = false;
     }
-    if (!state.interviewStatus.title) {
+    if (!state.interviewStatus) {
       errors.interviewStatus = "Interview Status is required";
       isValid = false;
     }
@@ -707,7 +707,32 @@ function Applicantlist() {
 
   console.log(state)
 
-
+  const handleInputChange = (e) => {
+    setState({
+      ...state,
+      inputSkill: e.target.value,
+    });
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && state.inputSkill.trim()) {
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
+    } else if (e.key === "Backspace" && !state.inputSkill) {
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
+    }
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
+    setState((prevState) => ({
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+    }));
+  };
   const handlePageChange = (event, newPage) => {
     setPage(newPage); // Update the current page
   };

@@ -338,6 +338,8 @@ function Interviewer() {
   }
 
 
+
+
   return (
     <>
       <div>
@@ -398,9 +400,15 @@ function Interviewer() {
                           name="interviewerName"
                           label="Interviewer Name"
                           value={state.interviewerName}
-                          onChange={(e) =>
-                            setState({ ...state, interviewerName: e.target.value })
-                          }
+                          onChange={(e) => {
+                            const regex = /^[a-zA-Z. ]*$/;
+                            if (regex.test(e.target.value)) {
+                              setState({ ...state, interviewerName: e.target.value });
+                            }
+                          }}
+                          // onChange={(e) =>
+                          //   setState({ ...state, interviewerName: e.target.value })
+                          // }
                           error={!!errors.interviewerName}
                           helperText={errors.interviewerName}
                         />

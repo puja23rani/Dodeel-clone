@@ -23,6 +23,9 @@ import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
 import InfoIcon from '@mui/icons-material/Info';
 import { Navigate, useNavigate } from "react-router-dom";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "../../../../firebase.config";
+
 
 
 
@@ -105,18 +108,18 @@ function Quotation() {
       errors.resume = "Resume is required";
       isValid = false;
     }
-    if (state.customQuestion.length==0) {
+    if (state.customQuestion.length == 0) {
       errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
-    
+
 
     setErrors(errors);
     console.log(isValid)
-    
+
     return isValid;
   };
- 
+
 
 
   const [state, setState] = useState({
@@ -145,16 +148,17 @@ function Quotation() {
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
   const navigate = useNavigate();
-  
-    
-   
-    const [dataEditorState, setEditorState] = useState();
-  
-    const onEditorStateChange = editorStateParam => {
-      setEditorState(editorStateParam);
-    };
-  
-  
+  const { requireID } = location.state || {};
+
+
+
+  const [dataEditorState, setEditorState] = useState();
+
+  const onEditorStateChange = editorStateParam => {
+    setEditorState(editorStateParam);
+  };
+
+
 
   const columnData = [
     {
@@ -204,7 +208,7 @@ function Quotation() {
   ];
 
   useEffect(() => {
-    
+
     table1();
   }, []);
 
@@ -241,18 +245,35 @@ function Quotation() {
     }
   };
 
-  
+  const [isLoading, setisLoading] = useState(false)
+  const handleFilesChange = (e, field) => {
+    const file = e.target.files[0];
+    if (file) {
+      setisLoading(true);
+      const imageRef = ref(storage, `/photo/${file.name}`);
+      uploadBytes(imageRef, file).then(() => {
+        getDownloadURL(imageRef).then(url => {
+          // console.log(url);
+          setState(prevState => ({
+            ...prevState,
+            [field]: url
+          }));
+          setisLoading(false);
+        });
+      });
+    }
+  };
 
-  
-    function fetchJobCreate(pg) {
-      axios
-        .post(
-   
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      }, {
+
+  function fetchJobCreate(pg) {
+    axios
+      .post(
+
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -265,11 +286,11 @@ function Quotation() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus ,
+              createStatus: item.createStatus,
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume ,
+              resume: item.resume,
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -281,8 +302,8 @@ function Quotation() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);   
-                      
+                      setItemToDelete(item._id);
+
                       setState({
                         id: item._id,
                         jobTitle: item.jobTitle,
@@ -291,7 +312,7 @@ function Quotation() {
                         createStatus: {
                           title: item.createStatus
                         },
-                       
+
                         startDate: item.startDate.slice(0, 10),
                         endDate: item.endDate.slice(0, 10),
                         skills: item.skills,
@@ -347,7 +368,7 @@ function Quotation() {
                         state: {
                           jobID: item,
 
-                         
+
                         },
                       });
                     }}
@@ -371,6 +392,50 @@ function Quotation() {
     fetchJobCreate(page);
   }, [page, rowsPerPage]);
 
+  const [apiData, setApiData] = useState([]); // Declare a state for apiData
+
+  useEffect(() => {
+    // Fetch data from an API
+    const fetchApiData = async () => {
+      try {
+        const data2 = { id: requireID };
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/auth/getrequirementbyid`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data2),
+          }
+        );
+        const data = await response.json();
+        console.log(data, "data");
+
+        // Map the productDetails and structure it into productID, productName, and quantity
+        const formattedProductDetails = data.requirement.productDetails.map(
+          (product) => ({
+            productID: product.productType, // Assuming productType is the product ID
+            productName: product.productName,
+            quantity: product.quantity,
+            amount: 0, // Initialize amount to 0
+          })
+        );
+        console.log(formattedProductDetails, "forrrrrrrrrrr");
+
+        // Set the formatted data in the state
+        setApiData(formattedProductDetails);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchApiData();
+  }, []);
+
+
+
   const handleSaveJobs = () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
@@ -378,7 +443,7 @@ function Quotation() {
       setSeverity("warning");
       return;
     }
-   else {
+    else {
       axios
         .post(
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
@@ -388,7 +453,7 @@ function Quotation() {
             jobCategory: state.jobCategory,
 
             jobDescription: state.jobDescription,
-             
+
             createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
@@ -496,7 +561,7 @@ function Quotation() {
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-      
+
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -504,7 +569,7 @@ function Quotation() {
       skills: state.skills.join(","),
       resume: state.resume.title,
       customQuestionID: state.customQuestionID,
-     
+
     };
 
     console.log(requestData);
@@ -581,44 +646,44 @@ function Quotation() {
 
   const handleInputChange = (e) => {
     setState({
-        ...state,
-        inputSkill: e.target.value,
+      ...state,
+      inputSkill: e.target.value,
     });
-};
-const handleKeyDown = (e) => {
+  };
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-        setState({
-            ...state,
-            skills: [...state.skills, state.inputSkill.trim()],
-            inputSkill: "",
-        });
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-        setState({
-            ...state,
-            skills: state.skills.slice(0, -1),
-        });
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
     }
-};
-const handleSkillDelete = (skillToDelete) => () => {
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-        ...prevState,
-        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-};
+  };
 
 
-const handlePageChange = (event, newPage) => {
-  setPage(newPage); // Update the current page
-};
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage); // Update the current page
+  };
 
-// Handle rows per page change
-const handleRowsPerPageChange = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-  setPage(0); // Reset to first page
-};
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(0); // Reset to first page
+  };
 
-const handleClear=()=>{
- 
+  const handleClear = () => {
+
     setState({
       jobTitle: "",
       jobCategory: "",
@@ -634,19 +699,19 @@ const handleClear=()=>{
     });
     setErrors({
       jobTitle: "",
-    jobCategory: "",
-    jobDescription: "",
-    createStatus: "",
-    startDate: "",
-    endDate: "",
-    skills: "",
-    resume: "",
-    customQuestionID: "",
-    customQuestion: "",
+      jobCategory: "",
+      jobDescription: "",
+      createStatus: "",
+      startDate: "",
+      endDate: "",
+      skills: "",
+      resume: "",
+      customQuestionID: "",
+      customQuestion: "",
     })
     setOpenDialog(false);
-  
-}
+
+  }
 
   return (
     <>
@@ -669,7 +734,7 @@ const handleClear=()=>{
         </Toolbar>
         <Dialog
           open={openDialog}
-           onClose={handleClear}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -679,8 +744,8 @@ const handleClear=()=>{
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-           
-              onClick={handleClear}
+
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -690,258 +755,173 @@ const handleClear=()=>{
           >
             <CloseIcon />
           </IconButton>
-          <DialogContent className={classes.dialogContent}>
-            <div className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="jobTitle"
-                    name="jobTitle"
-                    label="Job Title"
-                    value={state.jobTitle}
-                    // onChange={(e) => {
-                    //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                    //   if (regex.test(e.target.value)) {
-                    //     setState({ ...state, campaignName: e.target.value });
-                    //   }
-                    // }}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        jobTitle: e.target.value,
-                      })
-                    }
-                    error={!!errors.jobTitle} // Show error if it exists
-                    helperText={errors.jobTitle} // Display error message
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="jobCategory"
-                    name="jobCategory"
-                    label="Job Category"
-                    value={state.jobCategory}
-                    // onChange={(e) => {
-                    //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                    //   if (regex.test(e.target.value)) {
-                    //     setState({ ...state, campaignName: e.target.value });
-                    //   }
-                    // }}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        jobCategory: e.target.value,
-                      })
-                    }
-                    error={!!errors.jobCategory} // Show error if it exists
-                    helperText={errors.jobCategory} // Display error message
-                  />
-                </Grid>
+          <DialogContent>
+            <Grid container spacing={2}>
+              {/* Vendor Name */}
+              {/* <Grid item xs={12}>
+        <TextField
+          label="Vendor Name"
+          variant="standard"
+          fullWidth
+          value={state.vendorName || ""}
+          onChange={(e) => setState({ ...state, vendorName: e.target.value })}
+          margin="dense"
+        />
+      </Grid> */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="standard"
+                  id="Name"
+                  name="Name"
+                  label="Vendor Name"
+                  value={state.vendorName || ""}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const validInput = input.replace(/[^a-zA-Z\s]/g, "");
+                    setState({
+                      ...state,
+                      vendorName: validInput,
+                    });
+                  }}
+                  error={!!errors.vendorName} // Show error if it exists
+                  helperText={errors.vendorName} // Display error message
+                />
+              </Grid>
 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px"
-                    }}
-                    id="highlights-demo"
-                    options={[
-                      { title: "Active" },
-                      { title: "Inactive" },
+              {/* Product, Quantity, and Price Fields from API */}
+              {apiData?.map((item, index) => (
+                <Grid
+                  container
+                  key={index}
+                  spacing={2}
+                  alignItems="center"
+                  style={{ marginBottom: "16px", marginTop: "20px" }}
+                >
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Product Name"
+                      fullWidth
+                      value={item.productName || ""}
+                      margin="dense"
+                      InputProps={{
+                        readOnly: true, // Make this field read-only
+                      }}
+                    />
+                  </Grid>
 
-                    ]}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.createStatus} // Ensure value is an object or null
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        createStatus: v ? v : null, // Set campaignStatus to the selected object or null
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Create Status"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.createStatus} // Show error if it exists
-                        helperText={errors.createStatus} // Display error message
-                      />
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Quantity"
+                      fullWidth
+                      value={item.quantity || ""}
+                      margin="dense"
+                      InputProps={{
+                        readOnly: true, // Make this field read-only
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Price"
+                      fullWidth
+                      value={item.amount || ""}
+                      onChange={(e) => {
+                        const input = e.target.value;
+                        const validInput = input
+                          .replace(/[^0-9]/g, "")
+                          .slice(0, 10);
+                        handleFieldChange(index, "amount", parseInt(validInput))}
+                      }
+                      margin="dense"
+                     
+                      InputProps={{
+                        disabled: Boolean(state.totalPrice), // Disable price fields if totalPrice is set
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              ))}
+
+              {/* Total Price Section */}
+              <Grid item xs={12}>
+                <Typography variant="standard" color="secondary">
+                  Calculated Total Price:{" "}
+                  {state.totalPrice // Show totalPrice if entered manually
+                    ? state.totalPrice
+                    : apiData.reduce(
+                      (total, item) => total + (parseFloat(item.amount) || 0),
+                      0
                     )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px"
-                    }}
-                    id="highlights-demo"
-                    options={[
-                      { title: "Required" },
-                      { title: "Not required" },
+                </Typography>
+              </Grid>
 
-                    ]}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.resume} // Ensure value is an object or null
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        resume: v ? v : null, // Set campaignStatus to the selected object or null
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Resume"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.resume} // Show error if it exists
-                        helperText={errors.resume} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="skills"
-                    name="skills"
-                    label="Skills"
-                    value={state.inputSkill}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                  />
-                  <div style={{ marginTop: 10 }}>
-                    {state.skills?.map((skill, index) => (
-                      <Chip
-                        key={index}
-                        label={skill}
-                        onDelete={handleSkillDelete(skill)}
-                        style={{ marginRight: 10, marginBottom: 10 }}
+              <Grid item xs={12}>
+                <TextField
+                  label="Total Price"
+                  fullWidth
+                  variant="standard"
+                  value={state.totalPrice}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    const validInput = input
+                      .replace(/[^0-9]/g, "")
+                      .slice(0, 10);
+                    setState({ ...state, totalPrice: validInput });
+                  }}
+                  margin="dense"
+                  
+                />
+              </Grid>
+              
+              {/* Quotation File Field */}
+             
 
-                        error={!!errors.skills} // Show error if it exists
-                        helperText={errors.skills}
-                      />
-                    ))}
+              <Grid item md={6} xs={6}>
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <Grid sx={{ width: "50%", paddingTop: "28px" }}>
+                      <Typography variant="body2">Quotation File</Typography>
+                    </Grid>
+                    <Grid sx={{ paddingTop: "28px" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        <label
+                          style={{
+                            cursor: 'pointer',
+                            position: 'relative',
+                            width: '100%',
+                            overflow: 'hidden',
+                            borderRadius: '0.75rem', // Equivalent to rounded-xl
+                            border: '1px solid #27282C',
+                            backgroundColor: 'white',
+                            fontWeight: '500', // Equivalent to font-medium
+                            color: '#27282C',
+                            fontSize: "12px",
+                            padding: "10px"
+                          }}
+                        >
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFilesChange(e, "quoteFile")}
+                            style={{
+                              display: 'none', // Equivalent to hidden
+                            }}
+                          />
+                          Click to upload file
+                        </label>
+                        {state.quoteFile && (
+                          <img src={state.quoteFile} alt="..." width={64} height={64} style={{ marginTop: "10px" }} />
+                        )}
+                      </div>
+                    </Grid>
                   </div>
                 </Grid>
 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    multiple
-                    id="tags-standard"
-                    options={customQuestionList}
-                    value={state.customQuestion}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
-                    onChange={(e, v) => {
-                      const selectedCustomquestionIds = v.map((item) => item.id);
-                      setState({
-                        ...state,
-                        customQuestion: v, // Store selected objects
-                        customQuestionID: selectedCustomquestionIds, // Store IDs
-                      });
-                    }}
-                    getOptionLabel={(option) => option.title}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Custom Question"
-                        
-                        error={!!errors.customQuestion} // Show error if it exists
-                        helperText={errors.customQuestion} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
-
-               
-                <Grid item xs={6} sx={{ width: "100%" }}>
-                  <TextField
-                    id="date"
-                    label="Start Date"
-                    type="date"
-                    variant="standard"
-                    defaultValue={state.startDate}
-                    sx={{ width: "100%" }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setState({ ...state, startDate: e.target.value })}
-                  />
-                </Grid>
-
-                <Grid item xs={6} sx={{ width: "100%" }}>
-                  <TextField
-                    id="date"
-                    label="End Date"
-                    type="date"
-                    variant="standard"
-                    defaultValue={state.endDate}
-                    sx={{ width: "100%" }}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => setState({ ...state, endDate: e.target.value })}
-                  />
-                </Grid>
-                 {/* <Grid item xs={12}>
-  <Typography variant="subtitle1" gutterBottom>
-    Job Description
-  </Typography>
-  
-  <Paper elevation={3} style={{ padding: '16px', marginTop: '8px' }}>
-    
-      <Editor
-           editorState={state.jobDescription}
-            editorClassName={classes.textEditor}
-            toolbarClassName={classes.toolbarEditor}
-            
-            onEditorStateChange={(e) =>
-        setState({
-          ...state,
-          jobDescription: e,
-        })
-      }
-    />
-  </Paper>
-</Grid> */}
-<Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="jobDescription"
-                    name="jobDescription"
-                    label="Job Description"
-                    value={state.jobDescription}
-                    // onChange={(e) => {
-                    //   const regex = /^[a-zA-Z\s]*$/; // Allow only letters and spaces
-                    //   if (regex.test(e.target.value)) {
-                    //     setState({ ...state, campaignName: e.target.value });
-                    //   }
-                    // }}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        jobDescription: e.target.value,
-                      })
-                    }
-                    error={!!errors.jobDescription} // Show error if it exists
-                    helperText={errors.jobDescription} // Display error message
-                  />
-                </Grid>
-
-              </Grid>
-            </div>
+            </Grid>
           </DialogContent>
           <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={() => setOpenDialog(false)} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -965,7 +945,7 @@ const handleClear=()=>{
                 </Button>
               </>
             )}
-           
+
           </DialogActions>
         </Dialog>
       </div>
@@ -985,7 +965,7 @@ const handleClear=()=>{
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-      
+
 
       <AlertDialog
         open={deleteDialogOpen}

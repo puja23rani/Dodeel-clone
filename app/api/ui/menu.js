@@ -252,18 +252,21 @@ module.exports = [
         name: "Custom Question",
         link: "/app/Custom_Question",
         icon: "settings_suggest",
+        badge: "Hot",
       },
       {
         key: "Interviewer",
         name: "Interviewer",
         link: "/app/Interviewer",
         icon: "settings_suggest",
+        badge: "Hot",
       },
       {
         key: "Job_Application",
         name: "Job Application",
         link: "/app/Job_Application",
         icon: "settings_suggest",
+        badge: "Hot",
       },
       // {
       //   key: "applicantlist",
