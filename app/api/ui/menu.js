@@ -131,32 +131,7 @@ module.exports = [
     name: "Lead",
     icon: "settings_suggest",
     child: [
-      {
-        key: "Lead_Settings",
-        name: "Lead Settings",
-        title: true,
-      },
-      {
-        key: "Lead_Status",
-        name: "Lead Status",
-        link: "/app/lead/lead-status",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
-      {
-        key: "Log_Notes",
-        name: "Log Notes",
-        link: "/app/lead/log-notes",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
-      {
-        key: "Channel",
-        name: "Channel",
-        link: "/app/lead/channel",
-        icon: "settings_suggest",
-        badge: "Hot",
-      },
+      
       {
         key: "Lead_Management",
         name: "Lead Management",
@@ -328,101 +303,7 @@ module.exports = [
       
     ],
   },
-  {
-    key: 'HRM',
-    name: 'HRM',
-    icon: 'widgets',
-    child: [
-      {
-        key: 'HRM Setting',
-        name: 'HRM Setting',
-        title: true,
-      },
-      {
-        key: 'Department',
-        name: 'Department',
-        icon: 'check_circle',
-        link: '/app/Department',
-      },
-      {
-        key: 'Designation',
-        name: 'Designation',
-        icon: 'perm_contact_calendar',
-        link: '/app/pages/contact'
-      },
-      {
-        key: 'Leave',
-        name: 'Leave',
-        icon: 'mail',
-        link: '/app/pages/email',
-        badge: '4'
-      },
-      // {
-      //   key: 'Allowance',
-      //   name: 'Firebase Apps',
-      //   title: true,
-      // },
-      {
-        key: 'Allowance',
-        name: 'Allowance',
-        icon: 'check_circle',
-        link: '/app/pages/todo-firebase',
-      },
-      {
-        key: 'Performance',
-        name: 'Performance',
-        icon: 'perm_contact_calendar',
-        link: '/app/pages/contact-firebase'
-      },
-      {
-        key: 'Competency Type',
-        name: 'Competency Type',
-        icon: 'mail',
-        link: '/app/pages/email-firebase',
-      },
-      // {
-      //   key: 'Competencies',
-      //   name: 'Competencies',
-      //   title: true,
-      // },
-      {
-        key: 'Competencies',
-        name: 'Competencies',
-        icon: 'mail',
-        link: '/app/pages/email-firebase',
-      },
-      {
-        key: 'Office Shift',
-        name: 'Office Shift',
-        icon: 'place',
-        link: '/app/maps/map-marker'
-      },
-      {
-        key: 'Contact Details',
-        name: 'Contact Details',
-        icon: 'directions',
-        link: '/app/maps/map-direction'
-      },
-      // {
-      //   key: 'map_searchbox',
-      //   name: 'Map with Searchbox',
-      //   icon: 'search',
-      //   link: '/app/maps/map-searchbox'
-      // },
-      // {
-      //   key: 'map_traffic',
-      //   name: 'Traffic Indicator',
-      //   icon: 'traffic',
-      //   link: '/app/maps/map-traffic'
-      // },
-      // {
-      //   key: 'street_view',
-      //   name: 'Street View',
-      //   icon: 'map',
-      //   link: '/app/maps/street-view'
-      // },
-    ]
-  },
+  
   // {
   //   key: 'apps',
   //   name: 'Applications',

@@ -124,6 +124,11 @@ import Holidays from "../Pages/HRMmodule/HRMmanagement/Holidays";
 import Payroll from "../Pages/HRMmodule/HRMmanagement/Payroll";
 import Appraisal from "../Pages/HRMmodule/HRMmanagement/Appraisal";
 import AppraisalList from "../Pages/HRMmodule/HRMmanagement/AppraisalList";
+import JobAppView from "../Pages/Recruitment/jobview";
+import JobApplicantView from "../Pages/Recruitment/applicantview";
+import Requirement from "../Pages/Procurement/requirement";
+import Quotation from "../Pages/Procurement/quotation";
+import Billing from "../Pages/Procurement/billing";
 
 function Application(props) {
   const { history } = props;

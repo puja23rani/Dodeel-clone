@@ -63,7 +63,7 @@ function Custom_Question() {
       isValid = false;
     }
 
-    if (!state.Required_or_Not.title.trim()) {
+    if (!state.Required_or_Not.trim()) {
       errors.Required_or_Not = "Requirements is required";
       isValid = false;
     }
@@ -418,6 +418,8 @@ function Custom_Question() {
                           onChange={(e) =>
                             setState({ ...state, Custom_Question: e.target.value })
                           }
+                          error={!!errors.Custom_Question} // Show error if it exists
+              helperText={errors.Custom_Question}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -448,7 +450,10 @@ function Custom_Question() {
                               label="Requirement"
                               // margin="normal"
                               variant="standard"
+                              error={!!errors.Required_or_Not} // Show error if it exists
+                        helperText={errors.Required_or_Not}
                             />
+                            
                           )}
                           renderOption={(props, option, { inputValue }) => {
                             const matches = match(option.title, inputValue, { insideWords: true });
@@ -472,6 +477,7 @@ function Custom_Question() {
                             );
                           }}
                         />
+                        
                       </Grid>
 
                     </Grid>

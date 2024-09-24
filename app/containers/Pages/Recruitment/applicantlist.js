@@ -112,7 +112,7 @@ function Applicantlist() {
       errors.feedback = "Feedback is required";
       isValid = false;
     }
-    if (!state.interviewStatus.title) {
+    if (!state.interviewStatus) {
       errors.interviewStatus = "Interview Status is required";
       isValid = false;
     }
