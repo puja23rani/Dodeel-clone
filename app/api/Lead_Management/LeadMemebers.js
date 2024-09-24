@@ -28,6 +28,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 
 import AddIcon from "@mui/icons-material/Add";
+import { set } from "lodash";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -473,7 +474,21 @@ function LeadMemebers() {
       fieldset: state.fieldset.filter((_, index) => index !== idx),
     });
   };
-  console.log(state);
+  //console.log(state, "sssssss");\
+  function handleClear() {
+    setState({
+      employeeName: [],
+      membersID: [],
+      leadName: null,
+      isUpdate: false,
+    });
+    setErrors({
+      employeeName: "",
+
+      leadName: null,
+    });
+    setOpenDialog(false);
+  }
   return (
     <>
       <div>
@@ -494,7 +509,7 @@ function LeadMemebers() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -502,7 +517,7 @@ function LeadMemebers() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -597,7 +612,7 @@ function LeadMemebers() {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
+            <Button onClick={handleClear} color="secondary">
               Close
             </Button>
           </DialogActions>

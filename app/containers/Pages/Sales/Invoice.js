@@ -125,11 +125,6 @@ function Invoice() {
     let isValid = true;
     let errors = {};
 
-    if (!state.billCreatorID.id) {
-      errors.billCreatorID = "Creator is required";
-      isValid = false;
-    }
-
     if (!state.billCustomerID.id) {
       errors.billCustomerID = "Customer is required";
       isValid = false;
@@ -367,26 +362,11 @@ function Invoice() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);
-                      setState({
-                        bill_ID: item.bill_ID,
-                        billCreatorID: {
-                          id: item.billCreatorID,
-                          title: item.billCreatorName,
-                        },
-                        billCustomerID: {
-                          id: item.billCustomerID,
-                          title: item.billCustomerName,
-                        },
-                       
-                        billProjectID: {
-                          id: item.billProjectID,
-                          title: item.billProjectTitle,
-                        },
-                        invoiceDate: item.invoiceDate?.slice(0, 10),
-                        billDueDate: item.billDueDate?.slice(0, 10),
+                      // setItemToDelete(item._id);
+                      navigate("/app/sales/invoice/invoice-update", {
+                        state: { InvoiceID: item._id },
                       });
-                      setOpenDialog(true);
+                      // setOpenDialog(true);
                     }}
                   >
                     <EditIcon />
@@ -399,6 +379,20 @@ function Invoice() {
                     }}
                   >
                     <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Info"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/sales/invoice/invoice-view", {
+                        state: { InvoiceID: item._id },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
                   </IconButton>
                 </>
               ),
@@ -422,12 +416,10 @@ function Invoice() {
     try {
       // Prepare the data to match the required request body format
       const data = {
-        billCreatorID: state.billCreatorID.id,
-       
         billCustomerID: state.billCustomerID.id,
-        
+
         billProjectID: state.billProjectID.id,
-       
+
         invoiceDate: state.invoiceDate,
         billDueDate: state.billDueDate,
 
@@ -478,8 +470,10 @@ function Invoice() {
         // setMessage("Saved successfully!");
         // setOpen(true);
         // setSeverity("success");
-        navigate("/app/sales/invoice/invoice-view",{state:{ InvoiceID: result._id },})
-      } else { 
+        navigate("/app/sales/invoice/invoice-update", {
+          state: { InvoiceID: result._id },
+        });
+      } else {
         setMessage(result.message);
         setOpen(true);
         setSeverity("error");
@@ -492,112 +486,36 @@ function Invoice() {
     }
   };
   console.log(state, "sssssss");
-  //   const handleUpdateLead = async () => {
-  //     if (!validate()) {
-  //       setMessage("Please fill all required fields");
-  //       setOpen(true);
-  //       setSeverity("warning");
-  //       return;
-  //     }
-  //     console.log("p1");
-  //     try {
-  //       // Prepare the data to match the required request body format
-  //       const data = {
-  //         id: parseInt(itemToDelete),
-  //         leadName: state.Name,
-  //         email: state.Email,
-  //         campaignID: state.Campaign.id, // campaignName from state
-  //         channelID: state.Channel.id,
-  //         leadStatusID: state.Lead_Status.id,
 
-  //         contactNumber: parseInt(state.Phone_Number),
-  //         notes: state.Description,
-  //       };
-  //       console.log("p2");
-  //       const response = await fetch(
-  //         `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
-  //         {
-  //           method: "PUT",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //           body: JSON.stringify(data),
-  //         }
-  //       );
-  //       console.log("p3");
-  //       const result = await response.json();
-  //       if (result.status === 200) {
-  //         fetchLead();
-  //         window.scrollTo({
-  //           top: 400,
-  //           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-  //         });
-  //         // Reset the state after successful creation
-  //         setState({
-  //           Name: "",
-  //           Phone_Number: "",
-  //           Email: "",
-  //           Campaign: "",
-  //           Campaign_Id: "",
-  //           Channel: "",
-  //           Channel_Id: "",
-  //           Lead_Status: "",
-  //           Lead_Status_Id: "",
-  //           Description: "",
-
-  //           isUpdate: false,
-  //         });
-  //         setOpenDialog(false);
-  //         setMessage("Saved successfully!");
-  //         setOpen(true);
-  //         setSeverity("success");
-  //       } else {
-  //         setMessage(result.message);
-  //         setOpen(true);
-  //         setSeverity("error");
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //       setMessage(err.message);
-  //       setOpen(true);
-  //       setSeverity("error");
-  //     }
-  //   };
-  const handleCustomerDelete = async () => {
+  const handleDelete = async () => {
     try {
-      const data = { id: parseInt(itemToDelete) };
-      const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCustomer`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
 
-      const result = await response.json();
-      if (result.status === 200) {
-        setDeleteDialogOpen(false);
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+      const data = { id: parseInt(itemToDelete) };
+      const requestOptions = {
+        method: "DELETE",
+        headers: loginHeaders,
+        body: JSON.stringify(data),
+      };
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteInvoice`,
+        requestOptions
+      );
+      const actualData = await res.json();
+      if (actualData.status == 200) {
+        toast.success("Successfully deleted !");
         fetchInvoice(page);
-        setMessage("Deleted successfully!");
-        setOpen(true);
-        setSeverity("success");
-        setItemToDelete(null);
       } else {
-        setMessage(result.message);
-        setOpen(true);
-        setSeverity("error");
-        setItemToDelete(null);
+        toast.error("Failed to delete Invoice!");
       }
     } catch (err) {
-      //console.log(err);
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
+      console.log(err);
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -661,7 +579,7 @@ function Invoice() {
     });
     setOpenDialog(false);
   };
-  console.log(state,"ssstate")
+  console.log(state, "ssstate");
 
   // Delete a section by index
   return (
@@ -700,8 +618,7 @@ function Invoice() {
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
-               
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <Autocomplete
                     sx={{
                       marginTop: "-16px",
@@ -741,7 +658,7 @@ function Invoice() {
                       />
                     )}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
@@ -874,6 +791,17 @@ function Invoice() {
                     InputLabelProps={{ shrink: true }}
                     error={!!errors.billDueDate} // Show error if it exists
                     helperText={errors.billDueDate} // Display error message
+                    inputProps={{
+                      ...(state.invoiceDate && {
+                        min: new Date(
+                          new Date(state.invoiceDate).setDate(
+                            new Date(state.invoiceDate).getDate() + 1
+                          )
+                        )
+                          .toISOString()
+                          .split("T")[0], // Adding one day to invoiceDate if it's not empty
+                      }),
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -890,7 +818,6 @@ function Invoice() {
                     placeholder="Bill Notes"
                   />
                 </Grid>
-               
               </Grid>
             </div>
           </DialogContent>
@@ -941,7 +868,7 @@ function Invoice() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCustomerDelete}
+        onDelete={handleDelete}
       />
       <Popup
         open={open}

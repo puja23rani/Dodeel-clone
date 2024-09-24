@@ -24,7 +24,6 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import MenuListComposition from "../../containers/UiElements/demos/DrawerMenu/BasicMenu";
 const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
@@ -114,121 +113,56 @@ function Lead_Status() {
   }, []);
 
   const fetchLeadStatus = () => {
-    // axios
-    //   .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
-    //     headers: { Authorization: `Bearer ${token}` },
-    //   })
-    //   .then((response) => {
-    //     if (response.data.data) {
-    //       setRowdata(
-    //         response.data.data.map((item) => ({
-    //           slNo: response.data.data.indexOf(item) + 1,
-    //           id: item._id,
-    //           statusName: item.statusName,
-    //           description: item.description,
-    //           actions: (
-    //             <>
-    //               <IconButton
-    //                 aria-label="Edit"
-    //                 onClick={(e) => {
-    //                   window.scrollTo({
-    //                     top: 0,
-    //                     behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-    //                   });
-    //                   setItemToDelete(item._id);
-    //                   setState({
-    //                     Status_Name: item.statusName,
-    //                     Description: item.description,
-    //                     isUpdate: true,
-    //                   });
-    //                   setOpenDialog(true);
-    //                 }}
-    //               >
-    //                 <EditIcon color={"primary"} />
-    //               </IconButton>
-    //               <IconButton
-    //                 aria-label="Delete"
-    //                 onClick={() => {
-    //                   setItemToDelete(item._id);
-    //                   setDeleteDialogOpen(true);
-    //                 }}
-    //               >
-    //                 <DeleteIcon color={"primary"} />
-    //               </IconButton>
-    //             </>
-    //           ),
-    //         }))
-    //       );
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching data:", error);
-    //   });
-    const response = {
-      data: {
-        data: [
-          {
-            _id: "1",
-            statusName: "Open",
-            description: "Open",
-          },
-          {
-            _id: "2",
-            statusName: "In Progress",
-            description: "In Progress",
-          },
-          {
-            _id: "3",
-            statusName: "Closed",
-            description: "Closed",
-          },
-        ],
-      },
-    }
-    setRowdata(
-      response.data.data.map((item) => ({
-        slNo: response.data.data.indexOf(item) + 1,
-        id: item._id,
-        statusName: item.statusName,
-        description: item.description,
-        actions: (
-          <>
-            <IconButton
-              aria-label="Edit"
-              onClick={(e) => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-                });
-                setItemToDelete(item._id);
-                setState({
-                  Status_Name: item.statusName,
-                  Description: item.description,
-                  isUpdate: true,
-                });
-                setOpenDialog(true);
-              }}
-            >
-              <EditIcon color={"primary"} />
-            </IconButton>
-            <IconButton
-              aria-label="Delete"
-              onClick={() => {
-                setItemToDelete(item._id);
-                setDeleteDialogOpen(true);
-              }}
-            >
-              <DeleteIcon color={"primary"} />
-            </IconButton>
-            <IconButton
-              aria-label="More"
-            >
-              <MenuListComposition />
-            </IconButton>
-          </>
-        ),
-      }))
-    );
+    axios
+      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        if (response.data.data) {
+          setRowdata(
+            response.data.data.map((item) => ({
+              slNo: response.data.data.indexOf(item) + 1,
+              id: item._id,
+              statusName: item.statusName,
+              description: item.description,
+              actions: (
+                <>
+                  <IconButton
+                    aria-label="Edit"
+                    onClick={(e) => {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+                      });
+                      setItemToDelete(item._id);
+                      setState({
+                        Status_Name: item.statusName,
+                        Description: item.description,
+                        isUpdate: true,
+                      });
+                      setOpenDialog(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={() => {
+                      setItemToDelete(item._id);
+                      setDeleteDialogOpen(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
+              ),
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   const handleCreateLeadStatus = async () => {
@@ -422,7 +356,7 @@ function Lead_Status() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => {
+          onClose= {() =>{ 
             setState({
               Status_Name: "",
               Description: "",
@@ -430,8 +364,7 @@ function Lead_Status() {
               searchText: "",
               isUpdate: false,
             })
-            setOpenDialog(false)
-          }}
+            setOpenDialog(false)}}
           fullWidth
           maxWidth="md"
         >
@@ -440,7 +373,7 @@ function Lead_Status() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => {
+              onClick={() =>{ 
                 setState({
                   Status_Name: "",
                   Description: "",
@@ -448,8 +381,7 @@ function Lead_Status() {
                   searchText: "",
                   isUpdate: false,
                 })
-                setOpenDialog(false)
-              }}
+                setOpenDialog(false)}}
             >
               <CloseIcon />
             </IconButton>
@@ -509,8 +441,8 @@ function Lead_Status() {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button onClick=
-              {() => {
+          <Button onClick=
+          {() =>{ 
                 setState({
                   Status_Name: "",
                   Description: "",
@@ -518,8 +450,7 @@ function Lead_Status() {
                   searchText: "",
                   isUpdate: false,
                 })
-                setOpenDialog(false)
-              }} color="secondary">
+                setOpenDialog(false)}} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -543,7 +474,7 @@ function Lead_Status() {
                 </Button>
               </>
             )}
-
+            
           </DialogActions>
         </Dialog>
       </div>
