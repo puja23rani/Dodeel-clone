@@ -88,7 +88,7 @@ function Quotation() {
       errors.jobDescription = "Job Description is required";
       isValid = false;
     }
-    if (!state.createStatus.title) {
+    if (!state.createStatus) {
       errors.createStatus = "Create Status is required";
       isValid = false;
     }
@@ -104,7 +104,7 @@ function Quotation() {
       errors.skills = "Skills is required";
       isValid = false;
     }
-    if (!state.resume.title) {
+    if (!state.resume) {
       errors.resume = "Resume is required";
       isValid = false;
     }
@@ -871,7 +871,8 @@ function Quotation() {
                     setState({ ...state, totalPrice: validInput });
                   }}
                   margin="dense"
-                  
+                  error={!!errors.totalPrice} // Show error if it exists
+                  helperText={errors.totalPrice}
                 />
               </Grid>
               
@@ -907,6 +908,8 @@ function Quotation() {
                             style={{
                               display: 'none', // Equivalent to hidden
                             }}
+                            error={!!errors.quoteFile} // Show error if it exists
+                            helperText={errors.quoteFile}
                           />
                           Click to upload file
                         </label>

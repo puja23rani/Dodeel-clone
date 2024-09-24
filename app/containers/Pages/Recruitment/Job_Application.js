@@ -97,8 +97,8 @@ function Job_Application() {
       errors.endDate = "End Date is required";
       isValid = false;
     }
-    if (!state.skills) {
-      errors.skills = "Skills is required";
+    if (!state.inputSkill) {
+      errors.inputSkill = "Skills is required";
       isValid = false;
     }
     if (!state.resume) {
@@ -814,6 +814,8 @@ const handleClear=()=>{
                     value={state.inputSkill}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
+                    error={!!errors.inputSkill} // Show error if it exists
+                    helperText={errors.inputSkill}
                   />
                   <div style={{ marginTop: 10 }}>
                     {state.skills?.map((skill, index) => (
@@ -823,8 +825,7 @@ const handleClear=()=>{
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
 
-                        error={!!errors.skills} // Show error if it exists
-                        helperText={errors.skills}
+                       
                       />
                     ))}
                   </div>
