@@ -61,7 +61,7 @@ module.exports = [
       {
         key: "Appraisal",
         name: "Appraisal",
-        link: "/app/hrm-setting/appraisal",
+        link: "/app/hrm-setting/appraisal-list",
         icon: "settings_suggest",
       },
       {

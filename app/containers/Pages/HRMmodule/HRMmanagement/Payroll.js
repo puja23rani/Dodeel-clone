@@ -11,15 +11,23 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControl,
     Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    Typography,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
+import InfoIcon from "@mui/icons-material/Info";
 import AlertDialog from "../../../UiElements/demos/DialogModal/AlertDialog";
 import TablePlayground from "../../../Tables/TablePlayground";
 import Popup from "../../../../components/Popup/Popup";
+import { useNavigate } from "react-router-dom";
+import MonthAndYear from "./MonthAndYear";
 
 const useStyles = makeStyles()((theme) => ({
     root: {
@@ -42,10 +50,10 @@ const useStyles = makeStyles()((theme) => ({
 
 function Payroll() {
     const { classes } = useStyles();
+    const navigate = useNavigate();
 
     const [state, setState] = useState({
         id: "",
-        employeeID: "",
         employeeName: "",
         salary: "",
         payrollStatus: "",
@@ -64,7 +72,6 @@ function Payroll() {
 
     const [errors, setErrors] = useState({
         employeeName: "",
-        employeeID: "",
         employeeName: "",
         salary: "",
         payrollStatus: "",
@@ -85,11 +92,6 @@ function Payroll() {
         let isValid = true;
         let errors = {};
 
-        if (!state.employeeName.trim()) {
-            errors.employeeName = "Payroll Name is required";
-            isValid = false;
-        }
-
         setErrors(errors);
         return isValid;
     };
@@ -109,12 +111,6 @@ function Payroll() {
             numeric: true,
             disablePadding: false,
             label: "Sl No",
-        },
-        {
-            id: "employeeID",
-            numeric: true,
-            disablePadding: false,
-            label: "Employee ID",
         },
         {
             id: "employeeName",
@@ -190,18 +186,25 @@ function Payroll() {
                                     onClick={(e) => {
                                         setState({
                                             id: item._id,
-                                            employeeID: item.employeeID,
-                                            employeeName: item.employeeName,
-                                            payrollType: item.payroll[0].payrollType,
+                                            employeeName: {
+                                                title: item.employeeName,
+                                                id: item.employeeID,
+                                            },
+                                            payrollType: {
+                                                title: item.payroll[0].payrollType
+                                            },
                                             salary: item.payroll[0].salary,
-                                            payrollStatus: item.payroll[0].payrollStatus,
+                                            payrollStatus: {
+                                                title: item.payroll[0].payrollStatus
+                                            },
                                             month: item.payroll[0].month,
                                             year: item.payroll[0].year,
-                                            structure: item.payroll[0].map((item) => ({
-                                                name: item.name,
-                                                amountType: item.amountType,
-                                                amount: item.amount,
+                                            structure: item.payroll[0].structure.map((str) => ({
+                                                payrollName: str.name,       // Update structure fields correctly
+                                                amountType: str.amountType,
+                                                amount: str.amount,
                                             })),
+
                                             isUpdate: true,
                                         });
                                         setOpenDialog(true);
@@ -217,6 +220,16 @@ function Payroll() {
                                     }}
                                 >
                                     <DeleteIcon color={"primary"} />
+                                </IconButton>
+                                <IconButton
+                                    aria-label="Info"
+                                    onClick={(e) => {
+                                        navigate("/app/hrm-setting/payroll-details", {
+                                            state: { id: item._id },
+                                        });
+                                    }}
+                                >
+                                    <InfoIcon color={"primary"} />
                                 </IconButton>
                             </>
                         ),
@@ -290,20 +303,20 @@ function Payroll() {
                 return;
             }
             const data = {
-                employeeName: state.employeeName,
-                employeeID: state.employeeID,
+                employeeName: state.employeeName.title,
+                employeeID: state.employeeName.id,
                 payroll: [
                     {
                         salary: parseInt(state.salary, 10),
-                        structure: structure?.map((item) => ({
-                            name: item.name,
+                        structure: state.structure?.map((item) => ({
+                            name: item.payrollName,
                             amount: parseInt(item.amount, 10),
                             amountType: item.amountType,
                         })),
                         month: state.month,
                         year: state.year,
-                        payrollType: state.payrollType,
-                        payrollStatus: state.payrollStatus,
+                        payrollType: state.payrollType.title,
+                        payrollStatus: state.payrollStatus.title,
                     },
                 ],
             };
@@ -313,7 +326,7 @@ function Payroll() {
                 body: JSON.stringify(data),
             };
             const res = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/api/auth/createHoliday`,
+                `${process.env.REACT_APP_BASE_URL}/api/auth/createEmployeePayroll`,
                 requestOptions
             );
             const actualData = await res.json();
@@ -321,9 +334,18 @@ function Payroll() {
                 setState({
                     id: "",
                     employeeName: "",
-                    startdate: "",
-                    enddate: "",
-                    description: "",
+                    salary: "",
+                    payrollStatus: "",
+                    payrollType: "",
+                    month: "",
+                    year: "",
+                    structure: [
+                        {
+                            payrollName: "",
+                            amountType: "",
+                            amount: "",
+                        }
+                    ],
                     isUpdate: false,
                 });
                 setOpenDialog(false);
@@ -335,6 +357,11 @@ function Payroll() {
                     top: 400,
                     behavior: "smooth",
                 });
+            } else {
+                setOpenDialog(false);
+                setMessage(actualData.message);
+                setOpen(true);
+                setSeverity("error");
             }
         } catch (err) {
             console.log(err);
@@ -345,7 +372,46 @@ function Payroll() {
         }
     };
 
-    const handleUpdateHoliday = async () => {
+    const handleDeletePayroll = async () => {
+        try {
+            const loginHeaders = new Headers();
+            loginHeaders.append("Content-Type", "application/json");
+
+            // Assuming you have an authorization token stored in localStorage
+            const authToken = localStorage.getItem("token");
+            if (authToken) {
+                loginHeaders.append("Authorization", `Bearer ${authToken}`);
+            }
+            const data = { id: idToDelete };
+            const requestOptions = {
+                method: "DELETE",
+                headers: loginHeaders,
+                body: JSON.stringify(data),
+            };
+            const res = await fetch(
+                `${process.env.REACT_APP_BASE_URL}/api/auth/deletePayroll`,
+                requestOptions
+            );
+            const actualData = await res.json();
+            if (actualData.status === 200) {
+                setDeleteDialogOpen(false);
+                setIdToDelete(null);
+                getPayrollList();
+                setMessage("Deleted successfully!");
+                setOpen(true);
+                setSeverity("success");
+            }
+        } catch (err) {
+            console.log(err);
+            setDeleteDialogOpen(false);
+            setIdToDelete(null);
+            setMessage("Something went wrong!");
+            setOpen(true);
+            setSeverity("error");
+        }
+    };
+
+    const handleUpdatePayroll = async () => {
         if (!validate()) {
             setMessage("Please fill all required fields");
             setOpen(true);
@@ -363,10 +429,22 @@ function Payroll() {
             }
             const data = {
                 id: state.id,
-                title: state.employeeName,
-                startdate: state.startdate,
-                enddate: state.enddate,
-                description: state.description,
+                employeeName: state.employeeName.title,
+                employeeID: state.employeeName.id,
+                payroll: [
+                    {
+                        salary: parseInt(state.salary, 10),
+                        structure: state.structure?.map((item) => ({
+                            name: item.payrollName,
+                            amount: parseInt(item.amount, 10),
+                            amountType: item.amountType,
+                        })),
+                        month: state.month,
+                        year: state.year,
+                        payrollType: state.payrollType.title,
+                        payrollStatus: state.payrollStatus.title,
+                    },
+                ],
             };
             const requestOptions = {
                 method: "PUT",
@@ -374,7 +452,7 @@ function Payroll() {
                 body: JSON.stringify(data),
             };
             const res = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/api/auth/updateHoliday`,
+                `${process.env.REACT_APP_BASE_URL}/api/auth/updateEmployeePayroll`,
                 requestOptions
             );
             const actualData = await res.json();
@@ -402,45 +480,6 @@ function Payroll() {
         }
     };
 
-    const handleDeleteHoliday = async () => {
-        try {
-            const loginHeaders = new Headers();
-            loginHeaders.append("Content-Type", "application/json");
-
-            // Assuming you have an authorization token stored in localStorage
-            const authToken = localStorage.getItem("token");
-            if (authToken) {
-                loginHeaders.append("Authorization", `Bearer ${authToken}`);
-            }
-            const data = { id: idToDelete };
-            const requestOptions = {
-                method: "DELETE",
-                headers: loginHeaders,
-                body: JSON.stringify(data),
-            };
-            const res = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/api/auth/deleteHoliday`,
-                requestOptions
-            );
-            const actualData = await res.json();
-            if (actualData.status === 200) {
-                setDeleteDialogOpen(false);
-                setIdToDelete(null);
-                getPayrollList();
-                setMessage("Deleted successfully!");
-                setOpen(true);
-                setSeverity("success");
-            }
-        } catch (err) {
-            console.log(err);
-            setDeleteDialogOpen(false);
-            setIdToDelete(null);
-            setMessage("Something went wrong!");
-            setOpen(true);
-            setSeverity("error");
-        }
-    };
-
     const handleCloseDeleteDialog = () => {
         setDeleteDialogOpen(false);
     };
@@ -449,6 +488,18 @@ function Payroll() {
         setState({
             id: "",
             employeeName: "",
+            salary: "",
+            payrollStatus: "",
+            payrollType: "",
+            month: "",
+            year: "",
+            structure: [
+                {
+                    payrollName: "",
+                    amountType: "",
+                    amount: "",
+                }
+            ],
             isUpdate: false,
         })
         setErrors({});
@@ -468,6 +519,64 @@ function Payroll() {
         setPage(0); // Reset to first page
     };
 
+    const handleAddSection = () => {
+        setState({
+            ...state,
+            structure: [...state.structure, { payrollName: "", amountType: "", amount: "" }],
+        });
+    };
+
+    const handleDeleteSection = (idx) => {
+        setState({
+            ...state,
+            structure: state.structure.filter((_, index) => index !== idx),
+        });
+    };
+
+    const currentYear = new Date().getFullYear();
+    const [years, setYears] = useState([]);
+    const [months, setMonths] = useState([
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]);
+
+    useEffect(() => {
+        const generateYears = () => {
+            const yearsArray = [];
+            for (let i = 0; i < 10; i++) {
+                yearsArray.push(currentYear - i);
+            }
+            setYears(yearsArray);
+        };
+
+        generateYears();
+    }, [currentYear]);
+
+    useEffect(() => {
+        const calculatedSalary = state.structure.reduce((total, entry) => {
+            const amount = parseFloat(entry.amount) || 0; // Parse amount to float, default 0 if empty
+            if (entry.amountType === "Earning") {
+                return total + amount;
+            } else if (entry.amountType === "Deduction") {
+                return total + amount;
+            }
+            return total;
+        }, 0);
+
+        // Update the salary in the state
+        setState((prevState) => ({
+            ...prevState,
+            salary: calculatedSalary.toString(), // Convert to string if needed
+        }));
+    }, [state.structure]);
+
+    const handleMonthYearChange = (month, year) => {
+        console.log(month, year);
+    }
+
+    console.log(state);
+
+
     return (
         <>
             <div>
@@ -481,7 +590,7 @@ function Payroll() {
                                 color="primary"
                                 className={classes.button}
                             >
-                                <AddIcon /> Add Payroll
+                                <AddIcon /> Create Payroll
                             </Button>
                         </Tooltip>
                     </div>
@@ -541,65 +650,242 @@ function Payroll() {
                             <Grid item xs={6}>
                                 <TextField
                                     fullWidth
+                                    disabled
                                     sx={{
                                         marginBottom: 2,
                                     }}
                                     variant="standard"
-                                    id="description"
-                                    name="description"
-                                    label="Short Description"
-                                    value={state.description}
+                                    id="salary"
+                                    name="salary"
+                                    label="Salary (Auto calculated)"
+                                    value={state.salary}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        const regex = /^[a-zA-Z\s]*$/;
-                                        const maxValue = 50
+                                        const regex = /^[0-9+\s-]*$/;
+                                        const maxValue = 10
                                         if (regex.test(value) && value.length <= maxValue) {
-                                            setState({ ...state, description: e.target.value });
+                                            setState({ ...state, salary: e.target.value });
                                         }
                                     }}
-                                    error={!!errors.description} // Show error if it exists
-                                    helperText={errors.description} // Display error message
+                                    error={!!errors.salary} // Show error if it exists
+                                    helperText={errors.salary} // Display error message
                                 />
+                            </Grid>
+                            {/* <Grid item md={6} xs={12} sx={{ textAlign: "right", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+                                <Typography>Salary (Auto calculated): </Typography>
+                                <Typography color={"primary"} sx={{ fontSize: 20, marginLeft: "5px" }}>{state.salary ? state.salary : 0}</Typography>
+                            </Grid> */}
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
+                                <Autocomplete
+                                    sx={{
+                                        marginTop: "-16px"
+                                    }}
+                                    id="tags-standard"
+                                    options={[
+                                        { title: "Part-time" },
+                                        { title: "Full-time" },
+                                    ]}
+                                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                                    value={state.payrollType} // Ensure value is an object or null
+                                    onChange={(e, v) => {
+                                        // console.log(v);
+                                        setState({
+                                            ...state,
+                                            payrollType: v ? v : null, // Set campaignStatus to the selected object or null
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Payroll Type"
+                                            margin="normal"
+                                            variant="standard"
+                                            error={!!errors.payrollType} // Show error if it exists
+                                            helperText={errors.payrollType} // Display error message
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
+                                <Autocomplete
+                                    sx={{
+                                        marginTop: "-16px"
+                                    }}
+                                    id="tags-standard"
+                                    options={[
+                                        { title: "Pending" },
+                                        { title: "Completed" },
+                                    ]}
+                                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                                    value={state.payrollStatus} // Ensure value is an object or null
+                                    onChange={(e, v) => {
+                                        // console.log(v);
+                                        setState({
+                                            ...state,
+                                            payrollStatus: v ? v : null, // Set campaignStatus to the selected object or null
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Payroll Status"
+                                            margin="normal"
+                                            variant="standard"
+                                            error={!!errors.payrollStatus} // Show error if it exists
+                                            helperText={errors.payrollStatus} // Display error message
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
+                                <FormControl fullWidth variant="standard" error={!!errors.year}>
+                                    <InputLabel>Year</InputLabel>
+                                    <Select
+                                        value={state.year}
+                                        onChange={(e) => setState({ ...state, year: e.target.value })}
+                                    >
+                                        {years.map((year) => (
+                                            <MenuItem key={year} value={year}>
+                                                {year}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.year && (
+                                        <Typography variant="caption" color="error">
+                                            {errors.year}
+                                        </Typography>
+                                    )}
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
+                                <FormControl fullWidth variant="standard" error={!!errors.month}>
+                                    <InputLabel>Month</InputLabel>
+                                    <Select
+                                        value={state.month}
+                                        onChange={(e) => setState({ ...state, month: e.target.value })}
+                                    >
+                                        {months.map((month, index) => (
+                                            <MenuItem key={index} value={month}>
+                                                {month}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.month && (
+                                        <Typography variant="caption" color="error">
+                                            {errors.month}
+                                        </Typography>
+                                    )}
+                                </FormControl>
+                            </Grid>
+                            {state.structure && state.structure.map((el, idx) => (
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    key={idx}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        marginLeft: 0,
+                                    }}
+                                    xs={12}
+                                >
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            variant="standard"
+                                            id={`payrollName-${idx}`}
+                                            name="payrollName"
+                                            label="Payroll Name"
+                                            value={el.payrollName}
+                                            onChange={(e) => {
+                                                const inputValue = e.target.value;
+                                                const regex = /^[a-zA-Z\s]*$/;
+                                                const maxValue = 50
+                                                if (regex.test(inputValue) && inputValue.length <= maxValue) {
+                                                    const newFieldset = [...state.structure];
+                                                    newFieldset[idx].payrollName = inputValue;
+                                                    setState({ ...state, structure: newFieldset });
+                                                }
+                                            }}
+                                            error={!!errors[`fieldsetName${idx}`]} // Show error if it exists
+                                            helperText={errors[`fieldsetName${idx}`]} // Display error message
+                                        />
+                                    </Grid>
+                                    <Grid item xs={3} style={{ marginTop: "8px" }}>
+                                        <Autocomplete
+                                            id={`amountType-${idx}`}
+                                            options={[
+                                                { title: "Earning" },
+                                                { title: "Deduction" },
+                                            ]} // Replace with your actual options
+                                            getOptionLabel={(option) => option.title || ""} // Access title safely
+                                            value={el.amountType ? { title: el.amountType } : null} // Ensures the selected value
+                                            onChange={(e, v) => {
+                                                const newFieldset = [...state.structure];
+                                                newFieldset[idx].amountType = v ? v.title : ""; // Update with selected title or clear it
+                                                setState({ ...state, structure: newFieldset });
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Amount Type"
+                                                    variant="standard"
+                                                    error={!!errors[`structure${idx}`]} // Show error if it exists
+                                                    helperText={errors[`structure${idx}`]} // Display error message
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            fullWidth
+                                            variant="standard"
+                                            id={`amount-${idx}`}
+                                            name="amount"
+                                            label="Amount"
+                                            value={el.amount}
+                                            onChange={(e) => {
+                                                const inputValue = e.target.value;
 
-                            </Grid>
-                            <Grid item xs={6} sx={{ marginTop: "-20px" }}>
-                                <TextField
-                                    id="startdate"
-                                    label="Start Date"
-                                    type="date"
-                                    variant="standard"
-                                    value={state.startdate} // Set default value to 18 years ago
-                                    sx={{ width: "100%" }}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    inputProps={{
-                                        min: new Date().toISOString().split("T")[0],
-                                    }}
-                                    onChange={(e) => setState({ ...state, startdate: e.target.value })}
-                                    error={!!errors.startdate}
-                                    helperText={errors.startdate}
-                                />
-                            </Grid>
-                            <Grid item xs={6} sx={{ marginTop: "-20px" }}>
-                                <TextField
-                                    id="enddate"
-                                    label="End Date"
-                                    type="date"
-                                    variant="standard"
-                                    disabled={state.startdate === "" ? true : false}
-                                    value={state.enddate} // Set default value to 18 years ago
-                                    sx={{ width: "100%" }}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    inputProps={{
-                                        min: state.startdate
-                                    }}
-                                    onChange={(e) => setState({ ...state, enddate: e.target.value })}
-                                    error={!!errors.enddate}
-                                    helperText={errors.enddate}
-                                />
+                                                // Allow only digits
+                                                const regex = /^[0-9]*$/;
+                                                const maxValue = 10
+                                                if (regex.test(inputValue) && inputValue.length <= maxValue) {
+                                                    const newFieldset = [...state.structure];
+                                                    newFieldset[idx].amount = inputValue;
+                                                    setState({ ...state, structure: newFieldset });
+                                                }
+                                            }}
+                                            error={!!errors[`structure${idx}`]} // Show error if it exists
+                                            helperText={errors[`structure${idx}`]} // Display error message
+                                        />
+                                    </Grid>
+
+                                    {/* Delete Icon (unchanged) */}
+                                    {idx > 0 && (
+                                        <Grid item xs={1}>
+                                            <DeleteIcon
+                                                onClick={() => handleDeleteSection(idx)}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    color: "red",
+                                                    width: 24,
+                                                    height: 24,
+                                                    marginTop: 8,
+                                                }}
+                                            />
+                                        </Grid>
+                                    )}
+                                </Grid>
+                            ))}
+                            <Grid item xs={2}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAddSection}
+                                >
+                                    + Add Section
+                                </Button>
                             </Grid>
                         </Grid>
 
@@ -613,7 +899,7 @@ function Payroll() {
                                 <Button
                                     color="primary"
                                     variant="contained"
-                                    onClick={handleUpdateHoliday}
+                                    onClick={handleUpdatePayroll}
                                 >
                                     Update
                                 </Button>
@@ -632,7 +918,7 @@ function Payroll() {
 
                     </DialogActions>
                 </Dialog>
-            </div>
+            </div >
 
             {rowdata && (
                 <TablePlayground
@@ -645,13 +931,16 @@ function Payroll() {
                     page={page} // Current page
                     onPageChange={handlePageChange} // Handle page change
                     onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
+                    MonthAndYear={MonthAndYear} // Pass the component reference
+                    onMonthYearChange={handleMonthYearChange} // Pass the callback function
                 />
-            )}
+            )
+            }
 
             <AlertDialog
                 open={deleteDialogOpen}
                 onClose={handleCloseDeleteDialog}
-                onDelete={handleDeleteHoliday}
+                onDelete={handleDeletePayroll}
             />
             <Popup
                 open={open}

@@ -31,6 +31,8 @@ function TablePlayground(props) {
     title,
     pagination,
     count,
+    MonthAndYear,
+    onMonthYearChange
   } = props;
 
   // console.log(rowData);
@@ -89,7 +91,7 @@ function TablePlayground(props) {
         <Grid item xs={12}>
           <Paper className={classes.rootTable}>
             {toolbarOptions.enabled && (
-              <EnhancedTableToolbar title={title} placeholder="Search" />
+              <EnhancedTableToolbar title={title} MonthAndYear={MonthAndYear} onMonthYearChange={onMonthYearChange} placeholder="Search" />
             )}
             <div className={classes.tableWrapper}>
               <Table

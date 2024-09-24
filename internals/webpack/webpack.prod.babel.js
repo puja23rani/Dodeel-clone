@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 // Important modules this config uses
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");

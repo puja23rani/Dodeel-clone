@@ -66,6 +66,22 @@ function Holidays() {
             isValid = false;
         }
 
+        if (!state.startdate.trim()) {
+            errors.startdate = "Start Date is required";
+            isValid = false;
+        }
+
+        if (!state.enddate.trim()) {
+            errors.enddate = "End Date is required";
+            isValid = false;
+        }
+
+
+        if (!state.description.trim()) {
+            errors.description = "Description is required";
+            isValid = false;
+        }
+
         setErrors(errors);
         return isValid;
     };

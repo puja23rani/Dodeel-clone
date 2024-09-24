@@ -122,13 +122,13 @@ import LeaveRequest from "../Pages/HRMmodule/HRMmanagement/LeaveRequest";
 import Task from "../Pages/HRMmodule/HRMmanagement/Task";
 import Holidays from "../Pages/HRMmodule/HRMmanagement/Holidays";
 import Payroll from "../Pages/HRMmodule/HRMmanagement/Payroll";
-import Appraisal from "../Pages/HRMmodule/HRMmanagement/Appraisal";
 import AppraisalList from "../Pages/HRMmodule/HRMmanagement/AppraisalList";
 import JobAppView from "../Pages/Recruitment/jobview";
 import JobApplicantView from "../Pages/Recruitment/applicantview";
 import Requirement from "../Pages/Procurement/requirement";
 import Quotation from "../Pages/Procurement/quotation";
 import Billing from "../Pages/Procurement/billing";
+import PayrollDetails from "../Pages/HRMmodule/HRMmanagement/PayrollDetails";
 
 function Application(props) {
   const { history } = props;
@@ -267,7 +267,7 @@ function Application(props) {
         <Route path="hrm-setting/task" element={<Task />} />
         <Route path="hrm-setting/holidays" element={<Holidays />} />
         <Route path="hrm-setting/payroll" element={<Payroll />} />
-        <Route path="hrm-setting/appraisal" element={<Appraisal />} />
+        <Route path="hrm-setting/payroll-details" element={<PayrollDetails />} />
         <Route path="hrm-setting/appraisal-list" element={<AppraisalList />} />
         {/* ------------------------------------------ */}
 

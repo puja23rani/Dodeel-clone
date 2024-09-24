@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -21,10 +21,13 @@ function TableToolbar(props) {
     filterText,
     placeholder,
     title,
-    onUserInput
+    onUserInput,
+    MonthAndYear,
+    onMonthYearChange
   } = props;
 
   const [showSearch, setShowSearch] = useState(false);
+
 
   const toggleSearch = useCallback(() => {
     setShowSearch(show => !show);
@@ -52,6 +55,7 @@ function TableToolbar(props) {
         )}
       </div>
       <div className={classes.spacer} />
+      {MonthAndYear && <MonthAndYear onMonthYearChange={onMonthYearChange} />}
       <div className={classes.actionsToolbar}>
         {numSelected > 0 ? (
           <div>

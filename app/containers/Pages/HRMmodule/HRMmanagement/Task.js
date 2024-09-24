@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
 import {
     Autocomplete,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -66,6 +67,46 @@ function Task() {
     const validate = () => {
         let isValid = true;
         let errors = {};
+
+        if (!state.taskName.trim()) {
+            errors.taskName = "Task Name is required";
+            isValid = false;
+        }
+
+        if (!state.startDate.trim()) {
+            errors.startDate = "Start Date is required";
+            isValid = false;
+        }
+
+        if (!state.endDate.trim()) {
+            errors.endDate = "End Date is required";
+            isValid = false;
+        }
+
+        if (!state.taskDescription.trim()) {
+            errors.taskDescription = "Task Description is required";
+            isValid = false;
+        }
+
+        if (!state.taskDetails.trim()) {
+            errors.taskDetails = "Task Details is required";
+            isValid = false;
+        }
+
+        if (!state.taskStatus) {
+            errors.taskStatus = "Task Status is required";
+            isValid = false;
+        }
+
+        if (!state.employeeDetails.length) {
+            errors.employeeDetails = "Employee Details is required";
+            isValid = false;
+        }
+
+        if (!state.taskPhotos.length) {
+            errors.taskPhotos = "Task Photos is required";
+            isValid = false;
+        }
 
         setErrors(errors);
         return isValid;
@@ -582,7 +623,7 @@ function Task() {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ marginTop: "-20px" }}>
                             <TextField
                                 multiline
                                 rows={3}
@@ -608,7 +649,7 @@ function Task() {
                             />
                         </Grid>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
                                 <TextField
                                     id="startDate"
                                     label="Start Date"
@@ -627,7 +668,7 @@ function Task() {
                                     helperText={errors.startDate}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} style={{ marginTop: "-20px" }}>
                                 <TextField
                                     id="endDate"
                                     label="End Date"
@@ -722,6 +763,26 @@ function Task() {
                                     />
                                     <AddIcon /> Click to upload some task photo
                                 </label>
+                                {isLoading && (
+                                    <div
+                                        style={{
+                                            position: 'fixed',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100vw',
+                                            height: '100vh',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.7)', // semi-transparent white background
+                                            backdropFilter: 'blur(2px)', // apply the blur effect
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            zIndex: 9999, // ensure it is on top of other content
+                                        }}
+                                    >
+                                        <CircularProgress size={24} />
+                                    </div>
+                                )}
+                                {errors.taskPhotos && <Typography color="error" style={{ fontSize: "12px" }}>{errors.taskPhotos}</Typography>}
                             </Typography>
 
                             <Grid container spacing={2} sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", marginTop: "10px", paddingLeft: "20px" }}>
