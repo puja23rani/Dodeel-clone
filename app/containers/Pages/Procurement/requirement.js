@@ -678,6 +678,8 @@ const handleClear=()=>{
           shrink: true,
         }}
         onChange={(e) => setState({ ...state, End_Date: e.target.value })}
+        error={!!errors.End_Date} // Show error if it exists
+        helperText={errors.End_Date} 
       />
     </Grid>
 
@@ -717,6 +719,8 @@ const handleClear=()=>{
             renderInput={(params) => (
               <TextField {...params} variant="standard" label="Product Name" fullWidth />
             )}
+            error={!!errors[`fieldsetsproductType${index}`]} // Show error if it exists
+            helperText={errors[`fieldsetsproductType${index}`]}
           />
         </Grid>
 
@@ -735,6 +739,8 @@ const handleClear=()=>{
               }
             }}
             margin="dense"
+            error={!!errors[`fieldsetsquantity${index}`]} // Show error if it exists
+            helperText={errors[`fieldsetsquantity${index}`]}
           />
         </Grid>
 
@@ -776,6 +782,8 @@ const handleClear=()=>{
                       }))
                     }
                     placeholder="Remark"
+                    error={!!errors.remark} // Show error if it exists
+            helperText={errors.remark}
                   />
                 </Grid>
       </Grid>
