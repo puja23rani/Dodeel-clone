@@ -25,6 +25,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -42,11 +43,13 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { useNavigate } from "react-router-dom";
 import { DesktopDatePicker, MobileDatePicker } from "@mui/x-date-pickers";
 import { convertFromRaw, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import { format } from "date-fns";
+import { set } from "lodash";
 const useStyles = makeStyles()((theme) => ({
   textEditor: {
     // optional padding for better spacing
@@ -79,20 +82,7 @@ const useStyles = makeStyles()((theme) => ({
     margin: theme.spacing(4),
   },
 }));
-const content = {
-  blocks: [
-    {
-      key: "637gr",
-      text: "",
-      type: "unstyled",
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-  entityMap: {},
-};
+
 function Invoice() {
   const { classes } = useStyles();
 
@@ -148,9 +138,7 @@ function Invoice() {
     setErrors(errors);
     return isValid;
   };
-  const contentBlock = convertFromRaw(content);
-  const tempEditorState = EditorState.createWithContent(contentBlock);
-  const [dataEditorState, setEditorState] = useState(tempEditorState);
+  
 
   const [rowdata, setRowdata] = useState([]);
   const [page, setPage] = useState(1);
@@ -161,9 +149,11 @@ function Invoice() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
+  const [invoiceID, setinvoiceID] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
-
+  const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+  const [showPaymentNote, setShowPaymentNote] = useState(false);
   const columnData = [
     {
       id: "slNo",
@@ -215,39 +205,66 @@ function Invoice() {
     },
     { id: "actions", label: "Action" },
   ];
-  const [empList, setEmpList] = React.useState([]);
-  const table3 = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
+  const [payerrors, setPayErrors] = useState({
+    paymentDate: "",
+    paymentAmount: "",
+    paymentTransactionID: "",
+    paymentInvoiceID: "",
+    paymentMode: "",
+    value: "",
+    paymentNotes: "",
+  });
+  const payvalidate = () => {
+    let isValid = true;
+    let errors = {};
 
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
-        requestOptions
-      );
-      const actualData = await res.json();
-      if (Array.isArray(actualData.employees)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        setEmpList(newobj);
-      }
-    } catch (err) {
-      //console.log(err);
+    if (!paystate.paymentDate) {
+      errors.paymentDate = "Payment Date is required";
+      isValid = false;
     }
-  };
 
+    if (!paystate.paymentAmount) {
+      errors.paymentAmount = "Payment Amount is required";
+      isValid = false;
+    } else if (
+      isNaN(paystate.paymentAmount) ||
+      Number(paystate.paymentAmount) <= 0
+    ) {
+      errors.paymentAmount = "Payment Amount must be a valid positive number";
+      isValid = false;
+    }
+
+    if (!paystate.paymentTransactionID.trim()) {
+      errors.paymentTransactionID = "Transaction ID is required";
+      isValid = false;
+    }
+
+    if (!paystate.paymentMode || !paystate.paymentMode.title) {
+      errors.paymentMode = "Payment Mode is required";
+      isValid = false;
+    }
+
+    // Payment Notes is optional, no validation needed for it
+
+    setPayErrors(errors);
+    return isValid;
+  };
+ 
+  const [paystate, paysetState] = useState({
+    invoiceID: "",
+    paymentCreatorName: "",
+    clientName: "",
+    projectTitle: "",
+    paymentDate: "",
+    paymentAmount: "",
+    paymentTransactionID: "",
+    paymentInvoiceID: "",
+    paymentMode: "",
+    value: "",
+    paymentNotes: EditorState.createEmpty(),
+    id: null,
+    isUpdate: false,
+  });
   const [customerList, setCustomerList] = React.useState([]);
   const cust_all = async () => {
     try {
@@ -317,14 +334,32 @@ function Invoice() {
       //console.log(err);
     }
   };
+ 
+
+  const handlePaymentPopupClose = () => {
+    setState({
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: EditorState.createEmpty(),
+      id: null,
+      isUpdate: false,
+    });
+    setOpenPaymentPopup(false);
+  };
 
   useEffect(() => {
-    table3();
+    
     cust_all();
     project_all();
-    fetchInvoice(page);
+    
   }, []);
-
+useEffect(() => {
+  fetchInvoice(page);
+},[page,rowsPerPage])
   function fetchInvoice(pg) {
     axios
       .post(
@@ -394,6 +429,24 @@ function Invoice() {
                   >
                     <InfoIcon />
                   </IconButton>
+                
+                    <IconButton
+                      aria-label="Payment"
+                      // onClick={() => {
+                      //   setItemToDelete(item._id);
+                      //   setDeleteDialogOpen(true);
+                      // }}
+                      onClick={(e) => {
+                        // navigate("/app/sales/invoice/invoice-view", {
+                        //   state: { InvoiceID: item._id },
+                        // });
+                        setinvoiceID(item.bill_ID);
+                        setOpenPaymentPopup(true);
+                      }}
+                    >
+                      <AttachMoneyIcon />
+                    </IconButton>
+                  
                 </>
               ),
             }))
@@ -508,14 +561,21 @@ function Invoice() {
       );
       const actualData = await res.json();
       if (actualData.status == 200) {
-        toast.success("Successfully deleted !");
+       setMessage("Deleted successfully!");
+       setOpen(true);
+       setSeverity("success");
         fetchInvoice(page);
       } else {
-        toast.error("Failed to delete Invoice!");
+        setMessage(actualData.message);
+        setOpen(true);
+        setSeverity("error");
       }
     } catch (err) {
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
       console.log(err);
-      toast.error("An error occurred. Please try again.");
+      
     }
   };
 
@@ -580,7 +640,81 @@ function Invoice() {
     setOpenDialog(false);
   };
   console.log(state, "ssstate");
+  const handleCreatePay = async (id) => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
 
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      // Function to format date to mm-dd-yyyy
+      const formatDate = (date) => {
+        if (!date) return ""; // Handle empty or undefined date
+        return format(new Date(date), "MM-dd-yyyy");
+      };
+
+      const data = {
+        paymentDate: formatDate(paystate.paymentDate),
+        paymentInvoiceID: invoiceID,
+        paymentAmount: parseInt(paystate.paymentAmount),
+        paymentTransactionID: paystate.paymentTransactionID,
+        paymentMode: paystate.paymentMode.title,
+        paymentNotes: JSON.stringify(
+          convertToRaw(paystate.paymentNotes.getCurrentContent())
+        ),
+      };
+
+      const requestOptions = {
+        method: "POST",
+        headers: loginHeaders,
+        body: JSON.stringify(data),
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createPayment`,
+        requestOptions
+      );
+      const actualData = await res.json();
+
+      if (actualData.status === 200) {
+        setMessage("Payment created successfully");
+        setSeverity("success");
+        setOpen(true);
+        paysetState((prevState) => ({
+          ...prevState,
+          paymentDate: "",
+          paymentAmount: "",
+          paymentInvoiceID: "",
+          paymentTransactionID: "",
+          paymentMode: "",
+          paymentNotes: EditorState.createEmpty(),
+          isUpdate: false,
+        }));
+        handlePaymentPopupClose();
+        fetchInvoice(page);
+      }else{
+        handlePaymentPopupClose();
+        setMessage(actualData.message);
+        setSeverity("error");
+        setOpen(true);
+      }
+    } catch (err) {
+      handlePaymentPopupClose();
+      setMessage(err.message);
+      setSeverity("error");
+      setOpen(true);
+      console.log(err);
+    }
+  };
+  const formatDate = (date) => {
+    if (!date) return ""; // Handle empty or undefined date
+    return format(new Date(date), "MM-dd-yyyy");
+  };
+  console.log(formatDate(paystate.paymentDate), "pay");
   // Delete a section by index
   return (
     <>
@@ -846,6 +980,170 @@ function Invoice() {
                 </Button>
               </>
             )}
+          </DialogActions>
+        </Dialog>
+        {/* payment dialog */}
+        <Dialog open={openPaymentPopup} onClose={handlePaymentPopupClose}>
+          <DialogTitle>Add Payment</DialogTitle>
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={handlePaymentPopupClose}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent className={classes.dialogContent}>
+            <div className={classes.form}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    id="date"
+                    label="Payment Date"
+                    type="date"
+                    variant="standard"
+                    value={paystate.paymentDate}
+                    onChange={(e) =>
+                      paysetState({
+                        ...paystate,
+                        paymentDate: e.target.value,
+                      })
+                    }
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    error={!!payerrors.paymentDate}
+                    helperText={payerrors.paymentDate}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="PaymentAmount"
+                    name="PaymentAmount"
+                    label="Payment Amount"
+                    value={paystate.paymentAmount}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const numericValue = value.replace(/[^0-9]/g, "");
+                      paysetState({ ...paystate, paymentAmount: numericValue });
+                    }}
+                    error={!!payerrors.paymentAmount}
+                    helperText={payerrors.paymentAmount}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    variant="standard"
+                    id="Transaction"
+                    name="Transaction"
+                    label="Transaction ID"
+                    value={paystate.paymentTransactionID}
+                    onChange={(e) =>
+                      paysetState({
+                        ...paystate,
+                        paymentTransactionID: e.target.value,
+                      })
+                    }
+                    fullWidth
+                    error={!!payerrors.paymentTransactionID}
+                    helperText={payerrors.paymentTransactionID}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Autocomplete
+                    sx={{
+                      marginTop: "-16px",
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Online" },
+                      { title: "Cash" },
+                      { title: "Bank Transfer" },
+                    ]}
+                    getOptionLabel={(option) => option.title || ""}
+                    value={paystate.paymentMode}
+                    onChange={(e, v) => {
+                      paysetState({
+                        ...paystate,
+                        paymentMode: v ? v : null,
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Payment Mode"
+                        margin="normal"
+                        variant="standard"
+                        error={!!payerrors.paymentMode}
+                        helperText={payerrors.paymentMode}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showPaymentNote}
+                        onChange={() => setShowPaymentNote((prev) => !prev)}
+                      />
+                    }
+                    label="Add Payment Note"
+                  />
+                </Grid>
+
+                {showPaymentNote && (
+                  <Grid item xs={12}>
+                    <div
+                      style={{
+                        border: "1px solid #ccc",
+                        padding: "10px",
+                        borderRadius: "4px",
+                        minHeight: "100px",
+                      }}
+                    >
+                      <Editor
+                        editorState={paystate.paymentNotes}
+                        editorClassName={classes.textEditor}
+                        toolbarClassName={classes.toolbarEditor}
+                        onEditorStateChange={(editorStateParam) =>
+                          paysetState((prevState) => ({
+                            ...prevState,
+                            paymentNotes: editorStateParam,
+                          }))
+                        }
+                        placeholder="Enter payment notes..."
+                      />
+                    </div>
+                  </Grid>
+                )}
+              </Grid>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handlePaymentPopupClose} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (payvalidate()) {
+                  handleCreatePay();
+                }
+              }}
+              color="primary"
+            >
+              Save
+            </Button>
           </DialogActions>
         </Dialog>
       </div>

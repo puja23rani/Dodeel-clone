@@ -281,7 +281,7 @@ function Customer() {
   useEffect(() => {   
     table3();   
     lead_all();
-    fetchCustomer();
+   
   }, []);
  
   function fetchCustomer(pg) {

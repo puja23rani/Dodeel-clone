@@ -35,9 +35,16 @@ import { convertFromRaw, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { toast } from "react-toastify";
 import "draft-js/dist/Draft.css"; // Ensure you import the Draft.js CSS
-
+import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import { format } from "date-fns";
 // import TextField from "@mui/material/TextField";
+import PaymentIcon from "@mui/icons-material/Payment";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import CachedIcon from "@mui/icons-material/Cached";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Popup from "../../../components/Popup/Popup";
+import { set } from "lodash";
+
 const useStyles = makeStyles()((theme) => ({
   textEditor: {
     // optional padding for better spacing
@@ -93,7 +100,9 @@ const InvoiceButtons = ({ mainlist, table }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openStopRecurringPopup, setOpenStopRecurringPopup] = useState(false);
   const [openDeletePopup, setOpenDeletePopup] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("");
   console.log(mainlist);
   const [state, setState] = useState({
     paymentDate: "",
@@ -106,6 +115,47 @@ const InvoiceButtons = ({ mainlist, table }) => {
     id: null,
     isUpdate: false,
   });
+  const [errors, setErrors] = useState({
+    paymentDate: "",
+    paymentAmount: "",
+    paymentTransactionID: "",
+    paymentInvoiceID: "",
+    paymentMode: "",
+    value: "",
+    paymentNotes: "",
+  });
+  const validate = () => {
+    let isValid = true;
+    let errors = {};
+
+    if (!state.paymentDate) {
+      errors.paymentDate = "Payment Date is required";
+      isValid = false;
+    }
+
+    if (!state.paymentAmount) {
+      errors.paymentAmount = "Payment Amount is required";
+      isValid = false;
+    } else if (isNaN(state.paymentAmount) || Number(state.paymentAmount) <= 0) {
+      errors.paymentAmount = "Payment Amount must be a valid positive number";
+      isValid = false;
+    }
+
+    if (!state.paymentTransactionID.trim()) {
+      errors.paymentTransactionID = "Transaction ID is required";
+      isValid = false;
+    }
+
+    if (!state.paymentMode || !state.paymentMode.title) {
+      errors.paymentMode = "Payment Mode is required";
+      isValid = false;
+    }
+
+    // Payment Notes is optional, no validation needed for it
+
+    setErrors(errors);
+    return isValid;
+  };
 
   const handleReminderPopupOpen = () => {
     setOpenReminderPopup(true);
@@ -150,7 +200,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
       paymentNotes: EditorState.createEmpty(),
       id: null,
       isUpdate: false,
-    })
+    });
     setOpenPaymentPopup(false);
   };
 
@@ -165,6 +215,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
   console.log("invoicebutton", InvoiceID);
 
   const handleCreatePay = async (id) => {
+    if (!validate()) return;
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -186,7 +237,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
         paymentInvoiceID: mainlist.bill_ID,
         paymentAmount: parseInt(state.paymentAmount),
         paymentTransactionID: state.paymentTransactionID,
-        paymentMode: state.paymentMode,
+        paymentMode: state.paymentMode.title,
         paymentNotes: JSON.stringify(
           convertToRaw(state.paymentNotes.getCurrentContent())
         ),
@@ -199,13 +250,15 @@ const InvoiceButtons = ({ mainlist, table }) => {
       };
 
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/createPayment`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createPayment`,
         requestOptions
       );
       const actualData = await res.json();
 
       if (actualData.status === 200) {
-        toast.success("Create Successfully");
+        setMessage(actualData.message);
+        setOpen(true);
+        setSeverity("success");
 
         setState((prevState) => ({
           ...prevState,
@@ -218,9 +271,16 @@ const InvoiceButtons = ({ mainlist, table }) => {
           isUpdate: false,
         }));
         handlePaymentPopupClose();
+      } else {
+        setMessage(actualData.message);
+        setSeverity("error");
+        setOpen(true);
       }
       await table();
     } catch (err) {
+      setMessage(err.message);
+      setSeverity("error");
+      setOpen(true);
       console.log(err);
     }
   };
@@ -265,14 +325,16 @@ const InvoiceButtons = ({ mainlist, table }) => {
         body: JSON.stringify(data),
       };
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/auth/deleteInvoice`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteInvoice`,
         requestOptions
       );
       const actualData = await res.json();
       if (actualData.status == 200) {
-        toast.success("Successfully deleted !");
+        setMessage("Deleted Sucessfully");
+        setSeverity("success");
+        setOpen(true);
         handleDeletePopupClose();
-        navigate("/Invoice_list");
+        navigate("/app/sales/invoice");
       } else {
         toast.error("Failed to delete Invoice!");
       }
@@ -281,7 +343,9 @@ const InvoiceButtons = ({ mainlist, table }) => {
       toast.error("An error occurred. Please try again.");
     }
   };
-
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <div
       style={{
@@ -311,8 +375,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
           onClick={handlePublishPopupOpen}
           style={{ position: "relative" }}
         >
-          {/* <MdPublishedWithChanges style={{ fontSize: '1.4rem' }} /> */}
-          publish changes
+          <PublishedWithChangesIcon style={{ fontSize: "1.4rem" }} />
         </Button>
       </Tooltip>
 
@@ -324,8 +387,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
           onClick={handleEmailPopupOpen}
           style={{ position: "relative" }}
         >
-          {/* <HiOutlineMailOpen style={{ fontSize: '1.4rem' }} /> */}
-          mail open
+          <MailOutlineIcon style={{ fontSize: "1.4rem" }} />
         </Button>
       </Tooltip>
 
@@ -337,8 +399,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
           onClick={handlePaymentPopupOpen}
           style={{ position: "relative" }}
         >
-          {/* <MdPayment style={{ fontSize: '1.4rem' }} /> */}
-          payment
+          <PaymentIcon style={{ fontSize: "1.4rem" }} />
         </Button>
       </Tooltip>
       {/* Recurring Options Button */}
@@ -350,8 +411,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
           onClick={handleRecurringClick}
           style={{ position: "relative" }}
         >
-          {/* <GiCycle style={{ fontSize: '1.4rem' }} /> */}
-          recurring
+          <CachedIcon style={{ fontSize: "1.4rem" }} />
         </Button>
       </Tooltip>
       {/* Delete button */}
@@ -363,8 +423,7 @@ const InvoiceButtons = ({ mainlist, table }) => {
           onClick={handleDeletePopupOpen}
           style={{ position: "relative" }}
         >
-          {/* <MdDelete style={{ fontSize: '1.4rem' }} /> */}
-          delete
+          <DeleteIcon style={{ fontSize: "1.4rem" }} />
         </Button>
       </Tooltip>
 
@@ -492,131 +551,123 @@ const InvoiceButtons = ({ mainlist, table }) => {
       <Dialog open={openPaymentPopup} onClose={handlePaymentPopupClose}>
         <DialogTitle>Add Payment</DialogTitle>
         <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={handlePaymentPopupClose}
-            sx={{
-              position: "absolute",
-              right: 12,
-              top: 12,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        <DialogContent
-          className={classes.dialogContent}
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={handlePaymentPopupClose}
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
+            color: (theme) => theme.palette.grey[500],
+          }}
         >
-         <div className={classes.form}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                id="date"
-                label="Payment Date"
-                type="date"
-                variant="standard"
-                value={state.paymentDate}
-                onChange={(e) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    paymentDate: e.target.value,
-                  }))
-                }
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                // error={!!errors.billDueDate} // Show error if it exists
-                // helperText={errors.billDueDate} // Display error message
-              />
-            </Grid>
+          <CloseIcon />
+        </IconButton>
+        <DialogContent className={classes.dialogContent}>
+          <div className={classes.form}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  id="date"
+                  label="Payment Date"
+                  type="date"
+                  variant="standard"
+                  value={state.paymentDate}
+                  onChange={(e) =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      paymentDate: e.target.value,
+                    }))
+                  }
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errors.paymentDate}
+                  helperText={errors.paymentDate}
+                />
+              </Grid>
 
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                variant="standard"
-                id="PaymentAmount"
-                name="PaymentAmount"
-                label="Payment Amount"
-                value={state.paymentAmount}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  // Remove any non-digit characters
-                  const numericValue = value.replace(/[^0-9]/g, "");
-                  setState({ ...state, paymentAmount: numericValue });
-                }}
-                // error={!!errors.ApproxBudget}
-                // helperText={errors.ApproxBudget}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                variant="standard"
-                id="Transaction"
-                name="Transaction"
-                label="Transaction ID"
-                value={state.paymentTransactionID}
-                onChange={(e) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    paymentTransactionID: e.target.value,
-                  }))
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Autocomplete
-                sx={{
-                  marginTop: "-16px",
-                }}
-                id="highlights-demo"
-                options={[
-                  { title: "Online" },
-                  { title: "Cash" },
-                  { title: "Bank Transfer" },
-                ]}
-                getOptionLabel={(option) => option.title || ""} // Safely access title
-                value={state.paymentMode} // Ensure value is an object or null
-                onChange={(e, v) => {
-                  setState({
-                    ...state,
-                    paymentMode: v ? v : null, // Set campaignStatus to the selected object or null
-                  });
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Payment Mode"
-                    margin="normal"
-                    variant="standard"
-                    // error={!!errors.campaignStatus} // Show error if it exists
-                    // helperText={errors.campaignStatus} // Display error message
-                  />
-                )}
-              />
-              
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={showPaymentNote}
-                    onChange={() => setShowPaymentNote((prev) => !prev)}
-                  />
-                }
-                label="Add Payment Note"
-              />
-            </Grid>
-            {showPaymentNote && (
-              <Grid item xs={12}>
-                <div
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "10px",
-                    borderRadius: "4px",
-                    minHeight: "100px",
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  variant="standard"
+                  id="PaymentAmount"
+                  name="PaymentAmount"
+                  label="Payment Amount"
+                  value={state.paymentAmount}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numericValue = value.replace(/[^0-9]/g, "");
+                    setState({ ...state, paymentAmount: numericValue });
                   }}
-                >
-                  {/* <Editor
+                  error={!!errors.paymentAmount}
+                  helperText={errors.paymentAmount}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  variant="standard"
+                  id="Transaction"
+                  name="Transaction"
+                  label="Transaction ID"
+                  value={state.paymentTransactionID}
+                  onChange={(e) =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      paymentTransactionID: e.target.value,
+                    }))
+                  }
+                  fullWidth
+                  error={!!errors.paymentTransactionID}
+                  helperText={errors.paymentTransactionID}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <Autocomplete
+                  id="highlights-demo"
+                  options={[
+                    { title: "Online" },
+                    { title: "Cash" },
+                    { title: "Bank transfer" },
+                  ]}
+                  getOptionLabel={(option) => option.title || ""}
+                  value={state.paymentMode}
+                  onChange={(e, v) => {
+                    setState({ ...state, paymentMode: v ? v : null });
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Mode"
+                      margin="normal"
+                      variant="standard"
+                      error={!!errors.paymentMode}
+                      helperText={errors.paymentMode}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showPaymentNote}
+                      onChange={() => setShowPaymentNote((prev) => !prev)}
+                    />
+                  }
+                  label="Add Payment Note"
+                />
+              </Grid>
+              {showPaymentNote && (
+                <Grid item xs={12}>
+                  <div
+                    style={{
+                      border: "1px solid #ccc",
+                      padding: "10px",
+                      borderRadius: "4px",
+                      minHeight: "100px",
+                    }}
+                  >
+                    {/* <Editor
                     editorState={state.paymentNotes}
                     onChange={(editorState) =>
                       setState((prevState) => ({
@@ -626,21 +677,21 @@ const InvoiceButtons = ({ mainlist, table }) => {
                     }
                     placeholder="Enter payment notes..."
                   /> */}
-                   <Editor
-                    editorState={state.paymentNotes}
-                    editorClassName={classes.textEditor}
-                    toolbarClassName={classes.toolbarEditor}
-                    onEditorStateChange={(editorStateParam) =>
-                      setState((prevState) => ({
-                        ...prevState,
-                        paymentNotes: editorStateParam, // Directly setting the editorState into billNote
-                      }))
-                    }
-                    placeholder="Enter payment notes..."
-                  />
-                </div>
-              </Grid>
-            )}
+                    <Editor
+                      editorState={state.paymentNotes}
+                      editorClassName={classes.textEditor}
+                      toolbarClassName={classes.toolbarEditor}
+                      onEditorStateChange={(editorStateParam) =>
+                        setState((prevState) => ({
+                          ...prevState,
+                          paymentNotes: editorStateParam, // Directly setting the editorState into billNote
+                        }))
+                      }
+                      placeholder="Enter payment notes..."
+                    />
+                  </div>
+                </Grid>
+              )}
             </Grid>
           </div>
         </DialogContent>
@@ -745,6 +796,12 @@ const InvoiceButtons = ({ mainlist, table }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Popup
+        open={open}
+        message={message}
+        onClose={handleClose}
+        severity={severity} // You can change this to "error", "warning", etc.
+      />
     </div>
   );
 };

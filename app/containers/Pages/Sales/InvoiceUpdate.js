@@ -223,6 +223,7 @@ function InvoiceUpdate() {
   const [list, setList] = useState([]);
   const [visalist, setVisalist] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [readOnly, setReadOnly] = useState("");
   const [invoiceDate, setInvoiceDate] = useState(new Date());
   const [mainlist, setMainList] = useState({});
   const [Invoicelist, setInvoiceList] = useState({});
@@ -342,6 +343,7 @@ function InvoiceUpdate() {
 
       var newStateData = {
         invoiceDate: actualData.data.invoiceDate.slice(0, 10),
+
         billDueDate: actualData.data.billDueDate.slice(0, 10),
         bill_ID: actualData.data.bill_ID,
         billSubTotal: "",
@@ -375,7 +377,9 @@ function InvoiceUpdate() {
       setState(newStateData);
       console.log(actualData);
       console.log("state", state);
-
+      if (actualData.data.billPaidAmount > 0) {
+        setReadOnly(true);
+      }
       return newStateData;
     } catch (err) {
       console.log(err);
@@ -463,9 +467,10 @@ function InvoiceUpdate() {
     setLineItems(lineItems.filter((item) => item.id !== id));
   };
 
-  const formattedDate = invoiceDate
-    ? invoiceDate.toISOString().split("T")[0]
-    : "";
+  // Utility function to format date as 'YYYY-MM-DD'
+  const formatDate = (date) => {
+    return date.toISOString().split("T")[0]; // Formats 'Date' object to 'YYYY-MM-DD'
+  };
 
   const [totalAmaount, settotalAmaount] = useState("");
 
@@ -483,7 +488,7 @@ function InvoiceUpdate() {
     percent: 0,
   });
   const [openDiscountPopup, setOpenDiscountPopup] = useState(false);
-
+  console.log(state, "state");
   // const calculateTotalAmount = () => {
   //   const subtotal = parseFloat(calculateSubtotal()) || 0;
   //   const adjustment = parseFloat(state.billAdjustmentAmount) || 0;
@@ -820,6 +825,7 @@ function InvoiceUpdate() {
                     }
                     sx={{ width: 220 }}
                     InputLabelProps={{ shrink: true }}
+                    InputProps={{ readOnly: readOnly }}
                     // error={!!errors.invoiceDate} // Show error if it exists
                     // helperText={errors.invoiceDate} // Display error message
                   />
@@ -875,6 +881,7 @@ function InvoiceUpdate() {
                           .toISOString()
                           .split("T")[0], // Adding one day to invoiceDate
                       }}
+                      InputProps={{ readOnly: readOnly }}
                       // error={!!errors.billDueDate} // Show error if it exists
                       // helperText={errors.billDueDate} // Display error message
                     />
@@ -948,6 +955,7 @@ function InvoiceUpdate() {
                   }
                   error={!!errors.lineItems[index]?.description}
                   helperText={errors.lineItems[index]?.description}
+                  InputProps={{ readOnly: readOnly }}
                 />
                 <TextField
                   label="Qty"
@@ -961,6 +969,7 @@ function InvoiceUpdate() {
                   }}
                   error={!!errors.lineItems[index]?.quantity}
                   helperText={errors.lineItems[index]?.quantity}
+                  InputProps={{ readOnly: readOnly }}
                 />
                 <TextField
                   label="Unit"
@@ -970,6 +979,7 @@ function InvoiceUpdate() {
                   }
                   error={!!errors.lineItems[index]?.unit}
                   helperText={errors.lineItems[index]?.unit}
+                  InputProps={{ readOnly: readOnly }}
                 />
                 <TextField
                   label="Rate"
@@ -983,6 +993,7 @@ function InvoiceUpdate() {
                   }}
                   error={!!errors.lineItems[index]?.rate}
                   helperText={errors.lineItems[index]?.rate}
+                  InputProps={{ readOnly: readOnly }}
                 />
                 <TextField
                   label="Total"
@@ -995,7 +1006,7 @@ function InvoiceUpdate() {
               </div>
             ))}
 
-            <Button
+         {!readOnly &&(<><Button
               style={{
                 background: "#939393",
                 borderRadius: 9,
@@ -1009,7 +1020,7 @@ function InvoiceUpdate() {
               onClick={handleNewLine}
             >
               NewLine
-            </Button>
+            </Button></>)}   
 
             <div style={styles.paper}>
               <Typography variant="h6" color="primary" gutterBottom>
@@ -1023,7 +1034,7 @@ function InvoiceUpdate() {
                 <Typography>Adjustment</Typography>
                 <Typography>{adjustment.amount?.toFixed(2) ?? 0.0}</Typography>
                 <div>
-                  <Button
+                {!readOnly &&(<>  <Button
                     variant="contained"
                     style={{
                       background: "#939393",
@@ -1059,6 +1070,7 @@ function InvoiceUpdate() {
                   >
                     Clear
                   </Button>
+                  </>)}
                 </div>
               </div>
               {/* <div style={styles.row}>
@@ -1104,7 +1116,7 @@ function InvoiceUpdate() {
                     ? `${discount.percent}%`
                     : `₹ ${discount.amount}`}
                 </Typography>
-                <Button
+              {!readOnly &&(<> <Button
                   variant="contained"
                   onClick={handleDiscountPopupOpen}
                   style={{
@@ -1122,7 +1134,8 @@ function InvoiceUpdate() {
                   }}
                 >
                   Apply Discount
-                </Button>
+                </Button></>)}  
+             
               </div>
 
               {/* discount form */}
@@ -1338,6 +1351,7 @@ function InvoiceUpdate() {
                   }))
                 }
                 placeholder="Bill Notes"
+
               />
               {/* <Editor
               label=""
@@ -1356,14 +1370,14 @@ function InvoiceUpdate() {
             </Grid>
           </Paper>
 
-          <Button
+         {!readOnly &&(<><Button
             variant="contained"
             color="primary"
             style={{ marginTop: "10px" }}
             onClick={handleUpdateInvoice}
           >
             Submit
-          </Button>
+          </Button></>)} 
         </div>
       </div>
 
