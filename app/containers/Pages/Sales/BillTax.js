@@ -495,7 +495,7 @@ function Bill_Tax() {
 
       {rowdata && (
         <TablePlayground
-          title="Lead Status List"
+          title="Bill Tax List"
           columnData={columnData}
           rowData={rowdata}
           page={page}
