@@ -135,7 +135,7 @@ function Row(props) {
           className={cx((item.edited ? css.hideAction : ''), classes.button)}
           aria-label="Edit"
           size="large">
-          <EditIcon />
+          <EditIcon color={"primary"} />
         </IconButton>
         <IconButton
           onClick={() => eventDone(this)}
@@ -150,7 +150,7 @@ function Row(props) {
           className={classes.button}
           aria-label="Delete"
           size="large">
-          <DeleteIcon />
+          <DeleteIcon color={"primary"} />
         </IconButton>
       </TableCell>
     </tr>

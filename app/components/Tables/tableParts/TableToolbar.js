@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -21,10 +21,13 @@ function TableToolbar(props) {
     filterText,
     placeholder,
     title,
-    onUserInput
+    onUserInput,
+    MonthAndYear,
+    onMonthYearChange
   } = props;
 
   const [showSearch, setShowSearch] = useState(false);
+
 
   const toggleSearch = useCallback(() => {
     setShowSearch(show => !show);
@@ -45,13 +48,14 @@ function TableToolbar(props) {
         {numSelected > 0 ? (
           <Typography color="inherit" variant="subtitle1">
             {numSelected}
-              &nbsp;selected
+            &nbsp;selected
           </Typography>
         ) : (
           <Typography variant="h6">{title}</Typography>
         )}
       </div>
       <div className={classes.spacer} />
+      {MonthAndYear && <MonthAndYear onMonthYearChange={onMonthYearChange} />}
       <div className={classes.actionsToolbar}>
         {numSelected > 0 ? (
           <div>
@@ -67,7 +71,7 @@ function TableToolbar(props) {
             </Tooltip>
             <Tooltip title="Delete">
               <IconButton aria-label="Delete" size="large">
-                <DeleteIcon />
+                <DeleteIcon color={"primary"} />
               </IconButton>
             </Tooltip>
           </div>

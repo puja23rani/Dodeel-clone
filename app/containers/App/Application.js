@@ -105,7 +105,7 @@ import {
   InvoiceView,
   CustomerView,
   InvoiceUpdate,
- 
+
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
 import Designation from "../Pages/HRMmodule/HRMsettings/Designation";
@@ -116,6 +116,32 @@ import CompentencyType from "../Pages/HRMmodule/HRMsettings/CompentencyType";
 import Competenies from "../Pages/HRMmodule/HRMsettings/Competenies";
 import OfficeShift from "../Pages/HRMmodule/HRMsettings/OfficeShift";
 import ContactDetails from "../Pages/HRMmodule/HRMsettings/ContactDetails";
+import Contractor from "../Pages/AssetModule/Contractor";
+import Category from "../Pages/AssetModule/Category";
+import Supplier from "../Pages/AssetModule/Supplier";
+import JobAppView from "../Pages/Recruitment/JobAppView";
+
+import EmployeeDetails from "../Pages/HRMmodule/HRMmanagement/EmployeeDetails";
+import CreateEmployee from "../Pages/HRMmodule/HRMmanagement/CreateEmployee";
+import TimeSheet from "../Pages/HRMmodule/HRMmanagement/TimeSheet";
+import Attendance from "../Pages/HRMmodule/HRMmanagement/Attendance";
+import LeaveRequest from "../Pages/HRMmodule/HRMmanagement/LeaveRequest";
+import Task from "../Pages/HRMmodule/HRMmanagement/Task";
+import Holidays from "../Pages/HRMmodule/HRMmanagement/Holidays";
+import Payroll from "../Pages/HRMmodule/HRMmanagement/Payroll";
+import AppraisalList from "../Pages/HRMmodule/HRMmanagement/AppraisalList";
+import JobApplicantView from "../Pages/Recruitment/applicantview";
+import Requirement from "../Pages/Procurement/requirement";
+import Quotation from "../Pages/Procurement/quotation";
+import Billing from "../Pages/Procurement/billing";
+import PayrollDetails from "../Pages/HRMmodule/HRMmanagement/PayrollDetails";
+import Product from "../Pages/AssetModule/Product";
+import Warehouse from "../Pages/AssetModule/Warehouse";
+import Warehouse_list from "../Pages/AssetModule/Warehouses/Warehouse_list";
+import WarehouseStock from "../Pages/AssetModule/Warehouses/WarehouseStock";
+import Con_Eng_list from "../Pages/AssetModule/Con_Eng_stocks/Con_Eng_list";
+import Con_Eng_Stock from "../Pages/AssetModule/Con_Eng_stocks/Con_Eng_Stock";
+import PurchaseIndent from "../Pages/AssetModule/PurchaseIndent";
 
 function Application(props) {
   const { history } = props;
@@ -234,6 +260,7 @@ function Application(props) {
 
 
         {/* ---------------HRM Modules--------------- */}
+        {/* HRM Setting */}
         <Route path="hrm-setting/department" element={<Department />} />
         <Route path="hrm-setting/designation" element={<Designation />} />
         <Route path="hrm-setting/leave" element={<Leave />} />
@@ -244,8 +271,20 @@ function Application(props) {
         <Route path="hrm-setting/office-shift" element={<OfficeShift />} />
         <Route path="hrm-setting/contact-details" element={<ContactDetails />} />
 
-        {/* Lead Pages */}
+        {/* HRM Management */}
+        <Route path="hrm-setting/employee-details" element={<EmployeeDetails />} />
+        <Route path="hrm-setting/employee-details/create-employee-details" element={<CreateEmployee />} />
+        <Route path="hrm-setting/timeSheet" element={<TimeSheet />} />
+        <Route path="hrm-setting/attendance" element={<Attendance />} />
+        <Route path="hrm-setting/leave-request" element={<LeaveRequest />} />
+        <Route path="hrm-setting/task" element={<Task />} />
+        <Route path="hrm-setting/holidays" element={<Holidays />} />
+        <Route path="hrm-setting/payroll" element={<Payroll />} />
+        <Route path="hrm-setting/payroll-details" element={<PayrollDetails />} />
+        <Route path="hrm-setting/appraisal-list" element={<AppraisalList />} />
+        {/* ------------------------------------------ */}
 
+        {/* Lead Pages */}
         <Route path="lead/lead-status" element={<LeadStatus />} />
         <Route path="/Custom_Question" element={<Custom_Question />} />
         <Route path="lead/log-notes" element={<LogNotes />} />
@@ -260,20 +299,55 @@ function Application(props) {
         <Route path="/Interviewer" element={<Interviewer />} />
         <Route path="/applicantlist" element={<Applicantlist />} />
         <Route path="/Job_Application" element={<Job_Application />} />
+        {/* --------- */}
+        <Route path="/jobview" element={<JobAppView />} />
+        <Route path="/applicantview" element={<JobApplicantView />} />
 
-          {/* Sales Pages */}
-          <Route path="/sales/bill-tax" element={<BillTax />} />
-          <Route path="/sales/customer" element={<Customer />} />
-          <Route path="/sales/customer/customer-view" element={<CustomerView />} />
-          
-          <Route path="/sales/invoice" element={<Invoice />} />
-          <Route path="/sales/invoice/invoice-update" element={<InvoiceUpdate />} />
-          <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
-          <Route path="/sales/payments" element={<Payments />} />
-          <Route path="/sales/project" element={<Project />} />
-          <Route path="/sales/proposal" element={<Proposal />} />
-          
 
+
+        {/* Procurement Pages */}
+        <Route path="/requirement" element={<Requirement />} />
+        <Route path="/quotation" element={<Quotation />} />
+        <Route path="/billing" element={<Billing />} />
+
+
+        {/* Sales Pages */}
+        <Route path="/sales/bill-tax" element={<BillTax />} />
+        <Route path="/sales/customer" element={<Customer />} />
+        <Route path="/sales/customer/customer-view" element={<CustomerView />} />
+
+        <Route path="/sales/invoice" element={<Invoice />} />
+        <Route path="/sales/invoice/invoice-update" element={<InvoiceUpdate />} />
+        <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
+        <Route path="/sales/payments" element={<Payments />} />
+        <Route path="/sales/project" element={<Project />} />
+        <Route path="/sales/proposal" element={<Proposal />} />
+
+
+        {/* Asset Management Pages */}
+        <Route path="/Contractor" element={<Contractor />} />
+        <Route path="/Category" element={<Category />} />
+        <Route path="/Supplier" element={<Supplier />} />
+        <Route path="/Product" element={<Product />} />
+        <Route path="/Warehouse" element={<Warehouse />} />
+        <Route path="/Warehouse_list" element={<Warehouse_list />} />
+        <Route path="/WarehouseStock" element={<WarehouseStock />} />
+        <Route path="/Con_Eng_list" element={<Con_Eng_list />} />
+        <Route path="/Contractor-Engineer-Stock" element={<Con_Eng_Stock />} />
+        <Route path="/PurchaseIndent" element={<PurchaseIndent />} />
+
+        {/* Sales Pages */}
+        <Route path="/sales/bill-tax" element={<BillTax />} />
+        <Route path="/sales/customer" element={<Customer />} />
+
+        <Route path="/sales/invoice" element={<Invoice />} />
+        <Route path="/sales/payments" element={<Payments />} />
+        <Route path="/sales/project" element={<Project />} />
+        <Route path="/sales/proposal" element={<Proposal />} />
+
+
+        <Route path="/jobview" element={<JobAppView />} />
+        <Route path="/applicantview" element={<JobApplicantView />} />
       </Routes>
 
 

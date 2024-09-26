@@ -31,7 +31,11 @@ function TablePlayground(props) {
     title,
     pagination,
     count,
+    MonthAndYear,
+    onMonthYearChange
   } = props;
+
+  // console.log(rowData);
 
   const [selected, setSelected] = useState([]);
 
@@ -73,7 +77,7 @@ function TablePlayground(props) {
       <TableCell
         align="left"
         key={index.toString()}
-        style={{ paddingLeft: "20px" }}
+       
       >
         {dataArray[itemCell.id]}
       </TableCell>
@@ -87,7 +91,7 @@ function TablePlayground(props) {
         <Grid item xs={12}>
           <Paper className={classes.rootTable}>
             {toolbarOptions.enabled && (
-              <EnhancedTableToolbar title={title} placeholder="Search" />
+              <EnhancedTableToolbar title={title} MonthAndYear={MonthAndYear} onMonthYearChange={onMonthYearChange} placeholder="Search" />
             )}
             <div className={classes.tableWrapper}>
               <Table
@@ -112,7 +116,6 @@ function TablePlayground(props) {
                       {" "}
                       {rowData.map((n) => {
                         const isSelected = thisIsSelected(n.id);
-                        // console.log(n.actions);
                         return (
                           <TableRow
                             role="checkbox"
@@ -169,11 +172,6 @@ function TablePlayground(props) {
                     </>
                   )}
 
-                  {/* {emptyRows > 0 && (
-                    <TableRow style={{ height: 49 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )} */}
                 </TableBody>
               </Table>
               {rowData.length === 0 && <EmptyData />}

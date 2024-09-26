@@ -68,7 +68,7 @@ function TaskItem(props) {
 
   const renderTitleInput = (newTask) => (
     <input
-        autoFocus // eslint-disable-line
+      autoFocus // eslint-disable-line
       autoComplete="off"
       defaultValue={newTask.title}
       maxLength="64"
@@ -131,7 +131,7 @@ function TaskItem(props) {
                 size="small"
                 onClick={edit}
               >
-                <EditIcon />
+                <EditIcon color={"primary"} />
               </IconButton>
               <IconButton
                 className={
@@ -143,7 +143,7 @@ function TaskItem(props) {
                 size="small"
                 onClick={remove}
               >
-                <DeleteIcon />
+                <DeleteIcon color={"primary"} />
               </IconButton>
             </>
           )}

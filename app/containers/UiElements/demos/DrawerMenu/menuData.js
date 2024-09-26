@@ -49,7 +49,7 @@ export const otherMailFolderListItems = (
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <DeleteIcon />
+        <DeleteIcon color={"primary"} />
       </ListItemIcon>
       <ListItemText primary="Trash" />
     </ListItem>

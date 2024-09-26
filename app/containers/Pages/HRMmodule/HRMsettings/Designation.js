@@ -155,7 +155,7 @@ function Designation() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -164,7 +164,7 @@ function Designation() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),
@@ -457,7 +457,7 @@ function Designation() {
                   getOptionLabel={(option) => option.title || ""} // Safely access title
                   value={state.departmentName} // Ensure value is an object or null
                   onChange={(e, v) => {
-                    // console.log(v);
+                    console.log(v);
                     setState({
                       ...state,
                       departmentName: v ? v : null, // Set campaignStatus to the selected object or null
@@ -466,7 +466,7 @@ function Designation() {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Campaign Status"
+                      label="Department Name"
                       margin="normal"
                       variant="standard"
                       error={!!errors.departmentName} // Show error if it exists
@@ -501,6 +501,9 @@ function Designation() {
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -522,9 +525,6 @@ function Designation() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
           </DialogActions>
         </Dialog>
       </div>

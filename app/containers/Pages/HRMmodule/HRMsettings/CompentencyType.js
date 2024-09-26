@@ -131,7 +131,7 @@ function CompentencyType() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -140,7 +140,7 @@ function CompentencyType() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),
@@ -401,6 +401,9 @@ function CompentencyType() {
             />
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -422,9 +425,7 @@ function CompentencyType() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>

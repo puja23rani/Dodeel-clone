@@ -30,7 +30,7 @@ const actions = [
   { icon: <SaveIcon />, name: 'Save' },
   { icon: <PrintIcon />, name: 'Print' },
   { icon: <ShareIcon />, name: 'Share' },
-  { icon: <DeleteIcon />, name: 'Delete' },
+  { icon: <DeleteIcon color={"primary"} />, name: 'Delete' },
 ];
 
 function DialTooltip() {

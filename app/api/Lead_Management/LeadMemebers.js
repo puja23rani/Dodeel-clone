@@ -216,7 +216,7 @@ function LeadMemebers() {
         }
       )
       .then((response) => {
-        // console.log(response.data.data);
+        console.log(response.data.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
@@ -241,21 +241,21 @@ function LeadMemebers() {
                       });
                       setItemToDelete(item._id);
                       // Set state with required format
-                        setState({
-                          leadName: {title:item.leadName,id:item.leadID},
-                          membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
-                          employeeName: item.membersID.map((member) => ({
-                            title: member.employeeName,
-                            id: member.id,
-                          })), // Format employeeName as [{ title, id }]
-                         
-                          isUpdate: true, // Set isUpdate to true for edit mode
-                         
-                        });
+                      setState({
+                        leadName: { title: item.leadName, id: item.leadID },
+                        membersID: item.membersID.map((member) => member.id), // Extract only IDs from membersID
+                        employeeName: item.membersID.map((member) => ({
+                          title: member.employeeName,
+                          id: member.id,
+                        })), // Format employeeName as [{ title, id }]
+
+                        isUpdate: true, // Set isUpdate to true for edit mode
+
+                      });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
@@ -264,7 +264,7 @@ function LeadMemebers() {
                       setDeleteDialogOpen(true);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
                   </IconButton>
                 </>
               ),
@@ -478,13 +478,15 @@ function LeadMemebers() {
   function handleClear() {
     setState({
       employeeName: [],
-    membersID: [],
-    leadName: null,
-    isUpdate: false,
+      membersID: [],
+      leadName: null,
+      isUpdate: false,
     });
-    setErrors({employeeName: "",
+    setErrors({
+      employeeName: "",
 
-      leadName: null,});
+      leadName: null,
+    });
     setOpenDialog(false);
   }
   return (

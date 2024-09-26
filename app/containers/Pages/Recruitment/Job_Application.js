@@ -17,10 +17,13 @@ import match from 'autosuggest-highlight/match';
 import Popup from "../../../components/Popup/Popup";
 import { Chip, Dialog, DialogActions, DialogTitle, Paper, Toolbar, Tooltip, Typography } from "@mui/material";
 import { DialogContent } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { Close as CloseIcon, Visibility } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Editor, EditorState } from 'react-draft-wysiwyg';
 import { convertToRaw } from "draft-js";
+import InfoIcon from '@mui/icons-material/Info';
+import { Navigate, useNavigate } from "react-router-dom";
+
 
 
 
@@ -53,63 +56,68 @@ function Job_Application() {
   // };
 
   const [errors, setErrors] = useState({
-    // jobTitle: "",
-    // jobCategory: "",
-    // jobDescription: EditorState.createEmpty(),
-    // createStatus: "",
-    // startDate: "",
-    // endDate: "",
-    // skills: [],
-    // resume: "",
-    // customQuestionID: [],
-    // customQuestion: [],
-
+    jobTitle: "",
+    jobCategory: "",
+    jobDescription: "",
+    createStatus: "",
+    startDate: "",
+    endDate: "",
+    skills: "",
+    resume: "",
+    customQuestionID: "",
+    customQuestion: "",
   });
+  console.log(errors)
 
   const validate = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.jobTitle.trim()) {
+    if (!state.jobTitle) {
       errors.jobTitle = "Job Title is required";
       isValid = false;
     }
-    if (!state.jobCategory.trim()) {
+    if (!state.jobCategory) {
       errors.jobCategory = "Job Category is required";
       isValid = false;
     }
-    if (!state.jobDescription.trim()) {
+    if (!state.jobDescription) {
       errors.jobDescription = "Job Description is required";
       isValid = false;
     }
-    if (!state.createStatus.title.trim()) {
+    if (!state.createStatus) {
       errors.createStatus = "Create Status is required";
       isValid = false;
     }
-    if (!state.startDate.trim()) {
+    if (!state.startDate) {
       errors.startDate = "Start Date is required";
       isValid = false;
     }
-    if (!state.endDate.trim()) {
+    if (!state.endDate) {
       errors.endDate = "End Date is required";
       isValid = false;
     }
-    if (!state.skills.trim()) {
-      errors.skills = "Skills is required";
+    if (!state.inputSkill) {
+      errors.inputSkill = "Skills is required";
       isValid = false;
     }
-    if (!state.resume.title.trim()) {
+    if (!state.resume) {
       errors.resume = "Resume is required";
       isValid = false;
     }
-    if (!state.customQuestion.trim()) {
+    if (state.customQuestion.length == 0) {
       errors.customQuestion = "Custom Question is required";
       isValid = false;
     }
 
+
     setErrors(errors);
+    console.log(isValid)
+
     return isValid;
   };
+
+
 
   const [state, setState] = useState({
     jobTitle: "",
@@ -136,17 +144,17 @@ function Job_Application() {
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
   const [length, setLength] = useState(0);
+  const navigate = useNavigate();
 
-  
-    
-   
-    const [dataEditorState, setEditorState] = useState();
-  
-    const onEditorStateChange = editorStateParam => {
-      setEditorState(editorStateParam);
-    };
-  
-  
+
+
+  const [dataEditorState, setEditorState] = useState();
+
+  const onEditorStateChange = editorStateParam => {
+    setEditorState(editorStateParam);
+  };
+
+
 
   const columnData = [
     {
@@ -196,7 +204,7 @@ function Job_Application() {
   ];
 
   useEffect(() => {
-    
+
     table1();
   }, []);
 
@@ -233,18 +241,18 @@ function Job_Application() {
     }
   };
 
-  
 
-  
-    function fetchJobCreate(pg) {
-      axios
-        .post(
-   
-      `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
-      {
-        pageNumber: pg,
-        pageSize: rowsPerPage,
-      }, {
+
+
+  function fetchJobCreate(pg) {
+    axios
+      .post(
+
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllJobs`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -257,11 +265,11 @@ function Job_Application() {
               jobTitle: item.jobTitle,
               jobCategory: item.jobCategory,
               // jobDescription: item.jobDescription,
-              createStatus: item.createStatus ,
+              createStatus: item.createStatus,
               startDate: item.startDate.slice(0, 10),
               endDate: item.endDate.slice(0, 10),
               // skills: item.skills,
-              resume: item.resume ,
+              resume: item.resume,
               // customQuestionID: item.customQuestionID,
               // customQuestion: item.customQuestion,
               actions: (
@@ -273,8 +281,8 @@ function Job_Application() {
                         top: 0,
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
-                      setItemToDelete(item._id);   
-                      
+                      setItemToDelete(item._id);
+
                       setState({
                         id: item._id,
                         jobTitle: item.jobTitle,
@@ -283,30 +291,68 @@ function Job_Application() {
                         createStatus: {
                           title: item.createStatus
                         },
-                       
+
                         startDate: item.startDate.slice(0, 10),
                         endDate: item.endDate.slice(0, 10),
                         skills: item.skills,
                         resume: {
                           title: item.resume
                         },
-                       
-                        customQuestionID: item.customQuestionID,
-                        customQuestion: item.customQuestion, isUpdate: true,
+                        customQuestionID: item.customQuestionID.map((cus) => cus._id),
+                        customQuestion: item.customQuestionID.map((cus) => ({
+                          title: cus.customQuestion,
+                          id: cus.id,
+                        })), // Format employeeName as [{ title, id }]
+                        // customQuestionID: item.customQuestionID,
+                        // customQuestion: item.customQuestion, 
+                        isUpdate: true,
                       });
                       setOpenDialog(true);
                     }}
                   >
-                    <EditIcon />
+                    <EditIcon color={"primary"} />
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
                     onClick={() => {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
+                      setSelectedJob(job);
                     }}
                   >
-                    <DeleteIcon />
+                    <DeleteIcon color={"primary"} />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/applicantlist", {
+                        state: { jobID: item._id },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/jobview", {
+                        state: {
+                          jobID: item,
+
+
+                        },
+                      });
+                    }}
+                  >
+                    <Visibility />
                   </IconButton>
                 </>
               ),
@@ -326,28 +372,13 @@ function Job_Application() {
   }, [page, rowsPerPage]);
 
   const handleSaveJobs = () => {
-    // if (!validate()) {
-    //   setMessage("Please fill all required fields");
-    //   setOpen(true);
-    //   setSeverity("warning");
-    //   return;
-    // }
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == ""
-
-    ) {
-      toast.error("Fill all the information", {
-        position: "top-center",
-      });
-    } else {
+    if (!validate()) {
+      setMessage("Please fill all required fields");
+      setOpen(true);
+      setSeverity("warning");
+      return;
+    }
+    else {
       axios
         .post(
           `${process.env.REACT_APP_BASE_URL}/api/auth/createJob`,
@@ -357,7 +388,7 @@ function Job_Application() {
             jobCategory: state.jobCategory,
 
             jobDescription: state.jobDescription,
-             
+
             createStatus: state.createStatus.title,
             startDate: state.startDate,
             // visa_id: visaId,
@@ -365,7 +396,7 @@ function Job_Application() {
             skills: state.skills,
             resume: state.resume.title,
             customQuestionID: state.customQuestionID,
-            customQuestion: state.customQuestion,
+            // customQuestion: state.customQuestion,
 
           },
           {
@@ -465,7 +496,7 @@ function Job_Application() {
       jobTitle: state.jobTitle,
       jobCategory: state.jobCategory,
       jobDescription: state.jobDescription,
-      
+
       createStatus: state.createStatus.title,
       startDate: state.startDate,
       // visa_id: visaId,
@@ -473,24 +504,16 @@ function Job_Application() {
       skills: state.skills.join(","),
       resume: state.resume.title,
       customQuestionID: state.customQuestionID,
-      customQuestion: state.customQuestion,
+
     };
 
     console.log(requestData);
 
-    if (state.jobTitle == "" ||
-      state.jobCategory == "" ||
-      state.jobDescription == "" ||
-      state.createStatus == "" ||
-      state.startDate == "" ||
-      state.endDate == "" ||
-      state.skills == "" ||
-      state.resume == "" ||
-      state.customQuestionID == "" ||
-      state.customQuestion == "") {
+    if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
       setSeverity("warning");
+      return;
     } else {
       axios
         .put(
@@ -558,39 +581,72 @@ function Job_Application() {
 
   const handleInputChange = (e) => {
     setState({
-        ...state,
-        inputSkill: e.target.value,
+      ...state,
+      inputSkill: e.target.value,
     });
-};
-const handleKeyDown = (e) => {
+  };
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && state.inputSkill.trim()) {
-        setState({
-            ...state,
-            skills: [...state.skills, state.inputSkill.trim()],
-            inputSkill: "",
-        });
+      setState({
+        ...state,
+        skills: [...state.skills, state.inputSkill.trim()],
+        inputSkill: "",
+      });
     } else if (e.key === "Backspace" && !state.inputSkill) {
-        setState({
-            ...state,
-            skills: state.skills.slice(0, -1),
-        });
+      setState({
+        ...state,
+        skills: state.skills.slice(0, -1),
+      });
     }
-};
-const handleSkillDelete = (skillToDelete) => () => {
+  };
+  const handleSkillDelete = (skillToDelete) => () => {
     setState((prevState) => ({
-        ...prevState,
-        skills: prevState.skills.filter((skill) => skill !== skillToDelete),
+      ...prevState,
+      skills: prevState.skills.filter((skill) => skill !== skillToDelete),
     }));
-};
-const handlePageChange = (event, newPage) => {
-  setPage(newPage); // Update the current page
-};
+  };
 
-// Handle rows per page change
-const handleRowsPerPageChange = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
-  setPage(0); // Reset to first page
-};
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage); // Update the current page
+  };
+
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(0); // Reset to first page
+  };
+
+  const handleClear = () => {
+
+    setState({
+      jobTitle: "",
+      jobCategory: "",
+      jobDescription: "",
+      createStatus: "",
+      startDate: "",
+      endDate: "",
+      skills: [],
+      resume: "",
+      customQuestionID: [],
+      customQuestion: [],
+      isUpdate: false,
+    });
+    setErrors({
+      jobTitle: "",
+      jobCategory: "",
+      jobDescription: "",
+      createStatus: "",
+      startDate: "",
+      endDate: "",
+      skills: "",
+      resume: "",
+      customQuestionID: "",
+      customQuestion: "",
+    })
+    setOpenDialog(false);
+
+  }
 
   return (
     <>
@@ -613,7 +669,7 @@ const handleRowsPerPageChange = (event) => {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -623,7 +679,8 @@ const handleRowsPerPageChange = (event) => {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => setOpenDialog(false)}
+
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -757,6 +814,8 @@ const handleRowsPerPageChange = (event) => {
                     value={state.inputSkill}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
+                    error={!!errors.inputSkill} // Show error if it exists
+                    helperText={errors.inputSkill}
                   />
                   <div style={{ marginTop: 10 }}>
                     {state.skills?.map((skill, index) => (
@@ -766,8 +825,7 @@ const handleRowsPerPageChange = (event) => {
                         onDelete={handleSkillDelete(skill)}
                         style={{ marginRight: 10, marginBottom: 10 }}
 
-                        error={!!errors.resume} // Show error if it exists
-                        helperText={errors.resume}
+
                       />
                     ))}
                   </div>
@@ -779,9 +837,9 @@ const handleRowsPerPageChange = (event) => {
                     id="tags-standard"
                     options={customQuestionList}
                     value={state.customQuestion}
-                    // isOptionEqualToValue={(option, value) =>
-                    //   option.id === value.id
-                    // }
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
                     onChange={(e, v) => {
                       const selectedCustomquestionIds = v.map((item) => item.id);
                       setState({
@@ -796,7 +854,7 @@ const handleRowsPerPageChange = (event) => {
                         {...params}
                         variant="standard"
                         label="Custom Question"
-                        
+
                         error={!!errors.customQuestion} // Show error if it exists
                         helperText={errors.customQuestion} // Display error message
                       />
@@ -804,68 +862,41 @@ const handleRowsPerPageChange = (event) => {
                   />
                 </Grid>
 
-               
-                <Grid item xs={6} style={{}}>
-                  <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.startDate}
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        startDate: v,
-                      });
+
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="Start Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.startDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Start Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            startDate: e.target.value,
-                          })
-                        }
-                      />
-                    )}
+                    onChange={(e) => setState({ ...state, startDate: e.target.value })}
+                    error={!!errors.startDate} // Show error if it exists
+                    helperText={errors.startDate}
                   />
                 </Grid>
-                <Grid item xs={6} >
-                  <Autocomplete
-                    options={[]} // Optional: Add predefined date options here if needed
-                    freeSolo // Allows users to input custom dates freely
-                    value={state.endDate}
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        endDate: v,
-                      });
+
+                <Grid item xs={6} sx={{ width: "100%" }}>
+                  <TextField
+                    id="date"
+                    label="End Date"
+                    type="date"
+                    variant="standard"
+                    defaultValue={state.endDate}
+                    sx={{ width: "100%" }}
+                    InputLabelProps={{
+                      shrink: true,
                     }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="End Date"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true, // Keeps the label visible even when a date is selected
-                        }}
-                        onChange={(e) =>
-                          setState({
-                            ...state,
-                            endDate: e.target.value,
-                          })
-                        }
-                      />
-                    )}
+                    onChange={(e) => setState({ ...state, endDate: e.target.value })}
+                    error={!!errors.endDate} // Show error if it exists
+                    helperText={errors.endDate}
                   />
-                </Grid> 
-                 {/* <Grid item xs={12}>
+                </Grid>
+                {/* <Grid item xs={12}>
   <Typography variant="subtitle1" gutterBottom>
     Job Description
   </Typography>
@@ -886,7 +917,7 @@ const handleRowsPerPageChange = (event) => {
     />
   </Paper>
 </Grid> */}
-<Grid item xs={12}>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -915,6 +946,9 @@ const handleRowsPerPageChange = (event) => {
             </div>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleClear} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -936,9 +970,7 @@ const handleRowsPerPageChange = (event) => {
                 </Button>
               </>
             )}
-            <Button onClick={() => setOpenDialog(false)} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>
@@ -958,7 +990,7 @@ const handleRowsPerPageChange = (event) => {
           onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
         />
       )}
-      
+
 
       <AlertDialog
         open={deleteDialogOpen}

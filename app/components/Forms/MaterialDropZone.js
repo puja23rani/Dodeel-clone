@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { makeStyles } from 'tss-react/mui';
 import Dropzone from 'react-dropzone';
 import PropTypes from 'prop-types';
@@ -10,23 +10,11 @@ import Snackbar from '@mui/material/Snackbar';
 import CloudUpload from '@mui/icons-material/CloudUpload';
 import 'enl-styles/vendors/react-dropzone/react-dropzone.css';
 import isImage from './helpers/helpers.js';
+import Popup from '../Popup/Popup.js';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '../../../firebase.config.js';
 
 const useStyles = makeStyles()((theme) => ({
-  dropItem: {
-    borderColor: theme.palette.divider,
-    background: theme.palette.background.default,
-    borderRadius: theme.rounded.medium,
-    color: theme.palette.text.disabled,
-    textAlign: 'center'
-  },
-  uploadIconSize: {
-    display: 'inline-block',
-    '& svg': {
-      width: 72,
-      height: 72,
-      fill: theme.palette.secondary.main,
-    }
-  },
   rightIcon: {
     marginLeft: theme.spacing(1),
     '& svg': {
@@ -43,36 +31,53 @@ function MaterialDropZone(props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [files, setFiles] = useState(props.files); // eslint-disable-line
   const [acceptedFiles] = useState(props.acceptedFiles); // eslint-disable-line
+  // const [fileURL, setfileURL] = useState("")
 
   const {
     classes,
-    cx
   } = useStyles();
   const {
     showPreviews,
     maxSize,
-    text,
+    onFilesChange,
     showButton,
     filesLimit,
     ...rest
   } = props;
 
-  const onDrop = useCallback((filesVal) => {
-    let oldFiles = files;
-    const filesLimitVal = filesLimit || '3';
-    oldFiles = oldFiles.concat(filesVal);
-    if (oldFiles.length > filesLimit) {
-      setOpenSnackbar(true);
-      setErrorMessage(`Cannot upload more than ${filesLimitVal} items.`);
-    } else {
-      setFiles(oldFiles);
-    }
-  }, [files, filesLimit]);
-
   const onDropRejected = () => {
     setOpenSnackbar(true);
     setErrorMessage('File too big, max size is 3MB');
   };
+
+
+  const onDrop = useCallback((filesVal) => {
+    const filesLimitVal = filesLimit || 1;
+    if (filesVal.length > filesLimitVal) {
+      setOpenSnackbar(true);
+      setErrorMessage(`You can only upload ${filesLimitVal} file.`);
+    } else {
+      filesVal.map((file, index) => {
+        console.log(file);
+        if (isImage(file)) {
+          const imageRef = ref(storage, `/photo/${file.name}`);
+          uploadBytes(imageRef, file).then(() => {
+            getDownloadURL(imageRef).then(url => {
+              console.log(url);
+              previewImage(url);
+              onFilesChange(url); // Update the parent state
+            }).catch((error) => {
+              console.error('Failed to get download URL', error);
+            });
+          }).catch((error) => {
+            console.error('Failed to upload file', error);
+          });
+        }
+      });
+      setFiles(filesVal);
+    }
+  }, [filesLimit, onFilesChange]);
+
 
   const handleRequestCloseSnackBar = () => {
     setOpenSnackbar(false);
@@ -90,6 +95,7 @@ function MaterialDropZone(props) {
   }, [files]);
 
   const fileSizeLimit = maxSize || 3000000;
+
   const DeleteBtn = ({ file, index }) => (
     <div className="middle">
       <IconButton onClick={() => handleRemove(file, index)} size="large">
@@ -103,75 +109,91 @@ function MaterialDropZone(props) {
     index: PropTypes.number.isRequired
   };
 
-  const Previews = ({ filesArray }) => filesArray.map((file, index) => {
-    const base64Img = URL.createObjectURL(file);
-    if (isImage(file)) {
-      return (
-        <div key={index.toString()}>
-          <div className="imageContainer col fileIconImg">
-            <figure className="imgWrap"><img className="smallPreviewImg" src={base64Img} alt="preview" /></figure>
-            <DeleteBtn file={file} index={index} />
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div key={index.toString()}>
-        <div className="imageContainer col fileIconImg">
-          <FileIcon className="smallPreviewImg" alt="preview" />
-          <DeleteBtn file={file} index={index} />
-        </div>
-      </div>
-    );
-  });
+  // console.log(fileURL);
 
-  Previews.propTypes = { filesArray: PropTypes.array.isRequired };
+  // const Previews = ({ filesArray }) => filesArray.map((file, index) => {
+
+  //   if (isImage(file)) {
+  //     return (
+  //       <div key={index.toString()}>
+  //         {imageURL ? (
+  //           <div className="imageContainer col fileIconImg">
+  //             <figure className="imgWrap">
+  //               <img className="smallPreviewImg" src={imageURL} alt="preview" />
+  //             </figure>
+  //             <DeleteBtn file={file} index={index} />
+  //           </div>
+  //         ) : (
+  //           <p>Loading...</p> // Placeholder while loading the image URL
+  //         )}
+  //       </div>
+  //     );
+  //   }
+
+  //   return (
+  //     <div key={index.toString()}>
+  //       <div className="imageContainer col fileIconImg">
+  //         <FileIcon className="smallPreviewImg" alt="preview" />
+  //         <DeleteBtn file={file} index={index} />
+  //       </div>
+  //     </div>
+  //   );
+  // });
+
+  const previewImage = (imageURL) => {
+    <div>
+      {imageURL ? (
+        <div className="imageContainer col fileIconImg">
+          <figure className="imgWrap">
+            <img className="smallPreviewImg" src={imageURL} alt="preview" />
+          </figure>
+          {/* <DeleteBtn file={image} index={index} /> */}
+        </div>
+      ) : (
+        <p>Loading...</p> // Placeholder while loading the image URL
+      )}
+    </div>
+  }
+
+  // Previews.propTypes = { filesArray: PropTypes.array.isRequired };
 
   let dropzoneRef;
+
   return (
     <div>
       <Dropzone
         accept={acceptedFiles.join(',')}
         onDrop={onDrop}
         onDropRejected={onDropRejected}
-        acceptClassName="stripes"
-        rejectClassName="rejectStripes"
         maxSize={fileSizeLimit}
         ref={(node) => { dropzoneRef = node; }}
+        noClick
+        noKeyboard
         {...rest}
       >
-        {({ getRootProps, getInputProps }) => (
-          <div {...getRootProps()} className={cx(classes.dropItem, 'dropZone')}>
-            <div className="dropzoneTextStyle">
-              <input {...getInputProps()} />
-              <p className="dropzoneParagraph">{text}</p>
-              <div className={classes.uploadIconSize}>
-                <CloudUpload />
-              </div>
-            </div>
-          </div>
+        {({ getInputProps }) => (
+          <>
+            <input {...getInputProps()} />
+            {showButton && (
+              <Button
+                className={classes.button}
+                fullWidth
+                variant="contained"
+                onClick={() => dropzoneRef.open()}
+                color="secondary"
+              >
+                {'Click to upload file(s)'}
+                <span className={classes.rightIcon}>
+                  <CloudUpload />
+                </span>
+              </Button>
+            )}
+          </>
         )}
-        {/* end */}
       </Dropzone>
-      {showButton && (
-        <Button
-          className={classes.button}
-          fullWidth
-          variant="contained"
-          onClick={() => {
-            dropzoneRef.open();
-          }}
-          color="secondary"
-        >
-          Click to upload file(s)
-          <span className={classes.rightIcon}>
-            <CloudUpload />
-          </span>
-        </Button>
-      )}
-      <div className="row preview">
+      {/* <div className="row preview">
         {showPreviews && <Previews filesArray={files} />}
-      </div>
+      </div> */}
       <Snackbar
         open={openSnackBar}
         message={errorMessage}
@@ -184,18 +206,19 @@ function MaterialDropZone(props) {
 
 MaterialDropZone.propTypes = {
   files: PropTypes.array.isRequired,
-  text: PropTypes.string.isRequired,
   acceptedFiles: PropTypes.array,
   showPreviews: PropTypes.bool.isRequired,
   showButton: PropTypes.bool,
   maxSize: PropTypes.number.isRequired,
-  filesLimit: PropTypes.number.isRequired,
-
+  filesLimit: PropTypes.number, // Change here
+  onFilesChange: PropTypes.func.isRequired, // Add this line to PropTypes
 };
 
 MaterialDropZone.defaultProps = {
   acceptedFiles: [],
-  showButton: false,
+  showButton: true,
+  filesLimit: 1, // Set the default limit to 1
 };
+
 
 export default MaterialDropZone;

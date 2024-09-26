@@ -132,7 +132,7 @@ function Department() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -141,7 +141,7 @@ function Department() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),
@@ -320,6 +320,7 @@ function Department() {
       departmentName: "",
       isUpdate: false,
     })
+    setErrors({});
     setOpenDialog(false);
   }
 
@@ -401,6 +402,9 @@ function Department() {
             />
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -422,9 +426,7 @@ function Department() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>

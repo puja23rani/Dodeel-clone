@@ -92,7 +92,7 @@ function FloatingButtons() {
     {
       color: 'secondary',
       className: classes.fab,
-      icon: <EditIcon />,
+      icon: <EditIcon color={"primary"} />,
     },
     {
       color: 'inherit',
@@ -126,7 +126,7 @@ function FloatingButtons() {
             Extended
           </Fab>
           <Fab disabled aria-label="delete" className={classes.button}>
-            <DeleteIcon />
+            <DeleteIcon color={"primary"} />
           </Fab>
         </Grid>
         <Grid item md={6}>

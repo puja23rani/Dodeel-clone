@@ -150,7 +150,7 @@ function Leave() {
                     setOpenDialog(true);
                   }}
                 >
-                  <EditIcon />
+                  <EditIcon color={"primary"} />
                 </IconButton>
                 <IconButton
                   aria-label="Delete"
@@ -159,7 +159,7 @@ function Leave() {
                     setIdToDelete(item._id);
                   }}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color={"primary"} />
                 </IconButton>
               </>
             ),
@@ -454,6 +454,9 @@ function Leave() {
             </Grid>
           </DialogContent>
           <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
@@ -475,9 +478,7 @@ function Leave() {
                 </Button>
               </>
             )}
-            <Button onClick={handleCloseDialog} color="secondary">
-              Close
-            </Button>
+
           </DialogActions>
         </Dialog>
       </div>

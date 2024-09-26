@@ -7,6 +7,7 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { makeStyles } from 'tss-react/mui';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -15,81 +16,76 @@ const useStyles = makeStyles()((theme) => ({
   paper: {
     marginRight: theme.spacing(2),
   },
+  popper: {
+    zIndex: 1300, // Ensure the popper appears above other content
+  },
 }));
 
 export default function MenuListComposition() {
-  const {
-    classes
-  } = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const { classes } = useStyles();
+  const [openMoreMenu, setOpenMoreMenu] = React.useState(false);
   const anchorRef = React.useRef(null);
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setOpenMoreMenu((prevOpen) => !prevOpen);
   };
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
-    setOpen(false);
+    setOpenMoreMenu(false);
   };
 
   function handleListKeyDown(event) {
     if (event.key === 'Tab') {
       event.preventDefault();
-      setOpen(false);
+      setOpenMoreMenu(false);
     }
   }
 
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
+  const prevOpen = React.useRef(openMoreMenu);
   React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
+    if (prevOpen.current === true && openMoreMenu === false) {
       anchorRef.current.focus();
     }
 
-    prevOpen.current = open;
-  }, [open]);
+    prevOpen.current = openMoreMenu;
+  }, [openMoreMenu]);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <MenuList>
-          <MenuItem>Profile</MenuItem>
-          <MenuItem>My account</MenuItem>
-          <MenuItem>Logout</MenuItem>
-        </MenuList>
-      </Paper>
-      <div>
-        <Button
-          ref={anchorRef}
-          aria-controls={open ? 'menu-list-grow' : undefined}
-          aria-haspopup="true"
-          onClick={handleToggle}
-        >
-          Toggle Menu Grow
-        </Button>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </div>
+    <div>
+      <MoreVertIcon
+        ref={anchorRef}
+        aria-controls={openMoreMenu ? 'menu-list-grow' : undefined}
+        onClick={handleToggle}
+        style={{ cursor: 'pointer' }}
+      />
+      <Popper
+        open={openMoreMenu}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+        className={classes.popper}
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList autoFocusItem={openMoreMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                  <MenuItem onClick={handleClose}>Logout</MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </div>
   );
 }

@@ -397,21 +397,52 @@ export const Interviewer = loadable(
     fallback: <Loading />,
   }
 );
-export const Job_Create = loadable(
-  () => import("../containers/Pages/Recruitment/Job_Create"),
+export const Applicantlist = loadable(
+  () => import("../containers/Pages/Recruitment/applicantlist"),
   {
     fallback: <Loading />,
   }
 );
+
 export const Job_Application = loadable(
   () => import("../containers/Pages/Recruitment/Job_Application"),
   {
     fallback: <Loading />,
   }
 );
+export const JobAppView = loadable(
+  () => import("../containers/Pages/Recruitment/jobview"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const JobApplicantView = loadable(
+  () => import("../containers/Pages/Recruitment/applicantview"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Requirement = loadable(
+  () => import("../containers/Pages/Procurement/requirement"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Quotation = loadable(
+  () => import("../containers/Pages/Procurement/quotation"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Billing = loadable(
+  () => import("../containers/Pages/Procurement/billing"),
+  {
+    fallback: <Loading />,
+  }
+);
+
 
 // ---------------------------------------------------------------
-
 export const Campaign = loadable(
   () => import("../api/Lead_Management/Campaign"),
   {
@@ -437,26 +468,37 @@ export const LeadDetails = loadable(
     fallback: <Loading />,
   }
 );
+export const Invoice = loadable(
+  () => import("../containers/Pages/Sales/Invoice"),
+  {
+    fallback: <Loading />,
+  }
+);
 export const BillTax = loadable(
   () => import("../containers/Pages/Sales/BillTax"),
   {
     fallback: <Loading />,
   }
 );
-
-export const  Invoice = loadable(
-  () => import("../containers/Pages/Sales/Invoice"),
+export const Proposal = loadable(
+  () => import("../containers/Pages/Sales/Proposal"),
   {
     fallback: <Loading />,
   }
 );
-export const  InvoiceUpdate = loadable(
+export const Customer = loadable(
+  () => import("../containers/Pages/Sales/Customer"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const InvoiceUpdate = loadable(
   () => import("../containers/Pages/Sales/InvoiceUpdate"),
   {
     fallback: <Loading />,
   }
 );
-export const  InvoiceView = loadable(
+export const InvoiceView = loadable(
   () => import("../containers/Pages/Sales/InvoiceView"),
   {
     fallback: <Loading />,
@@ -474,20 +516,69 @@ export const Project = loadable(
     fallback: <Loading />,
   }
 );
-export const Proposal = loadable(
-  () => import("../containers/Pages/Sales/Proposal"),
+// ------------------------------------------------
+// Asset management
+// ------------------------------------------------
+export const Contractor = loadable(
+  () => import("../containers/Pages/AssetModule/Contractor"),
   {
     fallback: <Loading />,
   }
 );
-export const Customer = loadable(
-  () => import("../containers/Pages/Sales/Customer"),
+
+export const Category = loadable(
+  () => import("../containers/Pages/AssetModule/Category"),
   {
     fallback: <Loading />,
   }
 );
-export const CustomerView = loadable(
-  () => import("../containers/Pages/Sales/CustomerView"),
+
+export const Supplier = loadable(
+  () => import("../containers/Pages/AssetModule/Supplier"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const Product = loadable(
+  () => import("../containers/Pages/AssetModule/Product"),
+  {
+    fallback: <Loading />,
+  }
+);
+
+export const Warehouse = loadable(
+  () => import("../containers/Pages/AssetModule/Warehouse"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Warehouse_list = loadable(
+  () => import("../containers/Pages/AssetModule/Warehouses/Warehouse_list"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const WarehouseStock = loadable(
+  () => import("../containers/Pages/AssetModule/Warehouses/WarehouseStock"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Con_Eng_list = loadable(
+  () => import("../containers/Pages/AssetModule/Con_Eng_stocks/Con_Eng_list"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const Con_Eng_Stock = loadable(
+  () => import("../containers/Pages/AssetModule/Con_Eng_stocks/Con_Eng_Stock"),
+  {
+    fallback: <Loading />,
+  }
+);
+export const PurchaseIndent = loadable(
+  () => import("../containers/Pages/AssetModule/PurchaseIndent"),
   {
     fallback: <Loading />,
   }
