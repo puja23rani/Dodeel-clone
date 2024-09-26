@@ -622,7 +622,7 @@ function Campaign() {
                         {...params}
                         variant="standard"
                         label="Employee Name"
-                        placeholder="Favorites"
+                       
                         error={!!errors.employeeName} // Show error if it exists
                         helperText={errors.employeeName} // Display error message
                       />
@@ -653,7 +653,7 @@ function Campaign() {
                         {...params}
                         variant="standard"
                         label="Channel Name"
-                        placeholder="Favorites"
+                       
                         error={!!errors.channelName} // Show error if it exists
                         helperText={errors.channelName} // Display error message
                       />
