@@ -20,6 +20,7 @@ import Popup from "../../../components/Popup/Popup";
 import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import {
   Autocomplete,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -41,7 +42,8 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-
+import { storage } from "../../../../firebase.config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 import { end, start } from "@popperjs/core";
 
@@ -239,21 +241,19 @@ function Project() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        
-                        Employee_Name: item.projectCreatorID.employeeName,
-                        
-                        Project_Title: vs.projectTitle,
-                        Project_File: vs.projectCvfileName,
-                        Start_Date: vs.projectStartDate.slice(0, 10),
-                        End_Date: vs.projectEndDate.slice(0, 10),
-                        Description: vs.projectDescription,
-                        Status: vs.projectStatus,
-                        Progress: vs.projectProgressRate,
-                  
-                        id: vs._id,
-                      })
-                    
-                     
+                        Employee_Name: {title:item.projectCreatorID.creatorName,id:item.projectCreatorID.value},
+
+                        Project_Title: item.projectTitle,
+                        Project_File: item.projectCvfileName,
+                        Start_Date: item.projectStartDate.slice(0, 10),
+                        End_Date: item.projectEndDate.slice(0, 10),
+                        Description: item.projectDescription,
+                        Status: {title:item.projectStatus},
+                        Progress: item.projectProgressRate,
+                        isUpdate:true,
+                        id: item._id,
+                      });
+
                       setOpenDialog(true);
                     }}
                   >
@@ -286,7 +286,7 @@ function Project() {
               ),
             }))
           );
-          setLength(response.data.totalCustomers);
+          setLength(response.data.totalRecords);
           setPagination(true);
         }
       })
@@ -294,12 +294,62 @@ function Project() {
         console.error("Error fetching data:", error);
       });
   }
+  const validateAllFields = () => {
+    let isValid = true;
+    let errors = {};
+  
+    if (!state.Project_Title) {
+      errors.Project_Title = "Project Title is required";
+      isValid = false;
+    }
+  
+    if (!state.Start_Date.trim()) {
+      errors.Start_Date = "Start Date is required";
+      isValid = false;
+    }
+  
+    if (!state.End_Date.trim()) {
+      errors.End_Date = "End Date is required";
+      isValid = false;
+    }
+  
+    if (!state.Description) {
+      errors.Description = "Description is required";
+      isValid = false;
+    }
+  
+    if (!state.Progress) {
+      errors.Progress = "Progress is required";
+      isValid = false;
+    }
+  
+    if (!state.Project_File) {
+      errors.Project_File = "Project File is required";
+      isValid = false;
+    }
+  
+    if (!state.Status) {
+      errors.Status = "Status is required";
+      isValid = false;
+    }
+  
+    if (!state.Employee_Name.title) {
+      errors.Employee_Name = "Employee Name is required";
+      isValid = false;
+    }
+  
+    console.log(errors);
+    console.log(isValid);
+    setErrors(errors);
+    return isValid;
+  };
+  
   useEffect(() => {
     fetchProject(page);
   }, [page, rowsPerPage]);
   useEffect(() => {
     table3();
-  },[])
+  }, []);
   const handleCreateProject = async () => {
     if (!validateProjectFields()) {
       return;
@@ -344,6 +394,68 @@ function Project() {
         });
         setOpenDialog(false);
         setMessage("Saved successfully!");
+        setOpen(true);
+        setSeverity("success");
+      } else {
+        setMessage(result.message);
+        setOpen(true);
+        setSeverity("error");
+      }
+    } catch (err) {
+      console.log(err);
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
+    }
+  };
+  const handleUpdateProject = async () => {
+    if(!validateAllFields())return;
+    try {
+      // Prepare the data to match the required request body format
+      const data = {
+        id:parseInt(itemToDelete),
+        projectCreatorID: state.Employee_Name.id,
+      projectTitle: state.Project_Title,
+      projectCvfileName: state.Project_File,
+      projectStartDate: state.Start_Date,
+      projectEndDate: state.End_Date,
+      projectDescription: state.Description,
+      projectStatus: state.Status.title,
+      projectProgressRate: parseInt(state.Progress),
+      };
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/updateProject`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      console.log("p3");
+      const result = await response.json();
+      if (result.status === 200) {
+        fetchProject(page);
+        window.scrollTo({
+          top: 400,
+          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+        });
+        // Reset the state after successful creation
+        setState({
+          Project_Title: "",
+          Start_Date: "",
+          End_Date: "",
+          Description: "",
+          Progress: null,
+          Project_File: null,
+          Status: "",
+          searchText: "",
+          isUpdate: false,
+        });
+        setOpenDialog(false);
+        setMessage("Updated successfully!");
         setOpen(true);
         setSeverity("success");
       } else {
@@ -455,7 +567,24 @@ function Project() {
     });
     setOpenDialog(false);
   };
-
+  const [isLoading, setisLoading] = useState(false);
+  const handleFilesChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setisLoading(true);
+      const imageRef = ref(storage, `/photo/${file.name}`);
+      uploadBytes(imageRef, file).then(() => {
+        getDownloadURL(imageRef).then((url) => {
+          // console.log(url);
+          setState((prevState) => ({
+            ...prevState,
+            Project_File: url,
+          }));
+          setisLoading(false);
+        });
+      });
+    }
+  };
   // Delete a section by index
   return (
     <>
@@ -478,7 +607,6 @@ function Project() {
         <Dialog
           open={openDialog}
           onClose={handleClear}
-          style={{ width: "80vw" }}
         >
           <DialogTitle>Project</DialogTitle>
           <IconButton
@@ -497,7 +625,9 @@ function Project() {
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
-              {state.isUpdate &&(<> <Grid item xs={6}>
+               
+               {state.isUpdate ?(<>
+                 <Grid item xs={6}>
                   <Autocomplete
                     sx={{
                       marginTop: "-16px",
@@ -546,9 +676,9 @@ function Project() {
                       />
                     )}
                   />
-                </Grid></>)}
+                </Grid>
              
-                <Grid item xs={state.isUpdate?6:9 }>
+                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -568,8 +698,8 @@ function Project() {
                     helperText={errors.Project_Title} // Display error message
                   />
                 </Grid>
-                
-                <Grid item xs={state.isUpdate?6:7}>
+
+                <Grid item xs={6}>
                   <TextField
                     id="date"
                     label="Start Date"
@@ -582,13 +712,13 @@ function Project() {
                         Start_Date: e.target.value,
                       })
                     }
-                   width={!state.isUpdate?350:414}
+                    sx={{ width: 270 }} // Set width to 414px
                     InputLabelProps={{ shrink: true }}
                     error={!!errors.Start_Date} // Show error if it exists
                     helperText={errors.Start_Date} // Display error message
                   />
                 </Grid>
-                <Grid item xs={state.isUpdate?6:7}>
+                <Grid item xs={6}>
                   <TextField
                     id="date"
                     label="End Date"
@@ -601,7 +731,7 @@ function Project() {
                         End_Date: e.target.value,
                       })
                     }
-                    width={!state.isUpdate?350:414}
+                    sx={{ width: 270 }} // Set width to 414px
                     InputLabelProps={{ shrink: true }}
                     error={!!errors.End_Date} // Show error if it exists
                     helperText={errors.End_Date} // Display error message
@@ -613,13 +743,12 @@ function Project() {
                           )
                         )
                           .toISOString()
-                          .split("T")[0], // Adding one day to invoiceDate if it's not empty
+                          .split("T")[0], // Adding one day to Start_Date if it's not empty
                       }),
                     }}
                   />
                 </Grid>
-                {state.isUpdate && (
-                  <> <Grid item xs={6}>
+                <Grid item xs={6}>
                   <Autocomplete
                     sx={{
                       marginTop: "-16px",
@@ -650,11 +779,30 @@ function Project() {
                       />
                     )}
                   />
-                </Grid></>
-                )}
-                {state.isUpdate && (
-                  <> 
-                  <Grid item xs={6}>
+                </Grid>              
+                
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="ProgressRate"
+                    name="ProgressRate"
+                    label="Progress Rate"
+                    value={state.Progress}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const validInput = input.replace(/[^0-9]/g, ""); // Allow only digits (0-9)
+                      setState({
+                        ...state,
+                        Progress: validInput,
+                      });
+                    }}
+                    
+                    error={!!errors.Progress} // Show error if it exists
+                    helperText={errors.Progress} // Display error message
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -673,8 +821,121 @@ function Project() {
                     error={!!errors.Description} // Show error if it exists
                     helperText={errors.Description} // Display error message
                   />
-                </Grid></>
-                )}
+                </Grid>
+                <Grid item xs={12}>
+                            <Typography color={"primary"} sx={{ marginTop: "10px" }}>
+                                <label style={{ cursor: 'pointer', position: 'relative' }}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFilesChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <AddIcon /> Click to upload project file
+                                </label>
+                                {isLoading && (
+                                    <div
+                                        style={{
+                                            position: 'fixed',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100vw',
+                                            height: '100vh',
+                                            backgroundColor: 'rgba(255, 255, 255, 0.7)', // semi-transparent white background
+                                            backdropFilter: 'blur(2px)', // apply the blur effect
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            zIndex: 9999, // ensure it is on top of other content
+                                        }}
+                                    >
+                                        <CircularProgress size={24} />
+                                    </div>
+                                )}
+                                {errors.Project_File && <Typography color="error" style={{ fontSize: "12px" }}>{errors.Project_File}</Typography>}
+                            </Typography>
+
+                            <Grid container spacing={2} sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", marginTop: "10px", paddingLeft: "20px" }}>
+                                {state.Project_File && 
+                                    <img src={state.Project_File}  alt="..." style={{ width: "100px", height: "100px", margin: "5px", borderRadius: "10px", objectFit: "cover" }} />
+                                }
+                            </Grid>
+
+                        </Grid>
+               </>):(
+                <> <Grid item xs={9}>
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="ProjectTitle"
+                    name="ProjectTitle"
+                    label="Project Title"
+                    value={state.Project_Title}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
+                      setState({
+                        ...state,
+                        Project_Title: validInput,
+                      });
+                    }}
+                    error={!!errors.Project_Title} // Show error if it exists
+                    helperText={errors.Project_Title} // Display error message
+                  />
+                </Grid>
+
+                <Grid item xs={7}>
+                  <TextField
+                    id="date"
+                    label="Start Date"
+                    type="date"
+                    variant="standard"
+                    value={state.Start_Date}
+                    onChange={(e) =>
+                      setState({
+                        ...state,
+                        Start_Date: e.target.value,
+                      })
+                    }
+                    sx={{ width: 414 }} // Set width to 414px
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.Start_Date} // Show error if it exists
+                    helperText={errors.Start_Date} // Display error message
+                  />
+                </Grid>
+                <Grid item xs={7}>
+                  <TextField
+                    id="date"
+                    label="End Date"
+                    type="date"
+                    variant="standard"
+                    value={state.End_Date}
+                    onChange={(e) =>
+                      setState({
+                        ...state,
+                        End_Date: e.target.value,
+                      })
+                    }
+                    sx={{ width: 414 }} // Set width to 414px
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.End_Date} // Show error if it exists
+                    helperText={errors.End_Date} // Display error message
+                    inputProps={{
+                      ...(state.Start_Date && {
+                        min: new Date(
+                          new Date(state.Start_Date).setDate(
+                            new Date(state.Start_Date).getDate() + 1
+                          )
+                        )
+                          .toISOString()
+                          .split("T")[0], // Adding one day to Start_Date if it's not empty
+                      }),
+                    }}
+                  />
+                </Grid></>)} 
+              
+
+               
               </Grid>
             </div>
           </DialogContent>
@@ -687,7 +948,7 @@ function Project() {
                 <Button
                   color="primary"
                   variant="contained"
-                  //onClick={handleUpdateLead}
+                  onClick={handleUpdateProject}
                 >
                   Update
                 </Button>

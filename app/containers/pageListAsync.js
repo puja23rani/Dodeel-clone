@@ -492,6 +492,12 @@ export const Customer = loadable(
     fallback: <Loading />,
   }
 );
+export const CustomerView = loadable(
+  () => import("../containers/Pages/Sales/CustomerView"),
+  {
+    fallback: <Loading />,
+  }
+);
 export const InvoiceUpdate = loadable(
   () => import("../containers/Pages/Sales/InvoiceUpdate"),
   {

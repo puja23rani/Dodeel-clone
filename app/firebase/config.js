@@ -1,11 +1,11 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyBuKOgZfuVZKYSk5J0UUZyZByCvsrfiR3c",
-  authDomain: "visa-root-3eaf0.firebaseapp.com",
-  projectId: "visa-root-3eaf0",
-  storageBucket: "visa-root-3eaf0.appspot.com",
-  messagingSenderId: "205031662087",
-  appId: "1:205031662087:web:9bcf15e92e3fecbfc3c0a2",
-  measurementId: "G-X6YS7TSSRK"
+  apiKey: "AIzaSyD-t8-r3CoMQtKmJdPxpHFEAvT60njoXtM",
+  authDomain: "realestatehrm-17d4b.firebaseapp.com",
+  projectId: "realestatehrm-17d4b",
+  storageBucket: "realestatehrm-17d4b.appspot.com",
+  messagingSenderId: "427696444801",
+  appId: "1:427696444801:web:3bd485cd5f99398a880480",
+  measurementId: "G-FKFK3Q2D1D"
 };
 
 export default firebaseConfig;
