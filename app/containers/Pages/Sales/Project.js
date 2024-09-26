@@ -43,6 +43,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
 import { useNavigate } from "react-router-dom";
+import { end, start } from "@popperjs/core";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -69,88 +70,47 @@ function Project() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [state, setState] = React.useState({
-    Id: "",
-    Company_Name: "",
-    Customer_Name: "",
-    Phone_Number: "",
-    Email: "",
-    Lead_Name: "",
-    Lead_Id: "",
-    Employee_Name: "",
-    Employee_Id: "",
-    Description:"",
-    Billing_Address: "",
-    Shipping_Address: "",
-    Status: "",   
+    Project_Title: "",
+    Start_Date: "",
+    End_Date: "",
+    Description: "",
+    Progress: null,
+    Project_File: null,
+    Status: "",
+    searchText: "",
     isUpdate: false,
-    toggle: false,    
   });
   const [errors, setErrors] = useState({
-    Id: "",
-    Company_Name: "",
-    Customer_Name: "",
-    Phone_Number: "",
-    Email: "",
-    Lead_Name: "",
-    Lead_Id: "",
-    Employee_Name: "",
-    Employee_Id: "",
-   
-    Billing_Address: "",
-    Shipping_Address: "",
-    Status: "",   
-    toggle: false,
-    
+    Project_Title: "",
+    Start_Date: "",
+    End_Date: "",
+    Description: "",
+    Progress: "",
+    Project_File: "",
+    // Photos: ["https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Fphotos%2Fjob&psig=AOvVaw0ENWvfhd_yYYWehvVXrHcA&ust=1718197241609000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCKiq2ujN04YDFQAAAAAdAAAAABAE",
+    Status: "",
+    searchText: "",
+    isUpdate: false,
   });
-  const validate = () => {
+  const validateProjectFields = () => {
     let isValid = true;
     let errors = {};
 
-    if (!state.Customer_Name.trim()) {
-      errors.Name = "Customer Name is required";
-      isValid = false;
-    }
-    if (!state.Company_Name.trim()) {
-        errors.Name = "Name is required";
-        isValid = false;
-    }
-
-    if (!state.Phone_Number.toString().trim()) {
-      errors.Phone_Number = "Phone Number is required";
-      isValid = false;
-    } else if (state.Phone_Number.toString().length !== 10) {
-      errors.Phone_Number = "Phone Number must be 10 digits";
+    if (!state.Project_Title) {
+      errors.Project_Title = "Project Title is required";
       isValid = false;
     }
 
-    if (!state.Email.trim()) {
-      errors.Email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(state.Email)) {
-      errors.Email = "Email is invalid";
+    if (!state.Start_Date.trim()) {
+      errors.Start_Date = "Start Date is required";
       isValid = false;
     }
 
-    if (!state.Lead_Name.id) {
-      errors.Lead_Name = "Campaign is required";
+    if (!state.End_Date.trim()) {
+      errors.End_Date = "End Date is required";
       isValid = false;
     }
 
-    if (!state.Employee_Name.id) {
-      errors.Employee_Name = "Channel is required";
-      isValid = false;
-    }
-    if (!state.Billing_Address.trim()) {
-        errors.Billing_Address = "Billing Address is required";
-        isValid = false;
-    }
-    if (!state.Shipping_Address.trim()) {
-        errors.Shipping_Address = "Shipping Address is required";
-        isValid = false;
-    }
-
-
-    
     console.log(errors);
     console.log(isValid);
     setErrors(errors);
@@ -177,23 +137,36 @@ function Project() {
       label: "Sl No",
     },
     {
-      id: "name",
+      id: "projectTitle",
       numeric: false,
       disablePadding: false,
-      label: "Customer Name",
+      label: "Project Title",
     },
     {
-      id: "companyname",
+      id: "startdate",
       numeric: true,
       disablePadding: false,
-      label: "Company Name",
+      label: "Start Date",
     },
     {
-      id: "email",
+      id: "enddate",
       numeric: true,
       disablePadding: false,
-      label: "Email",
-    }, 
+      label: "End Date",
+    },
+    {
+      id: "progress",
+      numeric: true,
+      disablePadding: false,
+      label: "Progress",
+    },
+    {
+      id: "status",
+      numeric: true,
+      disablePadding: false,
+      label: "Status",
+    },
+
     { id: "actions", label: "Action" },
   ];
   const [empList, setEmpList] = React.useState([]);
@@ -228,66 +201,10 @@ function Project() {
       //console.log(err);
     }
   };
-  
-  const [leadList, setleadList] = React.useState([]);
-  const lead_all = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
-
-      // Assuming you have an authorization token stored in localStorage
-      const authToken = localStorage.getItem("token");
-      if (authToken) {
-        loginHeaders.append("Authorization", `Bearer ${authToken}`);
-      }
-
-      const requestOptions = {
-        method: "GET",
-        headers: loginHeaders,
-      };
-
-      const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
-        requestOptions
-      );
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const actualData = await res.json();
-      //console.log(actualData, "ressss");
-      // Check if actualData.data is an array
-      if (Array.isArray(actualData.data)) {
-        // Map the data to an array of objects with 'title' and 'id'
-        const newobj = actualData.data.map((item) => ({
-          title: item.leadName, // Set the title from channelName
-          id: item._id, // Set the id from _id
-        }));
-        //console.log(newobj, "neee");
-        // Update state with the new array of objects
-        setleadList(newobj);
-        // setleadList(actualData.data);
-        // Return the array if needed
-        return newobj;
-      } else {
-        throw new Error("Data format is incorrect");
-      }
-    } catch (err) {
-      //console.log(err);
-    }
-  };
-
-  useEffect(() => {   
-    table3();   
-    lead_all();
-    fetchCustomer();
-  }, []);
- 
-  function fetchCustomer(pg) {
+  function fetchProject(pg) {
     axios
       .post(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllCustomers`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllProjects`,
         {
           pageNumber: pg,
           pageSize: rowsPerPage,
@@ -304,11 +221,13 @@ function Project() {
           setRowdata(
             response.data.data.map((item, index) => ({
               slNo: response.data.data.indexOf(item) + 1,
-              id: item._id,
-              name: item.clientName || "N/A",
-              companyname: item.clientCompanyName || "N/A",
-              contactNumber: item.clientPhoneNumber || "N/A",
-              email: item.clientEmail || "N/A",              
+              projectTitle: item.projectTitle || "N/A",
+              startdate: item.projectStartDate.slice(0, 10) || "",
+              enddate: item.projectEndDate.slice(0, 10) || "",
+              enddate: item.projectEndDate.slice(0, 10) || "",
+              progress: item.projectProgressRate || "N/A",
+              status: item.projectStatus || "N/A",
+
               actions: (
                 <>
                   <IconButton
@@ -320,24 +239,21 @@ function Project() {
                       });
                       setItemToDelete(item._id);
                       setState({
-                        Customer_Name: item.clientName,
-                        Company_Name:item.clientCompanyName,
-                        Phone_Number: item.clientPhoneNumber,
-                        Email: item.clientEmail,
-                        Lead_Name: {
-                          id: item.clientFromLeadID?.id,
-                          title: item.clientFromLeadID?.leadName,
-                        },                      
-                        Employee_Name: {
-                          id: item.clientCreatorID?.id,
-                          title: item.clientCreatorID?.employeeName,
-                        },
-                        Billing_Address:item.clientBillingAddress,
-                        Shipping_Address:item.clientShippingAddress,
-                        Description:item.clientDescription,
-                        switch:item.clientBillingAddress===item.clientShippingAddress,
-                        isUpdate: true,
-                      });
+                        
+                        Employee_Name: item.projectCreatorID.employeeName,
+                        
+                        Project_Title: vs.projectTitle,
+                        Project_File: vs.projectCvfileName,
+                        Start_Date: vs.projectStartDate.slice(0, 10),
+                        End_Date: vs.projectEndDate.slice(0, 10),
+                        Description: vs.projectDescription,
+                        Status: vs.projectStatus,
+                        Progress: vs.projectProgressRate,
+                  
+                        id: vs._id,
+                      })
+                    
+                     
                       setOpenDialog(true);
                     }}
                   >
@@ -379,29 +295,24 @@ function Project() {
       });
   }
   useEffect(() => {
-    fetchCustomer(page);
+    fetchProject(page);
   }, [page, rowsPerPage]);
-  const handleCreateCustomer = async () => {
-    if (!validate()) {      
+  useEffect(() => {
+    table3();
+  },[])
+  const handleCreateProject = async () => {
+    if (!validateProjectFields()) {
       return;
-    }  
+    }
     try {
       // Prepare the data to match the required request body format
       const data = {
-        clientCompanyName: state.Company_Name,
-        clientName: state.Customer_Name,
-        clientPhoneNumber: state.Phone_Number.trim(),
-        clientEmail: state.Email,
-        clientFromLeadID: state.Lead_Name.id,
-        clientCreatorID: state.Employee_Name.id,
-
-        clientDescription: state.Description,
-        clientBillingAddress: state.Billing_Address,
-        clientShippingAddress: state.Shipping_Address,
-       
-      };    
+        projectTitle: state.Project_Title,
+        projectStartDate: state.Start_Date,
+        projectEndDate: state.End_Date,
+      };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createCustomer`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createProject`,
         {
           method: "POST",
           headers: {
@@ -414,30 +325,22 @@ function Project() {
       console.log("p3");
       const result = await response.json();
       if (result.status === 200) {
-        fetchCustomer(page);
+        fetchProject(page);
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
         });
         // Reset the state after successful creation
         setState({
-            Id: "",
-            Company_Name: "",
-            Customer_Name: "",
-            Phone_Number: "",
-            Email: "",
-            Lead_Name: "",
-            Lead_Id: "",
-            Employee_Name: "",
-            Employee_Id: "",
-           
-            Billing_Address: "",
-            Shipping_Address: "",
-            Status: "",
-            
-            isUpdate: false,
-        
-            toggle: false,
+          Project_Title: "",
+          Start_Date: "",
+          End_Date: "",
+          Description: "",
+          Progress: null,
+          Project_File: null,
+          Status: "",
+          searchText: "",
+          isUpdate: false,
         });
         setOpenDialog(false);
         setMessage("Saved successfully!");
@@ -455,84 +358,12 @@ function Project() {
       setSeverity("error");
     }
   };
-  console.log(state,"sssssss");
-//   const handleUpdateLead = async () => {
-//     if (!validate()) {
-//       setMessage("Please fill all required fields");
-//       setOpen(true);
-//       setSeverity("warning");
-//       return;
-//     }
-//     console.log("p1");
-//     try {
-//       // Prepare the data to match the required request body format
-//       const data = {
-//         id: parseInt(itemToDelete),
-//         leadName: state.Name,
-//         email: state.Email,
-//         campaignID: state.Campaign.id, // campaignName from state
-//         channelID: state.Channel.id,
-//         leadStatusID: state.Lead_Status.id,
-
-//         contactNumber: parseInt(state.Phone_Number),
-//         notes: state.Description,
-//       };
-//       console.log("p2");
-//       const response = await fetch(
-//         `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadDetail`,
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//           body: JSON.stringify(data),
-//         }
-//       );
-//       console.log("p3");
-//       const result = await response.json();
-//       if (result.status === 200) {
-//         fetchLead();
-//         window.scrollTo({
-//           top: 400,
-//           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-//         });
-//         // Reset the state after successful creation
-//         setState({
-//           Name: "",
-//           Phone_Number: "",
-//           Email: "",
-//           Campaign: "",
-//           Campaign_Id: "",
-//           Channel: "",
-//           Channel_Id: "",
-//           Lead_Status: "",
-//           Lead_Status_Id: "",
-//           Description: "",
-
-//           isUpdate: false,
-//         });
-//         setOpenDialog(false);
-//         setMessage("Saved successfully!");
-//         setOpen(true);
-//         setSeverity("success");
-//       } else {
-//         setMessage(result.message);
-//         setOpen(true);
-//         setSeverity("error");
-//       }
-//     } catch (err) {
-//       console.log(err);
-//       setMessage(err.message);
-//       setOpen(true);
-//       setSeverity("error");
-//     }
-//   };
-  const handleCustomerDelete = async () => {
+  console.log(state, "sssssss");
+  const handleProjectDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteCustomer`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteProjectById`,
         {
           method: "DELETE",
           headers: {
@@ -542,11 +373,10 @@ function Project() {
           body: JSON.stringify(data),
         }
       );
-
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchCustomer(page);
+        fetchProject(page);
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -586,45 +416,45 @@ function Project() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(1); // Reset to first page
   };
- const handleClear=()=>{
+  const handleClear = () => {
     setState({
-        Company_Name: "",
-    Customer_Name: "",
-    Phone_Number: "",
-    Email: "",
-    Lead_Name: "",
-    Lead_Id: "",
-    Employee_Name: "",
-    Employee_Id: "",
-   Description:"",
-    Billing_Address: "",
-    Shipping_Address: "",
-    Status: "",
-    searchText: "",
-    isUpdate: false,
+      Company_Name: "",
+      Customer_Name: "",
+      Phone_Number: "",
+      Email: "",
+      Lead_Name: "",
+      Lead_Id: "",
+      Employee_Name: "",
+      Employee_Id: "",
+      Description: "",
+      Billing_Address: "",
+      Shipping_Address: "",
+      Status: "",
+      searchText: "",
+      isUpdate: false,
 
-    toggle: false,
-      });
-      setErrors({
-        Company_Name: "",
-    Customer_Name: "",
-    Phone_Number: "",
-    Email: "",
-    Lead_Name: "",
-    Lead_Id: "",
-    Employee_Name: "",
-    Employee_Id: "",
-   
-    Billing_Address: "",
-    Shipping_Address: "",
-    Status: "",
-    
-    isUpdate: false,
+      toggle: false,
+    });
+    setErrors({
+      Company_Name: "",
+      Customer_Name: "",
+      Phone_Number: "",
+      Email: "",
+      Lead_Name: "",
+      Lead_Id: "",
+      Employee_Name: "",
+      Employee_Id: "",
 
-    toggle: false,
-      })
-      setOpenDialog(false);
- }
+      Billing_Address: "",
+      Shipping_Address: "",
+      Status: "",
+
+      isUpdate: false,
+
+      toggle: false,
+    });
+    setOpenDialog(false);
+  };
 
   // Delete a section by index
   return (
@@ -640,7 +470,7 @@ function Project() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Customer
+                <AddIcon /> Add Project
               </Button>
             </Tooltip>
           </div>
@@ -648,10 +478,9 @@ function Project() {
         <Dialog
           open={openDialog}
           onClose={handleClear}
-          fullWidth
-          maxWidth="md"
+          style={{ width: "80vw" }}
         >
-          <DialogTitle>Customer</DialogTitle>
+          <DialogTitle>Project</DialogTitle>
           <IconButton
             aria-label="close"
             className={classes.closeButton}
@@ -668,114 +497,7 @@ function Project() {
           <DialogContent className={classes.dialogContent}>
             <div className={classes.form}>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="Name"
-                    name="Name"
-                    label="Name"
-                    value={state.Customer_Name}
-                    onChange={(e) => {
-                      const input = e.target.value;
-                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
-                      setState({
-                        ...state,
-                        Customer_Name: validInput,
-                      });
-                    }}
-                    error={!!errors.Customer_Name} // Show error if it exists
-                    helperText={errors.Customer_Name} // Display error message
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="CompanyName"
-                    name="CompanyName"
-                    label="Company Name"
-                    value={state.Company_Name}
-                    onChange={(e) => {
-                      const input = e.target.value;
-                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
-                      setState({
-                        ...state,
-                        Company_Name: validInput,
-                      });
-                    }}
-                    error={!!errors.Company_Name} // Show error if it exists
-                    helperText={errors.Company_Name} // Display error message
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
-                    variant="standard"
-                    id="PhoneNumber"
-                    name="PhoneNumber"
-                    label="Phone Number"
-                    value={state.Phone_Number}
-                    onChange={(e) => {
-                      const input = e.target.value;
-                      const validInput = input
-                        .replace(/[^0-9]/g, "")
-                        .slice(0, 10);
-                      setState({
-                        ...state,
-                        Phone_Number: validInput,
-                      });
-                    }}
-                    error={!!errors.Phone_Number} // Show error if it exists
-                    helperText={errors.Phone_Number} // Display error message
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    variant="standard"
-                    id="Email"
-                    name="Email"
-                    label="Email"
-                    fullWidth
-                    value={state.Email}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        Email: e.target.value,
-                      })
-                    }
-                    error={!!errors.Email} // Show error if it exists
-                    helperText={errors.Email} // Display error message
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px",
-                    }}
-                    id="highlights-demo"
-                    options={leadList}
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    value={state.Lead_Name} // Ensure value is an object or null
-                    onChange={(e, v) => {
-                      setState({
-                        ...state,
-                        Lead_Name: v ? v : null, // Set leadName to the selected object or null
-                      });
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Lead Name"
-                        margin="normal"
-                        variant="standard"
-                        error={!!errors.Lead_Name} // Show error if it exists
-                        helperText={errors.Lead_Name} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
+              {state.isUpdate &&(<> <Grid item xs={6}>
                   <Autocomplete
                     sx={{
                       marginTop: "-16px",
@@ -810,9 +532,11 @@ function Project() {
                         });
                       }
                     }}
+                   
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        
                         label="Employee Name"
                         margin="normal"
                         variant="standard"
@@ -822,80 +546,140 @@ function Project() {
                       />
                     )}
                   />
-                </Grid>
-               
-                <Grid item xs={6}>
+                </Grid></>)}
+             
+                <Grid item xs={state.isUpdate?6:9 }>
                   <TextField
-                    variant="standard"
-                    id="BillingAddress"
-                    name="BillingAddress"
-                    label="Billing Address"
                     fullWidth
-                    value={state.Billing_Address}
+                    variant="standard"
+                    id="ProjectTitle"
+                    name="ProjectTitle"
+                    label="Project Title"
+                    value={state.Project_Title}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const validInput = input.replace(/[^a-zA-Z\s]/g, "");
+                      setState({
+                        ...state,
+                        Project_Title: validInput,
+                      });
+                    }}
+                    error={!!errors.Project_Title} // Show error if it exists
+                    helperText={errors.Project_Title} // Display error message
+                  />
+                </Grid>
+                
+                <Grid item xs={state.isUpdate?6:7}>
+                  <TextField
+                    id="date"
+                    label="Start Date"
+                    type="date"
+                    variant="standard"
+                    value={state.Start_Date}
                     onChange={(e) =>
                       setState({
                         ...state,
-                        Billing_Address: e.target.value,
+                        Start_Date: e.target.value,
                       })
                     }
-                    error={!!errors.Billing_Address} // Show error if it exists
-                    helperText={errors.Billing_Address} // Display error message
+                   width={!state.isUpdate?350:414}
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.Start_Date} // Show error if it exists
+                    helperText={errors.Start_Date} // Display error message
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={state.isUpdate?6:7}>
                   <TextField
+                    id="date"
+                    label="End Date"
+                    type="date"
                     variant="standard"
-                    id="ShippingAddress"
-                    name="ShippingAddress"
-                    label="Shipping Address"
-                    fullWidth
-                    value={state.Shipping_Address}
+                    value={state.End_Date}
                     onChange={(e) =>
                       setState({
                         ...state,
-                        Shipping_Address: e.target.value,
+                        End_Date: e.target.value,
                       })
                     }
-                    error={!!errors.Shipping_Address} // Show error if it exists
-                    helperText={errors.Shipping_Address} // Display error message
+                    width={!state.isUpdate?350:414}
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.End_Date} // Show error if it exists
+                    helperText={errors.End_Date} // Display error message
+                    inputProps={{
+                      ...(state.Start_Date && {
+                        min: new Date(
+                          new Date(state.Start_Date).setDate(
+                            new Date(state.Start_Date).getDate() + 1
+                          )
+                        )
+                          .toISOString()
+                          .split("T")[0], // Adding one day to invoiceDate if it's not empty
+                      }),
+                    }}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Switch
-                    id="switch"
-                    name="If the Billing address is same as Shipping address"
-                    checked={state.switch}
-                    onChange={(e) =>{
-                        if(!state.switch){
-                            setState({ ...state, switch: !state.switch,Shipping_Address:state.Billing_Address })
-                        }else{
-                      setState({ ...state, switch: !state.switch });}}
-                    }
-                  />If the Billing address is same as Shipping address
-                </Grid>
-                <Grid item xs={12}>
-                <TextField
-            fullWidth
-            multiline
-            variant="standard"
-            rows={4}
-            id="textarea"
-            name="textarea"
-            label="Description"
-            value={state.Description}
-            onChange={(e)=>{
-                setState({...state,Description:e.target.value});
-            }}
-          />
-                </Grid>
+                {state.isUpdate && (
+                  <> <Grid item xs={6}>
+                  <Autocomplete
+                    sx={{
+                      marginTop: "-16px",
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "In Progress" },
+                      { title: "On Hold" },                     
+                      { title: "Completed" },
+                      { title: "Cancelled" },
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.Status} // Ensure value is an object or null
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        Status: v ? v : null, // Set campaignStatus to the selected object or null
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Status"
+                        margin="normal"
+                        variant="standard"
+                        error={!!errors.Status} // Show error if it exists
+                        helperText={errors.Status} // Display error message
+                      />
+                    )}
+                  />
+                </Grid></>
+                )}
+                {state.isUpdate && (
+                  <> 
+                  <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    variant="standard"
+                    id="Notes"
+                    name="Notes"
+                    label="Notes"
+                    value={state.Description}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      
+                      setState({
+                        ...state,
+                        Description: input,
+                      });
+                    }}
+                    error={!!errors.Description} // Show error if it exists
+                    helperText={errors.Description} // Display error message
+                  />
+                </Grid></>
+                )}
               </Grid>
             </div>
           </DialogContent>
           <DialogActions>
-            <Button
-              onClick={handleClear}
-              color="secondary"
-            >
+            <Button onClick={handleClear} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -913,7 +697,7 @@ function Project() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateCustomer}
+                  onClick={handleCreateProject}
                 >
                   Create
                 </Button>
@@ -925,7 +709,7 @@ function Project() {
 
       {rowdata && (
         <TablePlayground
-          title="Customer List"
+          title="Project List"
           columnData={columnData}
           rowData={rowdata}
           component="div"
@@ -941,7 +725,7 @@ function Project() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCustomerDelete}
+        onDelete={handleProjectDelete}
       />
       <Popup
         open={open}
