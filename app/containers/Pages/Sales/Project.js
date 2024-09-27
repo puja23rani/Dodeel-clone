@@ -80,6 +80,7 @@ function Project() {
     Project_File: null,
     Status: "",
     searchText: "",
+    fieldset: [{ name: "", value: "" }],
     isUpdate: false,
   });
   const [errors, setErrors] = useState({
@@ -129,8 +130,9 @@ function Project() {
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogMeta, setOpenDialogMeta] = useState(false);
   const [pagination, setPagination] = useState(false);
-
+ 
   const columnData = [
     {
       id: "slNo",
@@ -188,16 +190,16 @@ function Project() {
         headers: loginHeaders,
       };
       const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getallemployeeuser`,
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.employees)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
+      if (Array.isArray(actualData.users)) {
+        const newobj = actualData.users.map((item) => ({
+          title: item.adminName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
-        setEmpList(actualData.employees);
+        setEmpList(actualData.users);
       }
     } catch (err) {
       //console.log(err);
@@ -270,14 +272,9 @@ function Project() {
                   </IconButton>
                   <IconButton
                     aria-label="Info"
-                    // onClick={() => {
-                    //   setItemToDelete(item._id);
-                    //   setDeleteDialogOpen(true);
-                    // }}
+                    
                     onClick={(e) => {
-                      navigate("/app/lead/new-lead/lead-details", {
-                        state: { leadId: item._id },
-                      });
+                     navigate("/app/sales/project/project-metadata",{state:{id:item._id}});
                     }}
                   >
                     <InfoIcon />
@@ -303,12 +300,12 @@ function Project() {
       isValid = false;
     }
   
-    if (!state.Start_Date.trim()) {
+    if (!state.Start_Date) {
       errors.Start_Date = "Start Date is required";
       isValid = false;
     }
   
-    if (!state.End_Date.trim()) {
+    if (!state.End_Date) {
       errors.End_Date = "End Date is required";
       isValid = false;
     }
@@ -510,6 +507,18 @@ function Project() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
+  const handleAddSection = () => {
+    setState({
+      ...state,
+      fieldset: [...state.fieldset, { name: "", value: "" }],
+    });
+  };
+  const handleDeleteSection = (idx) => {
+    setState({
+      ...state,
+      fieldset: state.fieldset.filter((_, index) => index !== idx),
+    });
+  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -627,56 +636,7 @@ function Project() {
               <Grid container spacing={2}>
                
                {state.isUpdate ?(<>
-                 <Grid item xs={6}>
-                  <Autocomplete
-                    sx={{
-                      marginTop: "-16px",
-                    }}
-                    id="highlights-demo"
-                    options={
-                      empList.map((item) => {
-                        return {
-                          id: item._id,
-                          title: item.personalDetails.employeeName,
-                        };
-                      }) || []
-                    }
-                    getOptionLabel={(option) => option.title || ""} // Safely access title
-                    isOptionEqualToValue={(option, value) =>
-                      value && value.id ? option.id === value.id : false
-                    }
-                    value={state.Employee_Name}
-                    onChange={(e, v, reason) => {
-                      if (reason === "clear") {
-                        setState({
-                          ...state,
-                          Employee_Name: "",
-                        });
-                      } else {
-                        // const selectedLeadStatus = MemberList.find(
-                        //   (item) => item.personalDetails.employeeName === v
-                        // );
-                        setState({
-                          ...state,
-                          Employee_Name: v,
-                        });
-                      }
-                    }}
-                   
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        
-                        label="Employee Name"
-                        margin="normal"
-                        variant="standard"
-                        name="employeeName"
-                        error={!!errors.Employee_Name} // Show error if it exists
-                        helperText={errors.Employee_Name} // Display error message
-                      />
-                    )}
-                  />
-                </Grid>
+                 
              
                 <Grid item xs={6}>
                   <TextField
@@ -802,7 +762,7 @@ function Project() {
                     helperText={errors.Progress} // Display error message
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -966,6 +926,137 @@ function Project() {
             )}
           </DialogActions>
         </Dialog>
+        {/* <Dialog
+  open={openDialogMeta}
+  onClose={handleClear}
+  fullWidth
+  maxWidth="md"
+>
+  <DialogTitle>Project Meta Data</DialogTitle>
+  <IconButton
+    aria-label="close"
+    className={classes.closeButton}
+    onClick={handleClear}
+    sx={{
+      position: "absolute",
+      right: 12,
+      top: 12,
+      color: (theme) => theme.palette.grey[500],
+    }}
+  >
+    <CloseIcon />
+  </IconButton>
+  <DialogContent className={classes.dialogContent}>
+    <div className={classes.form}>
+      <Grid container spacing={2}>
+        {state.fieldset.map((el, idx) => (
+          <Grid
+            container
+            spacing={2}
+            key={idx}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginLeft: 0,
+            }}
+            xs={12}
+          >
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                variant="standard"
+                id={`name-${idx}`}
+                name="name"
+                label="Name"
+                value={el.name}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (inputValue.length <= 50) {
+                    const newFieldset = [...state.fieldset];
+                    newFieldset[idx].name = inputValue;
+                    setState({ ...state, fieldset: newFieldset });
+                  }
+                }}
+                error={!!errors[`fieldsetName${idx}`]}
+                helperText={errors[`fieldsetName${idx}`]}
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <TextField
+                fullWidth
+                variant="standard"
+                id={`value-${idx}`}
+                name="value"
+                label="Value"
+                value={el.value}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  const regex = /^[0-9]*$/;
+                  if (regex.test(inputValue)) {
+                    const newFieldset = [...state.fieldset];
+                    newFieldset[idx].value = inputValue;
+                    setState({ ...state, fieldset: newFieldset });
+                  }
+                }}
+                error={!!errors[`fieldsetValue${idx}`]}
+                helperText={errors[`fieldsetValue${idx}`]}
+              />
+            </Grid>
+            {idx > 0 && (
+              <Grid item xs={1}>
+                <DeleteIcon
+                  onClick={() => handleDeleteSection(idx)}
+                  style={{
+                    cursor: "pointer",
+                    color: "red",
+                    width: 24,
+                    height: 24,
+                    marginTop: 8,
+                  }}
+                />
+              </Grid>
+            )}
+          </Grid>
+        ))}
+        <Grid item xs={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleAddSection}
+          >
+            + Add Section
+          </Button>
+        </Grid>
+      </Grid>
+    </div>
+  </DialogContent>
+  <DialogActions>
+    <Button
+      onClick={handleClear}
+      color="secondary"
+    >
+      Close
+    </Button>
+    {state.isUpdate ? (
+      <Button
+        color="primary"
+        variant="contained"
+        //onClick={handleUpdateCampaign}
+      >
+        Update
+      </Button>
+    ) : (
+      <Button
+        color="primary"
+        variant="contained"
+        //onClick={handleCreateCampaign}
+      >
+        Create
+      </Button>
+    )}
+  </DialogActions>
+</Dialog> */}
+
       </div>
 
       {rowdata && (

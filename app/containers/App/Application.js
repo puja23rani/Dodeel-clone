@@ -105,6 +105,7 @@ import {
   InvoiceView,
   CustomerView,
   InvoiceUpdate,
+  ProjectMetaData,
 
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
@@ -321,6 +322,7 @@ function Application(props) {
         <Route path="/sales/invoice/invoice-view" element={<InvoiceView />} />
         <Route path="/sales/payments" element={<Payments />} />
         <Route path="/sales/project" element={<Project />} />
+        <Route path="/sales/project/project-metadata" element={<ProjectMetaData />} />
         <Route path="/sales/proposal" element={<Proposal />} />
 
 
@@ -336,15 +338,7 @@ function Application(props) {
         <Route path="/Contractor-Engineer-Stock" element={<Con_Eng_Stock />} />
         <Route path="/PurchaseIndent" element={<PurchaseIndent />} />
 
-        {/* Sales Pages */}
-        <Route path="/sales/bill-tax" element={<BillTax />} />
-        <Route path="/sales/customer" element={<Customer />} />
-
-        <Route path="/sales/invoice" element={<Invoice />} />
-        <Route path="/sales/payments" element={<Payments />} />
-        <Route path="/sales/project" element={<Project />} />
-        <Route path="/sales/proposal" element={<Proposal />} />
-
+    
 
         <Route path="/jobview" element={<JobAppView />} />
         <Route path="/applicantview" element={<JobApplicantView />} />

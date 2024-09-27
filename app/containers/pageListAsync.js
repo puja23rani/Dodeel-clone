@@ -522,6 +522,12 @@ export const Project = loadable(
     fallback: <Loading />,
   }
 );
+export const ProjectMetaData = loadable(
+  () => import("../containers/Pages/Sales/ProjectMetaData"),
+  {
+    fallback: <Loading />,
+  }
+);
 // ------------------------------------------------
 // Asset management
 // ------------------------------------------------

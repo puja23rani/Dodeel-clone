@@ -131,13 +131,13 @@ function LeadMemebers() {
         headers: loginHeaders,
       };
       const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getallemployeeuser`,
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.employees)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
+      if (Array.isArray(actualData.users)) {
+        const newobj = actualData.users.map((item) => ({
+          title: item.adminName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
         setEmpList(newobj);
