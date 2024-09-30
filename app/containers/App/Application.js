@@ -106,6 +106,7 @@ import {
   CustomerView,
   InvoiceUpdate,
   ProjectMetaData,
+  ProposalView,
 
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
@@ -324,6 +325,7 @@ function Application(props) {
         <Route path="/sales/project" element={<Project />} />
         <Route path="/sales/project/project-metadata" element={<ProjectMetaData />} />
         <Route path="/sales/proposal" element={<Proposal />} />
+        <Route path="/sales/proposal/proposal-view" element={<ProposalView />} />
 
 
         {/* Asset Management Pages */}

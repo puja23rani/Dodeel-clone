@@ -486,6 +486,12 @@ export const Proposal = loadable(
     fallback: <Loading />,
   }
 );
+export const ProposalView = loadable(
+  () => import("../containers/Pages/Sales/ProposalView"),
+  {
+    fallback: <Loading />,
+  }
+);
 export const Customer = loadable(
   () => import("../containers/Pages/Sales/Customer"),
   {
