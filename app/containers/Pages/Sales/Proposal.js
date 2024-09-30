@@ -20,13 +20,35 @@ import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import {
+  Autocomplete,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import { convertFromRaw, EditorState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
 const useStyles = makeStyles()((theme) => ({
+  textEditor: {
+    // optional padding for better spacing
+    padding: "5px",
+    backgroundColor: "#ececec",
+    minHeight: "300px", // set a minimum height for the editor
+    border: "1px solid #ccc", // optional border for better visibility
+  },
+  toolbarEditor: {
+    // boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',  // slight shadow effect
+    // optional padding for better spacing
+
+    borderRadius: "4px", // optional rounded corners
+    border: "1px solid #ececec",
+  },
   root: {
     flexGrow: 1,
     padding: 30,
@@ -51,14 +73,23 @@ function Proposal() {
   const token = localStorage.getItem("token");
 
   const [state, setState] = useState({
-    Status_Name: "",
-    Description: "",
-    searchText: "",
-    isUpdate: false,
+    type: "Customer", // Default to 'customer'
+    billCustomerID: null,
+    Customer_Name:"",
+    Lead:"",
+    leadName: null,
+    Proposal_Title: "",
+    Proposal_Date: "",
+    Valid_Until: "",
+    proposalStatus:"",
+    proposalNotes:EditorState.createEmpty(),
+    proposalViewed:"", 
+    isUpdate: false, 
   });
   const [errors, setErrors] = useState({
-    Status_Name: "",
-    Description: "",
+    Proposal_Title: "",
+    Proposal_Date: "",
+    Valid_Until: "",
   });
 
   const validate = () => {
@@ -78,16 +109,18 @@ function Proposal() {
     setErrors(errors);
     return isValid;
   };
-  const [rowdata, setRowdata] = useState([]);
-  const [page, setPage] = useState(0);
+  const [rowdata, setRowdata] = useState ([]);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [length, setLength] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-
+  const [pagination, setPagination] = useState(false);
+ 
   const columnData = [
     {
       id: "slNo",
@@ -96,37 +129,143 @@ function Proposal() {
       label: "Sl No",
     },
     {
-      id: "statusName",
+      id: "clientname",
       numeric: false,
       disablePadding: false,
-      label: "Status Name",
+      label: "Client Name",
     },
     {
-      id: "description",
+      id: "proposalTitle",
       numeric: false,
       disablePadding: false,
-      label: "Description",
+      label: "Proposal Title",
+    },
+    {
+      id: "proposalDate",
+      numeric: false,
+      disablePadding: false,
+      label: "Proposal Date",
+    },
+    {
+      id: "validUntill",
+      numeric: false,
+      disablePadding: false,
+      label: "Valid Untill",
     },
     { id: "actions", label: "Action" },
   ];
+  const [customerList, setCustomerList] = React.useState([]);
+  const cust_all = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
 
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      const requestOptions = {
+        method: "GET",
+        headers: loginHeaders,
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllCustomers`,
+        requestOptions
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const actualData = await res.json();
+      console.log(actualData, "ressss");
+      // Check if actualData.data is an array
+      setCustomerList(actualData.data);
+    } catch (err) {
+      //console.log(err);
+    }
+  };
+  const [leadList, setleadList] = React.useState([]);
+  const table4 = async () => {
+    try {
+      const loginHeaders = new Headers();
+      loginHeaders.append("Content-Type", "application/json");
+
+      // Assuming you have an authorization token stored in localStorage
+      const authToken = localStorage.getItem("token");
+      if (authToken) {
+        loginHeaders.append("Authorization", `Bearer ${authToken}`);
+      }
+
+      const requestOptions = {
+        method: "GET",
+        headers: loginHeaders,
+      };
+
+      const res = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadDetails`,
+        requestOptions
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const actualData = await res.json();
+      //console.log(actualData, "ressss");
+      // Check if actualData.data is an array
+      if (Array.isArray(actualData.data)) {
+        // Map the data to an array of objects with 'title' and 'id'
+        const newobj = actualData.data.map((item) => ({
+          title: item.leadName, // Set the title from channelName
+          id: item._id, // Set the id from _id
+        }));
+        //console.log(newobj, "neee");
+        // Update state with the new array of objects
+        setleadList(newobj);
+        // setleadList(actualData.data);
+        // Return the array if needed
+        return newobj;
+      } else {
+        throw new Error("Data format is incorrect");
+      }
+    } catch (err) {
+      //console.log(err);
+    }
+  };
   useEffect(() => {
-    fetchLeadStatus();
+    table4();
+    
+    cust_all();
   }, []);
 
-  const fetchLeadStatus = () => {
+  function fetchProposal(pg) {
     axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .post(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getAllProposals`,
+        {
+          pageNumber: pg,
+          pageSize: rowsPerPage,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
+        console.log(response.data);
         if (response.data.data) {
           setRowdata(
             response.data.data.map((item) => ({
               slNo: response.data.data.indexOf(item) + 1,
-              id: item._id,
-              statusName: item.statusName,
-              description: item.description,
+              clientname : item.proposalClientName,
+              proposalTitle: item.proposalTitle,
+              proposalDate: item.proposalPublishDate.slice(0, 10),
+              validUntill: item.proposalEndDate.slice(0, 10),        
               actions: (
                 <>
                   <IconButton
@@ -137,11 +276,18 @@ function Proposal() {
                         behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
                       });
                       setItemToDelete(item._id);
-                      setState({
-                        Status_Name: item.statusName,
-                        Description: item.description,
+                      setState({                        
+                        Proposal_Title: item.proposalTitle,
+                        Proposal_Date: item.proposalPublishDate.slice(0, 10),
+                        Valid_Until: item.proposalEndDate.slice(0, 10),
+                        proposalStatus:{title:item.proposalStatus},
+                        proposalNotes:item.proposalNotes =="" ? EditorState.createEmpty():EditorState.createWithContent(
+                          convertFromRaw(JSON.parse(item.proposalNotes))
+                        ),
+                        proposalViewed:{title:item.proposalViewed}, 
                         isUpdate: true,
-                      });
+                      })
+                     
                       setOpenDialog(true);
                     }}
                   >
@@ -160,33 +306,39 @@ function Proposal() {
               ),
             }))
           );
+          setLength(response.data.totalRecords);
+          setPagination(true);
         }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
-
-  const handleCreateLeadStatus = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
-      return;
-    }
+useEffect(() => {
+  fetchProposal(page);
+}, [page,rowsPerPage]);
+  const handleCreateProposal = async () => {
+    // if (!validate()) {
+    //   setMessage("Please fill all required fields");
+    //   setOpen(true);
+    //   setSeverity("warning");
+    //   return;
+    // }
     try {
       const data = {
-        statusName: state.Status_Name,
-        description: state.Description,
+        proposalClientType: state.type,
+        proposalClientID: state.type === "Lead" ? state.Lead.id:state.Customer_Name.id, // Use the id from the Lead object
+        proposalClientName: state.type === "Lead"?state.Lead.title : state.Customer_Name.title , // Use the title if Customer_Name is empty
+       
+        proposalTitle: state.Proposal_Title,
+        proposalPublishDate: state.Proposal_Date,
+        proposalEndDate: state.Valid_Until
       };
 
-      if (!state.Status_Name || !state.Description) {
-        toast.error("Fill all the information", { position: "top-center" });
-        return;
-      }
+     
 
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/createLeadStatus`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/createProposal`,
         {
           method: "POST",
           headers: {
@@ -199,7 +351,76 @@ function Proposal() {
 
       const result = await response.json();
       if (result.status === 200) {
-        fetchLeadStatus();
+        fetchProposal(page);
+        window.scrollTo({
+          top: 400,
+          behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
+        });
+        setState({
+          Status_Name: "",
+          Description: "",
+          id: "",
+          searchText: "",
+          isUpdate: false,
+        });
+        setMessage("Saved successfully!");
+        setOpen(true);
+        setSeverity("success");
+        setOpenDialog(false);
+      } else {
+        setMessage(result.message);
+        setOpen(true);
+        setSeverity("error");
+      }
+    } catch (err) {
+      //console.log(err);
+      setMessage(err.message);
+      setOpen(true);
+      setSeverity("error");
+    }
+  };
+  const handleUpdateProposal = async () => {
+    // if (!validate()) {
+    //   setMessage("Please fill all required fields");
+    //   setOpen(true);
+    //   setSeverity("warning");
+    //   return;
+    // }
+    try {
+      console.log("here");
+      const data = {
+        id: itemToDelete,
+      
+       
+        proposalTitle: state.Proposal_Title,
+        proposalPublishDate: state.Proposal_Date,
+        proposalEndDate: state.Valid_Until,
+    
+  
+    proposalNotes: JSON.stringify(
+      convertToRaw(state.proposalNotes.getCurrentContent())
+    ), //optional
+    proposalViewed: state.proposalViewed.title,
+    proposalStatus: state.proposalStatus.title  //dont add "Expired" in Dropdown  , valid options are 'Draft', 'New', 
+      };
+
+     
+
+      const response = await fetch(
+        `${process.env.REACT_APP_BASE_URL}/api/auth/updateProposal`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const result = await response.json();
+      if (result.status === 200) {
+        fetchProposal(page);
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -232,7 +453,7 @@ function Proposal() {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteLeadStatus`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/deleteProposal`,
         {
           method: "DELETE",
           headers: {
@@ -246,7 +467,7 @@ function Proposal() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLeadStatus();
+        fetchProposal(page);
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -338,6 +559,22 @@ function Proposal() {
   const handleClose = () => {
     setOpen(false);
   };
+  const handlePageChange = (event, newPage) => {
+    console.log(newPage);
+    if (newPage !== 0) {
+      setPage(newPage + 1); // Update the current page
+    }
+    if (newPage === 0) {
+      setPage(1);
+    }
+  };
+
+  // Handle rows per page change
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
+    setPage(1); // Reset to first page
+  };
+  console.log(state,"sttttaatttteee");
   return (
     <>
       <div>
@@ -351,39 +588,47 @@ function Proposal() {
                 color="primary"
                 className={classes.button}
               >
-                <AddIcon /> Add Lead Status
+                <AddIcon /> Add Proposal
               </Button>
             </Tooltip>
           </div>
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose= {() =>{ 
+          onClose={() => {
             setState({
               Status_Name: "",
               Description: "",
               id: "",
               searchText: "",
               isUpdate: false,
-            })
-            setOpenDialog(false)}}
+            });
+            setOpenDialog(false);
+          }}
           fullWidth
           maxWidth="md"
         >
           <DialogTitle>
-            Lead Status
+            Proposal
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() =>{ 
+              onClick={() => {
                 setState({
                   Status_Name: "",
                   Description: "",
                   id: "",
                   searchText: "",
                   isUpdate: false,
-                })
-                setOpenDialog(false)}}
+                });
+                setOpenDialog(false);
+              }}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
             >
               <CloseIcon />
             </IconButton>
@@ -400,59 +645,267 @@ function Proposal() {
                 <Grid item xs={12}>
                   <div className={classes.form}>
                     <Grid container spacing={2}>
+                      {/* Add option to choose between Lead or Customer */}
+                     {!state.isUpdate &&(<><Grid item xs={12}>
+                        <FormControl component="fieldset">
+                          <FormLabel component="legend">Select Type</FormLabel>
+                          <RadioGroup
+                            row
+                            value={state.type} // type will be 'lead' or 'customer'
+                            onChange={(e) =>
+                              setState({ ...state, type: e.target.value })
+                            }
+                          >
+                            <FormControlLabel
+                              value="Customer"
+                              control={<Radio />}
+                              label="Customer"
+                            />
+                            <FormControlLabel
+                              value="Lead"
+                              control={<Radio />}
+                              label="Lead"
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                        </Grid>
+                        {state.type === "Customer" && (
+                        <Grid item xs={6}>
+                          <Autocomplete
+                            sx={{ marginTop: "-16px" }}
+                            id="customer-dropdown"
+                            options={
+                              customerList
+                                ? customerList.map((item) => ({
+                                    id: item._id,
+                                    title: item.clientName,
+                                  }))
+                                : [] // Fallback to empty array if customerList is undefined
+                            }
+                            getOptionLabel={(option) => option.title || ""}
+                            isOptionEqualToValue={(option, value) =>
+                              value && value.id ? option.id === value.id : false
+                            }
+                            value={state.Customer_Name} // Ensure value is not undefined
+                            onChange={(e, v, reason) => {
+                              if (reason === "clear") {
+                                setState({ ...state, Customer_Name: "" });
+                              } else {
+                                setState({ ...state, Customer_Name: v });
+                              }
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Customer Name"
+                                margin="normal"
+                                variant="standard"
+                                name="Customer"
+                                // error={!!errors.billCustomerID}
+                                // helperText={errors.billCustomerID}
+                              />
+                            )}
+                          />
+                        </Grid>
+                      )}
+
+                      {state.type === "Lead" && (
+                        <Grid item xs={6}>
+                          <Autocomplete
+                            sx={{ marginTop: "-16px" }}
+                            id="lead-dropdown"
+                            options={leadList || []} // Fallback to empty array if leadList is undefined
+                            getOptionLabel={(option) => option.title || ""}
+                            value={state.Lead || null} // Ensure value is not undefined
+                            onChange={(e, v) => {
+                              setState({ ...state, Lead: v ? v : null });
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Lead Name"
+                                margin="normal"
+                                variant="standard"
+                                // error={!!errors.leadName}
+                                // helperText={errors.leadName}
+                              />
+                            )}
+                          />
+                        </Grid>
+                      )}
+                      </>)} 
+
+                      {/* Conditionally render dropdown based on selected type */}
+                     
+
                       <Grid item xs={6}>
                         <TextField
                           fullWidth
                           variant="standard"
-                          id="Status"
-                          name="Status"
-                          label="Status"
-                          value={state.Status_Name}
+                          id="ProjectTitle"
+                          name="ProjectTitle"
+                          label="Project Title"
+                          value={state.Proposal_Title}
                           onChange={(e) => {
-                            const regex = /^[a-zA-Z\s]*$/; // Regular expression to allow only letters and spaces
+                            const regex = /^[a-zA-Z\s]*$/;
                             if (regex.test(e.target.value)) {
                               setState({
                                 ...state,
-                                Status_Name: e.target.value,
+                                Proposal_Title: e.target.value,
                               });
                             }
                           }}
-                          error={!!errors.Status_Name}
-                          helperText={errors.Status_Name}
+                          // error={!!errors.Status_Name}
+                          // helperText={errors.Status_Name}
                         />
                       </Grid>
+
                       <Grid item xs={6}>
                         <TextField
-                          fullWidth
+                          id="date"
+                          label="Proposal Date"
+                          type="date"
                           variant="standard"
-                          id="Description"
-                          name="Description"
-                          label="Description"
-                          value={state.Description}
+                          value={state.Proposal_Date}
                           onChange={(e) =>
-                            setState({ ...state, Description: e.target.value })
+                            setState({ ...state, Proposal_Date: e.target.value })
                           }
-                          error={!!errors.Description}
-                          helperText={errors.Description}
+                          sx={{ width: 414 }}
+                          InputLabelProps={{ shrink: true }}
+                          // error={!!errors.Start_Date}
+                          // helperText={errors.Start_Date}
                         />
                       </Grid>
+
+                      <Grid item xs={6}>
+                        <TextField
+                          id="date"
+                          label="Valid Until"
+                          type="date"
+                          variant="standard"
+                          value={state.Valid_Until}
+                          onChange={(e) =>
+                            setState({ ...state, Valid_Until: e.target.value })
+                          }
+                          sx={{ width: 414 }}
+                          InputLabelProps={{ shrink: true }}
+                          // error={!!errors.End_Date}
+                          // helperText={errors.End_Date}
+                          inputProps={{
+                            ...(state.Proposal_Date && {
+                              min: new Date(
+                                new Date(state.Proposal_Date).setDate(
+                                  new Date(state.Proposal_Date).getDate() + 1
+                                )
+                              )
+                                .toISOString()
+                                .split("T")[0],
+                            }),
+                          }}
+                        />
+                      </Grid>
+                      
+                 {state.isUpdate &&(<> <Grid item xs={6}> 
+                 <Autocomplete
+                    sx={{
+                      marginTop: "-16px",
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Accepted" },                     
+                      { title: "Revised" },
+                      { title: "Draft" },
+                      { title: "Declined" },
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.proposalStatus} // Ensure value is an object or null
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        proposalStatus: v ? v : null, // Set campaignStatus to the selected object or null
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Proposal Status"
+                        margin="normal"
+                        variant="standard"
+                        // error={!!errors.campaignStatus} // Show error if it exists
+                        // helperText={errors.campaignStatus} // Display error message
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}> 
+                 <Autocomplete
+                    sx={{
+                      marginTop: "-16px",
+                    }}
+                    id="highlights-demo"
+                    options={[
+                      { title: "Yes" },                     
+                      { title: "No" },
+                      
+                    ]}
+                    getOptionLabel={(option) => option.title || ""} // Safely access title
+                    value={state.proposalViewed} // Ensure value is an object or null
+                    onChange={(e, v) => {
+                      setState({
+                        ...state,
+                        proposalViewed: v ? v : null, // Set campaignStatus to the selected object or null
+                      });
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Proposal View"
+                        margin="normal"
+                        variant="standard"
+                        // error={!!errors.campaignStatus} // Show error if it exists
+                        // helperText={errors.campaignStatus} // Display error message
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                <Editor
+                    editorState={state.proposalNotes}
+                    editorClassName={classes.textEditor}
+                    toolbarClassName={classes.toolbarEditor}
+                    onEditorStateChange={(editorStateParam) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        proposalNotes: editorStateParam, // Directly setting the editorState into billNote
+                      }))
+                    }
+                    placeholder="Proposal Notes"
+                  />
+                      </Grid>
+
+                </>)}
+                
                     </Grid>
                   </div>
                 </Grid>
               </Grid>
             </div>
           </DialogContent>
+
           <DialogActions>
-          <Button onClick=
-          {() =>{ 
+            <Button
+              onClick={() => {
                 setState({
                   Status_Name: "",
                   Description: "",
                   id: "",
                   searchText: "",
                   isUpdate: false,
-                })
-                setOpenDialog(false)}} color="secondary">
+                });
+                setOpenDialog(false);
+              }}
+              color="secondary"
+            >
               Close
             </Button>
             {state.isUpdate ? (
@@ -460,7 +913,7 @@ function Proposal() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLeadStatus}
+                  onClick={handleUpdateProposal}
                 >
                   Update
                 </Button>
@@ -470,27 +923,29 @@ function Proposal() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLeadStatus}
+                  onClick={handleCreateProposal}
                 >
                   Create
                 </Button>
               </>
             )}
-            
           </DialogActions>
         </Dialog>
       </div>
 
       {rowdata && (
         <TablePlayground
-          title="Lead Status List"
-          columnData={columnData}
-          rowData={rowdata}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={setPage}
-          onRowsPerPageChange={setRowsPerPage}
-        />
+        title="Proposal List"
+        columnData={columnData}
+        rowData={rowdata}
+        component="div"
+        count={length} // Total number of rows
+        rowsPerPage={rowsPerPage} // Number of rows per page
+        page={page} // Current page
+        onPageChange={handlePageChange} // Handle page change
+        onRowsPerPageChange={handleRowsPerPageChange} // Handle rows per page change
+        pagination={pagination}
+      />
       )}
 
       <AlertDialog
