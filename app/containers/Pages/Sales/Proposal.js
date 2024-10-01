@@ -13,7 +13,7 @@ import TablePlayground from "../../Tables/TablePlayground";
 import Popup from "../../../components/Popup/Popup";
 import AlertDialog from "../../UiElements/demos/DialogModal/AlertDialog";
 import { toast } from "react-toastify";
-
+import InfoIcon from "@mui/icons-material/Info";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
@@ -34,6 +34,7 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import { convertFromRaw, EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import { useNavigate } from "react-router-dom";
 const useStyles = makeStyles()((theme) => ({
   textEditor: {
     // optional padding for better spacing
@@ -120,7 +121,7 @@ function Proposal() {
   const [severity, setSeverity] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [pagination, setPagination] = useState(false);
- 
+  const navigate = useNavigate();
   const columnData = [
     {
       id: "slNo",
@@ -301,6 +302,20 @@ function Proposal() {
                     }}
                   >
                     <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Info"
+                    // onClick={() => {
+                    //   setItemToDelete(item._id);
+                    //   setDeleteDialogOpen(true);
+                    // }}
+                    onClick={(e) => {
+                      navigate("/app/sales/proposal/proposal-view", {
+                        state: { updateId: item._id },
+                      });
+                    }}
+                  >
+                    <InfoIcon />
                   </IconButton>
                 </>
               ),
