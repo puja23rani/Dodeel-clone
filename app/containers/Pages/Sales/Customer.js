@@ -111,7 +111,7 @@ function Customer() {
       isValid = false;
     }
     if (!state.Company_Name.trim()) {
-        errors.Name = "Name is required";
+        errors.Company_Name = "Company Name is required";
         isValid = false;
     }
 
@@ -689,8 +689,8 @@ function Customer() {
                         Customer_Name: validInput,
                       });
                     }}
-                    error={!!errors.Customer_Name} // Show error if it exists
-                    helperText={errors.Customer_Name} // Display error message
+                    error={!!errors.Name} // Show error if it exists
+                    helperText={errors.Name} // Display error message
                   />
                 </Grid>
                 <Grid item xs={6}>
