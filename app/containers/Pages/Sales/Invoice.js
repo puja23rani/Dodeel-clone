@@ -520,7 +520,7 @@ useEffect(() => {
           toggle: false,
         });
         // setOpenDialog(false);
-        // setMessage("Saved successfully!");
+        // setMessage("Created Sucessfully!");
         // setOpen(true);
         // setSeverity("success");
         navigate("/app/sales/invoice/invoice-update", {

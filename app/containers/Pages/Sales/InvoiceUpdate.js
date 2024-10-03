@@ -658,15 +658,6 @@ function InvoiceUpdate() {
     }
   };
 
-  const handleTaxTypeChange = (e, v) => {
-    const selectedDept = taxList.find((item) => item.taxType === v.title);
-    setState({
-      ...state,
-      taxType: v,
-      billTaxTypeID: selectedDept?._id || null,
-      taxRate: selectedDept?.taxRate || "",
-    });
-  };
   console.log(lineItems, "lineitems");
   return (
     <>
@@ -932,15 +923,22 @@ function InvoiceUpdate() {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                gap: "40px",
+                justifyContent: "space-between", // Use space-between to distribute space evenly
                 marginLeft: "15px",
+                marginRight: "15px", // Add margin right for symmetry
               }}
             >
-              <p style={{ marginLeft: "10px" }}>Description</p>
-              <p style={{ marginLeft: "167px" }}>Qty</p>
-              <p style={{ marginLeft: "167px" }}>Unit</p>
-              <p style={{ marginLeft: "167px" }}>Rate</p>
-              <p style={{ marginLeft: "238px" }}>Total</p>
+              <p style={{ flex: "1", margin: "0" }}>Description</p>
+              <p style={{ flex: "1", textAlign: "center", margin: "0" }}>Qty</p>
+              <p style={{ flex: "1", textAlign: "center", margin: "0" }}>
+                Unit
+              </p>
+              <p style={{ flex: "1", textAlign: "center", margin: "0" }}>
+                Rate
+              </p>
+              <p style={{ flex: "1", textAlign: "center", margin: "0" }}>
+                Total
+              </p>
             </div>
 
             <div style={styles.line}></div>
@@ -1006,21 +1004,25 @@ function InvoiceUpdate() {
               </div>
             ))}
 
-         {!readOnly &&(<><Button
-              style={{
-                background: "#939393",
-                borderRadius: 9,
-                width: "fit-content",
-                padding: 5,
-                fontSize: "10px",
-                color: "white",
-                marginLeft: "20px",
-                marginBottom: "20px",
-              }}
-              onClick={handleNewLine}
-            >
-              NewLine
-            </Button></>)}   
+            {!readOnly && (
+              <>
+                <Button
+                  style={{
+                    background: "#939393",
+                    borderRadius: 9,
+                    width: "fit-content",
+                    padding: 5,
+                    fontSize: "10px",
+                    color: "white",
+                    marginLeft: "20px",
+                    marginBottom: "20px",
+                  }}
+                  onClick={handleNewLine}
+                >
+                  NewLine
+                </Button>
+              </>
+            )}
 
             <div style={styles.paper}>
               <Typography variant="h6" color="primary" gutterBottom>
@@ -1034,43 +1036,47 @@ function InvoiceUpdate() {
                 <Typography>Adjustment</Typography>
                 <Typography>{adjustment.amount?.toFixed(2) ?? 0.0}</Typography>
                 <div>
-                {!readOnly &&(<>  <Button
-                    variant="contained"
-                    style={{
-                      background: "#939393",
-                      borderRadius: 9,
-                      width: "fit-content",
-                      padding: 5,
-                      fontSize: "12px",
-                      color: "white",
-                      marginLeft: "20px",
-                      marginBottom: "20px",
-                      border: "1px solid black",
-                    }}
-                    onClick={handlePopupOpen}
-                  >
-                    Adjust
-                  </Button>
-                  <Button
-                    variant="contained"
-                    // color="secondary"
-                    onClick={handleClearAdjustment}
-                    style={{
-                      marginLeft: "10px",
-                      borderRadius: 9,
-                      background: "#FA8072",
-                      width: "fit-content",
-                      padding: 5,
-                      fontSize: "12px",
-                      color: "white",
-                      marginLeft: "20px",
-                      marginBottom: "20px",
-                      border: "1px solid black",
-                    }}
-                  >
-                    Clear
-                  </Button>
-                  </>)}
+                  {!readOnly && (
+                    <>
+                      {" "}
+                      <Button
+                        variant="contained"
+                        style={{
+                          background: "#939393",
+                          borderRadius: 9,
+                          width: "fit-content",
+                          padding: 5,
+                          fontSize: "12px",
+                          color: "white",
+                          marginLeft: "20px",
+                          marginBottom: "20px",
+                          border: "1px solid black",
+                        }}
+                        onClick={handlePopupOpen}
+                      >
+                        Adjust
+                      </Button>
+                      <Button
+                        variant="contained"
+                        // color="secondary"
+                        onClick={handleClearAdjustment}
+                        style={{
+                          marginLeft: "10px",
+                          borderRadius: 9,
+                          background: "#FA8072",
+                          width: "fit-content",
+                          padding: 5,
+                          fontSize: "12px",
+                          color: "white",
+                          marginLeft: "20px",
+                          marginBottom: "20px",
+                          border: "1px solid black",
+                        }}
+                      >
+                        Clear
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
               {/* <div style={styles.row}>
@@ -1116,26 +1122,30 @@ function InvoiceUpdate() {
                     ? `${discount.percent}%`
                     : `₹ ${discount.amount}`}
                 </Typography>
-              {!readOnly &&(<> <Button
-                  variant="contained"
-                  onClick={handleDiscountPopupOpen}
-                  style={{
-                    marginLeft: "10px",
-                    borderRadius: 9,
-                    border: "",
-                    background: "#939393",
-                    width: "fit-content",
-                    padding: 5,
-                    fontSize: "12px",
-                    color: "white",
-                    marginBottom: "20px",
-                    marginTop: "10px",
-                    border: "1px solid black",
-                  }}
-                >
-                  Apply Discount
-                </Button></>)}  
-             
+                {!readOnly && (
+                  <>
+                    {" "}
+                    <Button
+                      variant="contained"
+                      onClick={handleDiscountPopupOpen}
+                      style={{
+                        marginLeft: "10px",
+                        borderRadius: 9,
+                        border: "",
+                        background: "#939393",
+                        width: "fit-content",
+                        padding: 5,
+                        fontSize: "12px",
+                        color: "white",
+                        marginBottom: "20px",
+                        marginTop: "10px",
+                        border: "1px solid black",
+                      }}
+                    >
+                      Apply Discount
+                    </Button>
+                  </>
+                )}
               </div>
 
               {/* discount form */}
@@ -1351,7 +1361,6 @@ function InvoiceUpdate() {
                   }))
                 }
                 placeholder="Bill Notes"
-
               />
               {/* <Editor
               label=""
@@ -1370,14 +1379,18 @@ function InvoiceUpdate() {
             </Grid>
           </Paper>
 
-         {!readOnly &&(<><Button
-            variant="contained"
-            color="primary"
-            style={{ marginTop: "10px" }}
-            onClick={handleUpdateInvoice}
-          >
-            Submit
-          </Button></>)} 
+          {!readOnly && (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginTop: "10px" }}
+                onClick={handleUpdateInvoice}
+              >
+                Submit
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

@@ -341,7 +341,7 @@ function Task() {
                     taskPhotos: [],
                 });
                 setOpenDialog(false);
-                setMessage("Saved successfully!");
+                setMessage("Created Sucessfully!");
                 setOpen(true);
                 setSeverity("success");
                 getTaskList();

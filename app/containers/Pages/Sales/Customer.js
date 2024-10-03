@@ -131,11 +131,10 @@ function Customer() {
       isValid = false;
     }
 
-    if (!state.Lead_Name.id) {
-      errors.Lead_Name = "Campaign is required";
+    if (!state.Lead_Name || !state.Lead_Name.id) {
+      errors.Lead_Name = "Lead is required";
       isValid = false;
     }
-
     if (!state.Employee_Name.id) {
       errors.Employee_Name = "Channel is required";
       isValid = false;
@@ -313,6 +312,7 @@ function Customer() {
                 <>
                   <IconButton
                     aria-label="Edit"
+                    color="primary"
                     onClick={(e) => {
                       window.scrollTo({
                         top: 0,
@@ -349,6 +349,7 @@ function Customer() {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
                     }}
+                    color="primary"
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -358,6 +359,7 @@ function Customer() {
                     //   setItemToDelete(item._id);
                     //   setDeleteDialogOpen(true);
                     // }}
+                    color="primary"
                     onClick={(e) => {
                       navigate("/app/sales/customer/customer-view", {
                         state: { updateId: item._id },
@@ -440,7 +442,7 @@ function Customer() {
             toggle: false,
         });
         setOpenDialog(false);
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
       } else {
@@ -456,7 +458,7 @@ function Customer() {
     }
   };
   console.log(state,"sssssss");
-  const handleUpdateLead = async () => { 
+  const handleUpdateCustomer = async () => { 
     console.log("update")  ;
     if (!validate()) {      
       return;
@@ -908,7 +910,7 @@ function Customer() {
                 <Button
                   color="primary"
                   variant="contained"
-                 onClick={handleUpdateLead}
+                 onClick={handleUpdateCustomer}
                 >
                   Update
                 </Button>

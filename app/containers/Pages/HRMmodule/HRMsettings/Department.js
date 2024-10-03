@@ -199,7 +199,7 @@ function Department() {
           isUpdate: false,
         });
         setOpenDialog(false);
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
         getDptList();

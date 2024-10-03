@@ -86,7 +86,7 @@ function Campaign() {
       isValid = false;
     }
 
-    if (!state.campaignStatus) {
+    if (!state.campaignStatus.title) {
       errors.campaignStatus = "Campaign Status is required";
       isValid = false;
     }
@@ -160,13 +160,13 @@ function Campaign() {
         headers: loginHeaders,
       };
       const res = await fetch(
-        `${process.env.REACT_APP_BASE_URL}/api/auth/getEmployeeDetails`,
+        `${process.env.REACT_APP_BASE_URL}/api/auth/getallemployeeuser`,
         requestOptions
       );
       const actualData = await res.json();
-      if (Array.isArray(actualData.employees)) {
-        const newobj = actualData.employees.map((item) => ({
-          title: item.personalDetails.employeeName, // Set the title from channelName
+      if (Array.isArray(actualData.users)) {
+        const newobj = actualData.users.map((item) => ({
+          title: item.adminName, // Set the title from channelName
           id: item._id, // Set the id from _id
         }));
         setEmpList(newobj);
@@ -353,7 +353,7 @@ function Campaign() {
           isUpdate: false,
         });
         setOpenDialog(false);
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
       } else {

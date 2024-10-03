@@ -260,7 +260,7 @@ function Competenies() {
           isUpdate: false,
         });
         setOpenDialog(false);
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
         getCompetenciesList();

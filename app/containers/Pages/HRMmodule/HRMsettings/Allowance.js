@@ -198,7 +198,7 @@ function Allowance() {
           isUpdate: false,
         });
         setOpenDialog(false);
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
         getAllowanceList();

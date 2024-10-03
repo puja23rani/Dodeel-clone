@@ -378,7 +378,7 @@ useEffect(() => {
           searchText: "",
           isUpdate: false,
         });
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
         setOpenDialog(false);
@@ -447,7 +447,7 @@ useEffect(() => {
           searchText: "",
           isUpdate: false,
         });
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setSeverity("success");
         setOpenDialog(false);

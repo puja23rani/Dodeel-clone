@@ -187,7 +187,7 @@ function Log_Notes() {
 
           isUpdate: false,
         });
-        setMessage("Saved successfully!");
+        setMessage("Created Sucessfully!");
         setOpen(true);
         setOpenDialog(false);
         setSeverity("success");

@@ -214,7 +214,7 @@ function Custom_Question() {
               Required_or_Not: "",
               isUpdate: false,
             });
-            setMessage("Saved successfully!");
+            setMessage("Created Sucessfully!");
             setOpen(true);
             setSeverity("success");
             setOpenDialog(false);
