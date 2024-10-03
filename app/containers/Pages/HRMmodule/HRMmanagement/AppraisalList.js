@@ -374,7 +374,7 @@ const AppraisalList = () => {
                     month: "",
                     totalAmount: 0
                 });
-                setMessage("Saved successfully!");
+                setMessage("Created Sucessfully!");
                 setOpen(true);
                 setSeverity("success");
             }
