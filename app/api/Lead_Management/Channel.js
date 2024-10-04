@@ -62,12 +62,12 @@ function Channel() {
     let isValid = true;
     let errors = {};
 
-    if (!state.Channel.trim()) {
-      errors.Channel = "Status Name is required";
+    if (!state.Channel) {
+      errors.Channel = "Channel Name is required";
       isValid = false;
     }
 
-    if (!state.ApproxBudget.trim()) {
+    if (!state.ApproxBudget) {
       errors.ApproxBudget = "ApproxBudget is required";
       isValid = false;
     }
@@ -107,10 +107,10 @@ function Channel() {
   ];
 
   useEffect(() => {
-    fetchLeadStatus();
+    fetchChannel();
   }, []);
 
-  const fetchLeadStatus = () => {
+  const fetchChannel = () => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllChannels`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -163,7 +163,7 @@ function Channel() {
       });
   };
 
-  const handleCreateLeadStatus = async () => {
+  const handleCreateChannel = async () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -190,7 +190,7 @@ function Channel() {
 
       const result = await response.json();
       if (result.status === 200) {
-        fetchLeadStatus();
+        fetchChannel();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -218,7 +218,7 @@ function Channel() {
     }
   };
 
-  const handleLeadStatusDelete = async () => {
+  const handleChannelDelete = async () => {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
@@ -236,7 +236,7 @@ function Channel() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLeadStatus();
+        fetchChannel();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -258,7 +258,9 @@ function Channel() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleUpdateLeadStatus = async () => {
+  
+  const handleUpdateChannel = async () => {
+    if(!validate()) return;
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -294,7 +296,7 @@ function Channel() {
         //console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
-          fetchLeadStatus();
+          fetchChannel();
           window.scrollTo({
             top: 400,
             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -373,6 +375,12 @@ function Channel() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
               onClick={() =>{ setState({ id: "", Channel: "", ApproxBudget: "",isUpdate: false});setOpenDialog(false)}}
             >
               <CloseIcon />
@@ -441,7 +449,7 @@ function Channel() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLeadStatus}
+                  onClick={handleUpdateChannel}
                 >
                   Update
                 </Button>
@@ -451,7 +459,7 @@ function Channel() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLeadStatus}
+                  onClick={handleCreateChannel}
                 >
                   Create
                 </Button>
@@ -479,7 +487,7 @@ function Channel() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleLeadStatusDelete}
+        onDelete={handleChannelDelete}
       />
       <Popup
         open={open}

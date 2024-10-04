@@ -336,6 +336,16 @@ function Lead_Status() {
   const handleClose = () => {
     setOpen(false);
   };
+  function handleClear(){
+    setState({
+      Status_Name: "",
+      Description: "",
+      searchText: "",
+      isUpdate: false,
+    });
+    setErrors({Status_Name:"",Description:""});
+    setOpenDialog(false);
+  }
   return (
     <>
       <div>
@@ -356,15 +366,7 @@ function Lead_Status() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose= {() =>{ 
-            setState({
-              Status_Name: "",
-              Description: "",
-              id: "",
-              searchText: "",
-              isUpdate: false,
-            })
-            setOpenDialog(false)}}
+          onClose= {handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -372,16 +374,14 @@ function Lead_Status() {
             Lead Status
             <IconButton
               aria-label="close"
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
               className={classes.closeButton}
-              onClick={() =>{ 
-                setState({
-                  Status_Name: "",
-                  Description: "",
-                  id: "",
-                  searchText: "",
-                  isUpdate: false,
-                })
-                setOpenDialog(false)}}
+              onClick={handleClear}
             >
               <CloseIcon />
             </IconButton>
@@ -441,16 +441,7 @@ function Lead_Status() {
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick=
-          {() =>{ 
-                setState({
-                  Status_Name: "",
-                  Description: "",
-                  id: "",
-                  searchText: "",
-                  isUpdate: false,
-                })
-                setOpenDialog(false)}} color="secondary">
+          <Button onClick={handleClear} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (

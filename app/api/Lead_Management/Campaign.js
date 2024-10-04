@@ -86,7 +86,7 @@ function Campaign() {
       isValid = false;
     }
 
-    if (!state.campaignStatus.title) {
+    if (!state.campaignStatus || !state.campaignStatus.title) {
       errors.campaignStatus = "Campaign Status is required";
       isValid = false;
     }
@@ -514,8 +514,7 @@ function Campaign() {
     });
   };
   //console.log(state, "sssssss");
-  const handleClear=()=>{
-    
+  const handleClear=()=>{    
       setState({
         membersID: [],
         campaignName: "",
