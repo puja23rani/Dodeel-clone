@@ -74,7 +74,7 @@ function LeadMemebers() {
       isValid = false;
     }
     if (!state.leadName) {
-      errors.leadName = "Campaign Status is required";
+      errors.leadName = "Lead is required";
       isValid = false;
     }
     setErrors(errors);

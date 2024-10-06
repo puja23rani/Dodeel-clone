@@ -106,7 +106,8 @@ import {
   CustomerView,
   InvoiceUpdate,
   ProjectMetaData,
-  ProposalView,
+  ProposalView, 
+  FBLogin,
 
 } from "../pageListAsync";
 import Department from "../Pages/HRMmodule/HRMsettings/Department";
@@ -325,6 +326,7 @@ function Application(props) {
         <Route path="/sales/project" element={<Project />} />
         <Route path="/sales/project/project-metadata" element={<ProjectMetaData />} />
         <Route path="/sales/proposal" element={<Proposal />} />
+        <Route path="/sales/fb-login" element={<FBLogin />} />
         <Route path="/sales/proposal/proposal-view" element={<ProposalView />} />
 
 

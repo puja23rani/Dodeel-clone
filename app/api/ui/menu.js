@@ -237,6 +237,18 @@ module.exports = [
         icon: "settings_suggest",
 
       },
+      {
+        key: "Integrations",
+        name: "Integrations",
+        title: true,
+      },
+      {
+        key: "Facebook",
+        name: "Facebook",
+        link: "/app/sales/fb-login",
+        icon: "settings_Facebook",
+
+      },
 
 
     ],

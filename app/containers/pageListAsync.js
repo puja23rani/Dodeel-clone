@@ -534,6 +534,12 @@ export const ProjectMetaData = loadable(
     fallback: <Loading />,
   }
 );
+export const FBLogin = loadable(
+  () => import("../containers/Pages/Sales/FBLogin"),
+  {
+    fallback: <Loading />,
+  }
+);
 // ------------------------------------------------
 // Asset management
 // ------------------------------------------------
