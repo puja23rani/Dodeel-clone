@@ -337,6 +337,7 @@ function Invoice() {
  
 
   const handlePaymentPopupClose = () => {
+    handleClearPayPop();
     setState({
       paymentDate: "",
       paymentAmount: "",
@@ -602,41 +603,54 @@ useEffect(() => {
   };
   const handleClear = () => {
     setState({
-      Company_Name: "",
-      Customer_Name: "",
-      Phone_Number: "",
-      Email: "",
-      Lead_Name: "",
-      Lead_Id: "",
-      Employee_Name: "",
-      Employee_Id: "",
-      Description: "",
-      Billing_Address: "",
-      Shipping_Address: "",
-      Status: "",
-      searchText: "",
-      isUpdate: false,
-
-      toggle: false,
+      bill_ID: "",
+    billCreatorID: "",
+    billCustomerID: "",
+    billProjectID: "",
+    invoiceDate: "",
+    billDueDate: "",
+    billNote: EditorState.createEmpty(),
+    paymentNotes: "",
+    _id: "",
+    isUpdate: false,
     });
     setErrors({
-      Company_Name: "",
-      Customer_Name: "",
-      Phone_Number: "",
-      Email: "",
-      Lead_Name: "",
-      Lead_Id: "",
-      Employee_Name: "",
-      Employee_Id: "",
-
-      Billing_Address: "",
-      Shipping_Address: "",
-      Status: "",
-
-      isUpdate: false,
-
-      toggle: false,
+      bill_ID: "",
+      billCreatorID: "",
+      billCustomerID: "",
+      billProjectID: "",
+      invoiceDate: "",
+      billDueDate: "",
+      billNote: "",
+      paymentNotes: "",
     });
+    setOpenDialog(false);
+  };
+  const handleClearPayPop = () => {
+paysetState({
+      invoiceID: "",
+      paymentCreatorName: "",
+      clientName: "",
+      projectTitle: "",
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: EditorState.createEmpty(),
+      id: null,
+      isUpdate: false,
+    });
+    setPayErrors({
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: "",
+    })
     setOpenDialog(false);
   };
   console.log(state, "ssstate");
@@ -1132,8 +1146,9 @@ useEffect(() => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handlePaymentPopupClose} color="primary">
-              Cancel
+              Close
             </Button>
+           
             <Button
               onClick={() => {
                 if (payvalidate()) {
@@ -1141,6 +1156,7 @@ useEffect(() => {
                 }
               }}
               color="primary"
+                  variant="contained"
             >
               Save
             </Button>

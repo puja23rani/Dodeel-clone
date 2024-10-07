@@ -114,17 +114,17 @@ function New_lead() {
       isValid = false;
     }
 
-    if (!state.Campaign.id) {
+    if (!state.Campaign ||!state.Campaign.id) {
       errors.Campaign = "Campaign is required";
       isValid = false;
     }
 
-    if (!state.Channel.id) {
+    if (!state.Channel ||!state.Channel.id) {
       errors.Channel = "Channel is required";
       isValid = false;
     }
 
-    if (!state.Lead_Status.id) {
+    if (!state.Lead_Status ||!state.Lead_Status.id) {
       errors.Lead_Status = "Lead Status is required";
       isValid = false;
     }
@@ -320,19 +320,7 @@ function New_lead() {
     table3();
     table4();
   }, []);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedEmployee, setSelectedEmployee] = React.useState(null);
-
-  const handleMenuClick = (event, employee) => {
-    setAnchorEl(event.currentTarget); // Set the clicked button as the anchor
-    setSelectedEmployee(employee); // Set the selected employee
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null); // Reset anchorEl to null to close the menu
-    setSelectedEmployee(null); // Reset selected employee
-  };
-
+ 
   function fetchLead(pg) {
     axios
       .post(
@@ -348,10 +336,10 @@ function New_lead() {
         }
       )
       .then((response) => {
-        console.log(response.data.data);
+        console.log(response.data.data);     
         if (response.data.data) {
           setRowdata(
-            response.data.data.map((item, index) => ({
+            response.data.data.map((item,index) => ({
               slNo: response.data.data.indexOf(item) + 1,
               id: item._id,
               leadName: item.leadName || "N/A",
@@ -405,6 +393,7 @@ function New_lead() {
                   </IconButton>
                   <IconButton
                     aria-label="Info"
+                    color="primary"
                     // onClick={() => {
                     //   setItemToDelete(item._id);
                     //   setDeleteDialogOpen(true);
@@ -504,10 +493,7 @@ function New_lead() {
     }
   };
   const handleUpdateLead = async () => {
-    if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
+    if (!validate()) {     
       return;
     }
     console.log("p1");
@@ -575,7 +561,7 @@ function New_lead() {
       setSeverity("error");
     }
   };
-  const handleCampaignDelete = async () => {
+  const handleLeadDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
@@ -633,13 +619,34 @@ function New_lead() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(1); // Reset to first page
   };
-  const handleAddSection = () => {
+  
+  function handleClear(){
     setState({
-      ...state,
-      fieldset: [...state.fieldset, { name: "", value: "" }],
+      Name: "",
+      Phone_Number: "",
+      Email: "",
+      Campaign: "",
+      Campaign_Id: "",
+      Channel: "",
+      Channel_Id: "",
+      Lead_Status: "",
+      Lead_Status_Id: "",
+      Description: "",
+      isUpdate: false,
     });
-  };
-
+    setErrors({  
+      Name: "",
+      Phone_Number: "",
+      Email: "",
+      Campaign: "",
+      Campaign_Id: "",
+      Channel: "",
+      Channel_Id: "",
+      Lead_Status: "",
+      Lead_Status_Id: "",
+      Description: "", });
+    setOpenDialog(false);
+  }
   // Delete a section by index
   return (
     <>
@@ -661,22 +668,7 @@ function New_lead() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => {
-            setState({
-              Name: "",
-              Phone_Number: "",
-              Email: "",
-              Campaign: "",
-              Campaign_Id: "",
-              Channel: "",
-              Channel_Id: "",
-              Lead_Status: "",
-              Lead_Status_Id: "",
-              Description: "",
-              isUpdate: false,
-            });
-            setOpenDialog(false);
-          }}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -684,22 +676,7 @@ function New_lead() {
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={() => {
-              setState({
-                Name: "",
-                Phone_Number: "",
-                Email: "",
-                Campaign: "",
-                Campaign_Id: "",
-                Channel: "",
-                Channel_Id: "",
-                Lead_Status: "",
-                Lead_Status_Id: "",
-                Description: "",
-                isUpdate: false,
-              });
-              setOpenDialog(false);
-            }}
+            onClick={handleClear}
             sx={{
               position: "absolute",
               right: 12,
@@ -958,22 +935,7 @@ function New_lead() {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => {
-                setState({
-                  Name: "",
-                  Phone_Number: "",
-                  Email: "",
-                  Campaign: "",
-                  Campaign_Id: "",
-                  Channel: "",
-                  Channel_Id: "",
-                  Lead_Status: "",
-                  Lead_Status_Id: "",
-                  Description: "",
-                  isUpdate: false,
-                });
-                setOpenDialog(false);
-              }}
+              onClick={handleClear}
               color="secondary"
             >
               Close
@@ -1021,7 +983,7 @@ function New_lead() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCampaignDelete}
+        onDelete={handleLeadDelete}
       />
       <Popup
         open={open}

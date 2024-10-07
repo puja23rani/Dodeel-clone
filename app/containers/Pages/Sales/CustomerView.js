@@ -44,6 +44,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 
 import { useLocation, useNavigate } from "react-router-dom";
+import { set } from "draft-js/lib/DefaultDraftBlockRenderMap";
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -77,95 +78,20 @@ function CustomerView() {
   const { classes } = useStyles();
 
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+ // const navigate = useNavigate();
   
-  const [errors, setErrors] = useState({
-    Id: "",
-    Company_Name: "",
-    Customer_Name: "",
-    Phone_Number: "",
-    Email: "",
-    Lead_Name: "",
-    Lead_Id: "",
-    Employee_Name: "",
-    Employee_Id: "",
-   
-    Billing_Address: "",
-    Shipping_Address: "",
-    Status: "",   
-    toggle: false,
-    
-  });
-  const validate = () => {
-    let isValid = true;
-    let errors = {};
+  
 
-    if (!state.Customer_Name.trim()) {
-      errors.Name = "Customer Name is required";
-      isValid = false;
-    }
-    if (!state.Company_Name.trim()) {
-        errors.Name = "Name is required";
-        isValid = false;
-    }
-
-    if (!state.Phone_Number.toString().trim()) {
-      errors.Phone_Number = "Phone Number is required";
-      isValid = false;
-    } else if (state.Phone_Number.toString().length !== 10) {
-      errors.Phone_Number = "Phone Number must be 10 digits";
-      isValid = false;
-    }
-
-    if (!state.Email.trim()) {
-      errors.Email = "Email is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(state.Email)) {
-      errors.Email = "Email is invalid";
-      isValid = false;
-    }
-
-    if (!state.Lead_Name.id) {
-      errors.Lead_Name = "Campaign is required";
-      isValid = false;
-    }
-
-    if (!state.Employee_Name.id) {
-      errors.Employee_Name = "Channel is required";
-      isValid = false;
-    }
-    if (!state.Billing_Address.trim()) {
-        errors.Billing_Address = "Billing Address is required";
-        isValid = false;
-    }
-    if (!state.Shipping_Address.trim()) {
-        errors.Shipping_Address = "Shipping Address is required";
-        isValid = false;
-    }
-
-
-    
-    console.log(errors);
-    console.log(isValid);
-    setErrors(errors);
-    return isValid;
-  };
-
-  const [rowdata, setRowdata] = useState([]);
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [length, setLength] = useState(0);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
+  
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [pagination, setPagination] = useState(false);
+
+ 
 
   const location = useLocation();
   console.log(location)
-  const { updateId } = location.state || {};
+  const { customerId } = location.state || {};
 
   
   const [state, setState] = useState({
@@ -195,7 +121,7 @@ function CustomerView() {
     axios
       .post(
         `${process.env.REACT_APP_BASE_URL}/api/auth/getCustomerById`,
-        { id: updateId },
+        { id: customerId },
         {
           headers: {
             "Content-Type": "application/json",
@@ -234,6 +160,7 @@ function CustomerView() {
           .join(' ');                      // Join non-empty texts
       }
     } catch (err) {
+      
       // If parsing fails, assume it's a normal string and return it as is
       return description;
     }
@@ -245,16 +172,15 @@ function CustomerView() {
 
 
         } else {
-          toast.error("Failed to save. Please try again.", {
-            position: "top-center",
-          });
+          setMessage(response.data.message);
+          setSeverity("error");
+          setOpen(true);
         }
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
-        toast.error("An error occurred. Please try again.", {
-          position: "top-center",
-        });
+       setMessage("Something went wrong"); 
+       setSeverity("error");
+       setOpen(true);
       });
   };
 

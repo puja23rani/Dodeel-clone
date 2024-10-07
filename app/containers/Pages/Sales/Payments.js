@@ -34,6 +34,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { format } from "date-fns";
 import { set } from "lodash";
 import { tr } from "date-fns/locale";
+
 const useStyles = makeStyles()((theme) => ({
   textEditor: {
     // optional padding for better spacing
@@ -105,7 +106,10 @@ function Payments() {
   const payvalidate = () => {
     let isValid = true;
     let errors = {};
-
+    if(!paystate.invoiceID || !paystate.invoiceID.id) {
+      errors.paymentInvoiceID = "Invoice ID is required";
+      isValid = false;
+    }
     if (!paystate.paymentDate) {
       errors.paymentDate = "Payment Date is required";
       isValid = false;
@@ -122,7 +126,7 @@ function Payments() {
       isValid = false;
     }
 
-    if (!paystate.paymentTransactionID.trim()) {
+    if (!paystate.paymentTransactionID) {
       errors.paymentTransactionID = "Transaction ID is required";
       isValid = false;
     }
@@ -235,9 +239,9 @@ function Payments() {
   };
   useEffect(() => {
     table1();
-    fetchLeadStatus();
+   
   }, []);
-  const handleDelete = async () => {
+  const handleDeletePay = async () => {
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -311,6 +315,7 @@ function Payments() {
                 <>
                   <IconButton
                     aria-label="Edit"
+                    color="primary"
                     onClick={(e) => {
                       window.scrollTo({
                         top: 0,
@@ -361,6 +366,7 @@ function Payments() {
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
+                    color="primary"
                     onClick={() => {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
@@ -384,62 +390,11 @@ function Payments() {
   useEffect(() => {
     fetchPayment(page);
   }, [page, rowsPerPage]);
-  const fetchLeadStatus = () => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadStatus`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        if (response.data.data) {
-          setRowdata(
-            response.data.data.map((item) => ({
-              slNo: response.data.data.indexOf(item) + 1,
-              id: item._id,
-              statusName: item.statusName,
-              description: item.description,
-              actions: (
-                <>
-                  <IconButton
-                    aria-label="Edit"
-                    onClick={(e) => {
-                      window.scrollTo({
-                        top: 0,
-                        behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-                      });
-                      setItemToDelete(item._id);
-                      setState({
-                        Status_Name: item.statusName,
-                        Description: item.description,
-                        isUpdate: true,
-                      });
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Delete"
-                    onClick={() => {
-                      setItemToDelete(item._id);
-                      setDeleteDialogOpen(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </>
-              ),
-            }))
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
+  
 
-  const handleUpdate = async () => {
-    // if (!validateFields()) return;
-    try {
+  const handleUpdatePay = async () => {
+    if (!payvalidate()) return;
+    try {  
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
 
@@ -509,80 +464,12 @@ function Payments() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleUpdateLeadStatus = async () => {
-    try {
-      const loginHeaders = new Headers();
-      loginHeaders.append("Content-Type", "application/json");
-
-      // Assuming you have an authorization token stored in localStorage
-      const token = localStorage.getItem("token");
-      if (token) {
-        loginHeaders.append("Authorization", `Bearer ${token}`);
-      }
-      const data = {
-        id: itemToDelete,
-        statusName: state.Status_Name,
-        description: state.Description,
-      };
-
-      if (state.Status_Name == "" || state.Description == "") {
-        setMessage("Please fill all required fields");
-        setOpen(true);
-        setSeverity("warning");
-        return;
-      } else {
-        const requestOptions = {
-          method: "PUT",
-          headers: loginHeaders,
-          body: JSON.stringify(data),
-        };
-        const res = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/api/auth/updateLeadStatus`,
-          requestOptions
-        );
-
-        const actualData = await res.json();
-        //console.log(actualData.holidays);
-        // setVisaList(actualData.Country);
-        if (actualData.status == 200) {
-          fetchLeadStatus();
-          window.scrollTo({
-            top: 400,
-            behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
-          });
-          setState({
-            Status_Name: "",
-            Description: "",
-            id: "",
-            searchText: "",
-            isUpdate: false,
-          });
-          setMessage("Updated successfully!");
-          setOpen(true);
-          setSeverity("success");
-          // Navigate("/Department");
-          setOpenDialog(false);
-        } else {
-          setMessage(actualData.message);
-          setOpen(true);
-          setSeverity("error");
-        }
-      }
-    } catch (err) {
-      //console.log(err);
-      // toast.error("Failed to save. Please try again.", {
-      //   position: "top-center",
-      // });
-      setMessage(err.message);
-      setOpen(true);
-      setSeverity("error");
-    }
-  };
+ 
   const handleClose = () => {
     setOpen(false);
   };
   const handleCreatePay = async (id) => {
-    console.log(paystate,"paaaaaaaayy");
+    if (!payvalidate()) return;
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -653,6 +540,7 @@ function Payments() {
     }
   };
   const handlePaymentPopupClose = () => {
+    handleClear();
     paysetState({
       paymentDate: "",
       paymentAmount: "",
@@ -682,6 +570,29 @@ function Payments() {
     setPage(1); // Reset to first page
   };
   console.log("state", paystate);
+  const handleClear = () => {
+    paysetState({
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: EditorState.createEmpty(),
+      id: null,
+      isUpdate: false,
+    });
+    setPayErrors({
+      paymentDate: "",
+      paymentAmount: "",
+      paymentTransactionID: "",
+      paymentInvoiceID: "",
+      paymentMode: "",
+      value: "",
+      paymentNotes: "",
+    });
+    setOpenPaymentPopup(false);
+  }
   return (
     <>
       <div>
@@ -750,13 +661,15 @@ function Payments() {
                         label="Invoice Id"
                         margin="normal"
                         variant="standard"
-                        // error={!!errors.campaignStatus} // Show error if it exists
-                        // helperText={errors.campaignStatus} // Display error message
+                        error={!!payerrors.paymentInvoiceID} // Show error if it exists
+                        helperText={payerrors.paymentInvoiceID} // Display error message
                       />
                     )}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                {paystate.invoiceID && (
+                  <>
+                  <Grid item xs={6}>
                   <TextField
                     fullWidth
                     variant="standard"
@@ -765,7 +678,7 @@ function Payments() {
                     label="Payment Creator Name"
                     value={paystate.paymentCreatorName}
                     InputProps={{ readOnly: true }}
-                    // error={!!errors.ApproxBudget}
+                    // error={!!errors.pay}
                     // helperText={errors.ApproxBudget}
                   />
                 </Grid>
@@ -794,7 +707,9 @@ function Payments() {
                     // error={!!errors.ApproxBudget}
                     // helperText={errors.ApproxBudget}
                   />
-                </Grid>
+                </Grid></>
+                )}
+                
                 <Grid item xs={6}>
                   <TextField
                     id="date"
@@ -807,8 +722,8 @@ function Payments() {
                     }
                     fullWidth
                     InputLabelProps={{ shrink: true }}
-                    // error={!!errors.billDueDate} // Show error if it exists
-                    // helperText={errors.billDueDate} // Display error message
+                    error={!!payerrors.paymentDate} // Show error if it exists
+                    helperText={payerrors.paymentDate} // Display error message
                   />
                 </Grid>
 
@@ -826,8 +741,8 @@ function Payments() {
                       const numericValue = value.replace(/[^0-9]/g, "");
                       paysetState({ ...paystate, paymentAmount: numericValue });
                     }}
-                    // error={!!errors.ApproxBudget}
-                    // helperText={errors.ApproxBudget}
+                    error={!!payerrors.paymentAmount}
+                    helperText={payerrors.paymentAmount}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -844,6 +759,8 @@ function Payments() {
                       }))
                     }
                     fullWidth
+                    error={!!payerrors.paymentTransactionID}
+                    helperText={payerrors.paymentTransactionID}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -871,8 +788,8 @@ function Payments() {
                         label="Payment Mode"
                         margin="normal"
                         variant="standard"
-                        // error={!!errors.campaignStatus} // Show error if it exists
-                        // helperText={errors.campaignStatus} // Display error message
+                        error={!!payerrors.paymentMode} // Show error if it exists
+                        helperText={payerrors.paymentMode} // Display error message
                       />
                     )}
                   />
@@ -921,12 +838,14 @@ function Payments() {
               Cancel
             </Button>
            {paystate.isUpdate?(<><Button
-              onClick={handleUpdate}
+              onClick={handleUpdatePay}
+                variant="contained"
               color="primary"
             >
               Update
             </Button></>):(<><Button
               onClick={handleCreatePay}
+              variant="contained"
               color="primary"
             >
               Save
@@ -953,7 +872,7 @@ function Payments() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleDelete}
+        onDelete={handleDeletePay}
       />
       <Popup
         open={open}

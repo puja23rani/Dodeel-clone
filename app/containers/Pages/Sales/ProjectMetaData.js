@@ -178,7 +178,7 @@ const token=localStorage.getItem("token");
   useEffect(() => {
     table();
   },[])
-  const handleDelete = (index) => {
+  const handleDeleteProjectMeta = (index) => {
     const updatedFields = fields.filter((_, i) => i !== index);
     setFields(updatedFields);
   };
@@ -186,7 +186,7 @@ const token=localStorage.getItem("token");
   const handleClosePopup = () => {
     setOpenPopup(false);
   };
-const handleUpdate = async () => {
+const handleUpdateProjectMeta = async () => {
     const updatedFields = fields.map(field => ({
         ...field,
         fieldMetaData:  JSON.stringify(
@@ -261,7 +261,7 @@ const handleUpdate = async () => {
         setSeverity("error");
       }
 }
-  const handleSubmit = async (e) => {
+  const handleCreateProjectMeta = async (e) => {
     const updatedFields = fields.map(field => ({
         ...field,
         fieldMetaData:  JSON.stringify(
@@ -405,7 +405,7 @@ const handleUpdate = async () => {
                   variant="contained"
                   className={classes.deleteButton}
                   startIcon={<DeleteIcon />}
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDeleteProjectMeta(index)}
                 >
                   Delete
                 </Button>
@@ -431,7 +431,7 @@ const handleUpdate = async () => {
             variant="contained"
            
            
-           onClick={handleUpdate}
+           onClick={handleUpdateProjectMeta}
            
           >
              Update
@@ -441,7 +441,7 @@ const handleUpdate = async () => {
             variant="contained"
             
             type="submit"
-            onClick={handleSubmit}
+            onClick={handleCreateProjectMeta}
            
           >
              Submit

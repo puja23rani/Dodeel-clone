@@ -201,7 +201,7 @@ function LeadMemebers() {
     table4();
   }, []);
 
-  function fetchLead(pg) {
+  function fetchLeadMembers(pg) {
     axios
       .post(
         `${process.env.REACT_APP_BASE_URL}/api/auth/getAllLeadMembers`,
@@ -280,7 +280,7 @@ function LeadMemebers() {
       });
   }
   useEffect(() => {
-    fetchLead(page);
+    fetchLeadMembers(page);
   }, [page, rowsPerPage]);
 
   const handleCreatemembers = async () => {
@@ -309,7 +309,7 @@ function LeadMemebers() {
       );
       const result = await response.json();
       if (result.status === 200) {
-        fetchLead();
+        fetchLeadMembers();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -339,7 +339,7 @@ function LeadMemebers() {
     }
   };
 
-  const handleCampaignDelete = async () => {
+  const handleMemberDelete = async () => {
     try {
       const data = { id: parseInt(itemToDelete) };
       const response = await fetch(
@@ -357,7 +357,7 @@ function LeadMemebers() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLead();
+        fetchLeadMembers();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -379,7 +379,11 @@ function LeadMemebers() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleUpdateCampaign = async () => {
+  const handleUpdateMembers = async () => {
+    if (!validate()) {
+     
+      return;
+    }
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -415,7 +419,7 @@ function LeadMemebers() {
         //console.log(actualData);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
-          fetchLead();
+          fetchLeadMembers();
           window.scrollTo({
             top: 400,
             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -460,20 +464,7 @@ function LeadMemebers() {
     setRowsPerPage(parseInt(event.target.value, 10)); // Update the rows per page
     setPage(0); // Reset to first page
   };
-  const handleAddSection = () => {
-    setState({
-      ...state,
-      fieldset: [...state.fieldset, { name: "", value: "" }],
-    });
-  };
-
-  // Delete a section by index
-  const handleDeleteSection = (idx) => {
-    setState({
-      ...state,
-      fieldset: state.fieldset.filter((_, index) => index !== idx),
-    });
-  };
+  
   //console.log(state, "sssssss");\
   function handleClear() {
     setState({
@@ -591,12 +582,15 @@ function LeadMemebers() {
             </div>
           </DialogContent>
           <DialogActions>
+          <Button onClick={handleClear} color="secondary">
+              Close
+            </Button>
             {state.isUpdate ? (
               <>
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateCampaign}
+                  onClick={handleUpdateMembers}
                 >
                   Update
                 </Button>
@@ -612,9 +606,7 @@ function LeadMemebers() {
                 </Button>
               </>
             )}
-            <Button onClick={handleClear} color="secondary">
-              Close
-            </Button>
+           
           </DialogActions>
         </Dialog>
       </div>
@@ -637,7 +629,7 @@ function LeadMemebers() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleCampaignDelete}
+        onDelete={handleMemberDelete}
       />
       <Popup
         open={open}

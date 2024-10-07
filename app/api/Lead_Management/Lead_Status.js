@@ -129,6 +129,8 @@ function Lead_Status() {
                 <>
                   <IconButton
                     aria-label="Edit"
+                    color="primary"
+
                     onClick={(e) => {
                       window.scrollTo({
                         top: 0,
@@ -147,6 +149,7 @@ function Lead_Status() {
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
+                    color="primary"
                     onClick={() => {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
@@ -167,10 +170,7 @@ function Lead_Status() {
 
   const handleCreateLeadStatus = async () => {
     if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
-      return;
+     return;
     }
     try {
       const data = {
@@ -265,6 +265,7 @@ function Lead_Status() {
     setDeleteDialogOpen(false);
   };
   const handleUpdateLeadStatus = async () => {
+    if(!validate()){return;}
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");

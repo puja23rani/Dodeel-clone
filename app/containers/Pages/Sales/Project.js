@@ -507,18 +507,7 @@ function Project() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleAddSection = () => {
-    setState({
-      ...state,
-      fieldset: [...state.fieldset, { name: "", value: "" }],
-    });
-  };
-  const handleDeleteSection = (idx) => {
-    setState({
-      ...state,
-      fieldset: state.fieldset.filter((_, index) => index !== idx),
-    });
-  };
+  
   const handleClose = () => {
     setOpen(false);
   };
@@ -539,40 +528,28 @@ function Project() {
   };
   const handleClear = () => {
     setState({
-      Company_Name: "",
-      Customer_Name: "",
-      Phone_Number: "",
-      Email: "",
-      Lead_Name: "",
-      Lead_Id: "",
-      Employee_Name: "",
-      Employee_Id: "",
+      Project_Title: "",
+    Start_Date: "",
+    End_Date: "",
+    Description: "",
+    Progress: null,
+    Project_File: null,
+    Status: "",
+    searchText: "",
+    fieldset: [{ name: "", value: "" }],
+    isUpdate: false,
+    });
+    setErrors({
+      Project_Title: "",
+      Start_Date: "",
+      End_Date: "",
       Description: "",
-      Billing_Address: "",
-      Shipping_Address: "",
+      Progress: "",
+      Project_File: "",
+      // Photos: ["https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freepik.com%2Fphotos%2Fjob&psig=AOvVaw0ENWvfhd_yYYWehvVXrHcA&ust=1718197241609000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCKiq2ujN04YDFQAAAAAdAAAAABAE",
       Status: "",
       searchText: "",
       isUpdate: false,
-
-      toggle: false,
-    });
-    setErrors({
-      Company_Name: "",
-      Customer_Name: "",
-      Phone_Number: "",
-      Email: "",
-      Lead_Name: "",
-      Lead_Id: "",
-      Employee_Name: "",
-      Employee_Id: "",
-
-      Billing_Address: "",
-      Shipping_Address: "",
-      Status: "",
-
-      isUpdate: false,
-
-      toggle: false,
     });
     setOpenDialog(false);
   };

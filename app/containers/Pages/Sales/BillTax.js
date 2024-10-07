@@ -8,9 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/BorderColor";
 
 import axios from "axios";
-import { PapperBlock } from "enl-components";
 
-import { toast } from "react-toastify";
 
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -65,20 +63,21 @@ function Bill_Tax() {
   const validate = () => {
     let isValid = true;
     let errors = {};
-
-    if (!state.taxType.trim()) {
+  
+    if (!state.taxType) {
       errors.taxType = "Bill Tax is required";
       isValid = false;
     }
-
-    if (!state.taxRate.trim()) {
-      errors.taxType = "Bill rate is required";
+  
+    if (!state.taxRate) {
+      errors.taxRate = "Bill rate is required"; // Fix: Set error for taxRate, not taxType
       isValid = false;
     }
-
+  
     setErrors(errors);
     return isValid;
   };
+  
   const [rowdata, setRowdata] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -132,6 +131,7 @@ function Bill_Tax() {
                 <>
                   <IconButton
                     aria-label="Edit"
+                    color="primary"
                     onClick={(e) => {
                       window.scrollTo({
                         top: 0,
@@ -150,6 +150,7 @@ function Bill_Tax() {
                   </IconButton>
                   <IconButton
                     aria-label="Delete"
+                    color="primary"
                     onClick={() => {
                       setItemToDelete(item._id);
                       setDeleteDialogOpen(true);
@@ -328,6 +329,19 @@ function Bill_Tax() {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleClear = () => {
+    setState({
+      taxRate: "",
+      taxType: "",
+      id: "",
+      isUpdate: false,
+    });
+    setErrors({
+      taxRate: "",
+      taxType: "",
+    });
+    setOpenDialog(false);
+  };
   return (
     <>
       <div>
@@ -348,16 +362,7 @@ function Bill_Tax() {
         </Toolbar>
         <Dialog
           open={openDialog}
-          onClose={() => {
-            setState({
-              taxRate: "",
-              taxType: "",
-              id: "",
-
-              isUpdate: false,
-            });
-            setOpenDialog(false);
-          }}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -366,16 +371,7 @@ function Bill_Tax() {
             <IconButton
               aria-label="close"
               className={classes.closeButton}
-              onClick={() => {
-                setState({
-                  taxRate: "",
-                  taxType: "",
-                  id: "",
-
-                  isUpdate: false,
-                });
-                setOpenDialog(false);
-              }}
+              onClick={handleClear}
             >
               <CloseIcon />
             </IconButton>
@@ -454,16 +450,7 @@ function Bill_Tax() {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => {
-                setState({
-                  taxRate: "",
-                  taxType: "",
-                  id: "",
-
-                  isUpdate: false,
-                });
-                setOpenDialog(false);
-              }}
+              onClick={handleClear}
               color="secondary"
             >
               Close

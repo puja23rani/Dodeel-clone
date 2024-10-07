@@ -135,8 +135,8 @@ function Customer() {
       errors.Lead_Name = "Lead is required";
       isValid = false;
     }
-    if (!state.Employee_Name.id) {
-      errors.Employee_Name = "Channel is required";
+    if (!state.Employee_Name ||!state.Employee_Name.id) {
+      errors.Employee_Name = "Employee is required";
       isValid = false;
     }
     if (!state.Billing_Address.trim()) {
@@ -362,7 +362,7 @@ function Customer() {
                     color="primary"
                     onClick={(e) => {
                       navigate("/app/sales/customer/customer-view", {
-                        state: { updateId: item._id },
+                        state: { customerId: item._id },
                       });
                     }}
                   >

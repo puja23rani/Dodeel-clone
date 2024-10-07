@@ -94,10 +94,10 @@ function Log_Notes() {
   ];
 
   useEffect(() => {
-    fetchLeadStatus();
+    fetchLogNotes();
   }, []);
 
-  const fetchLeadStatus = () => {
+  const fetchLogNotes = () => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/api/auth/getAllNotes`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -149,7 +149,7 @@ function Log_Notes() {
       });
   };
 
-  const handleCreateLeadStatus = async () => {
+  const handleCreateLogNotes = async () => {
     if (!validate()) {
       setMessage("Please fill all required fields");
       setOpen(true);
@@ -175,7 +175,7 @@ function Log_Notes() {
 
       const result = await response.json();
       if (result.status === 200) {
-        fetchLeadStatus();
+        fetchLogNotes();
         window.scrollTo({
           top: 400,
           behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -204,7 +204,7 @@ function Log_Notes() {
     }
   };
 
-  const handleLeadStatusDelete = async () => {
+  const handleLogNotesDelete = async () => {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
@@ -222,7 +222,7 @@ function Log_Notes() {
       const result = await response.json();
       if (result.status === 200) {
         setDeleteDialogOpen(false);
-        fetchLeadStatus();
+        fetchLogNotes();
         setMessage("Deleted successfully!");
         setOpen(true);
         setSeverity("success");
@@ -242,7 +242,8 @@ function Log_Notes() {
   const handleCloseDialog = () => {
     setDeleteDialogOpen(false);
   };
-  const handleUpdateLeadStatus = async () => {
+  const handleUpdateLogNotes = async () => {
+    if(!validate()){return;}
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
@@ -278,7 +279,7 @@ function Log_Notes() {
         //console.log(actualData.holidays);
         // setVisaList(actualData.Country);
         if (actualData.status == 200) {
-          fetchLeadStatus();
+          fetchLogNotes();
           window.scrollTo({
             top: 400,
             behavior: "smooth", // Optional: Use 'auto' for instant scrolling without animation
@@ -312,6 +313,14 @@ function Log_Notes() {
   const handleClose = () => {
     setOpen(false);
   };
+  function handleClear(){
+    setState({
+      Notes: "",
+      isUpdate: false,
+    });
+    setErrors({ Notes: "", });
+    setOpenDialog(false);
+  }
   return (
     <>
       <div>
@@ -333,7 +342,7 @@ function Log_Notes() {
 
         <Dialog
           open={openDialog}
-          onClose={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
+          onClose={handleClear}
           fullWidth
           maxWidth="md"
         >
@@ -341,8 +350,14 @@ function Log_Notes() {
             Log Notes
             <IconButton
               aria-label="close"
+              sx={{
+                position: "absolute",
+                right: 12,
+                top: 12,
+                color: (theme) => theme.palette.grey[500],
+              }}
               className={classes.closeButton}
-              onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}}
+              onClick={handleClear}
             >
               <CloseIcon />
             </IconButton>
@@ -359,7 +374,7 @@ function Log_Notes() {
                 <Grid item xs={12}>
                   <div className={classes.form}>
                     <Grid container spacing={2}>
-                      <Grid item xs={6}>
+                      <Grid item xs={12}>
                         <TextField
                           fullWidth
                           variant="standard"
@@ -381,7 +396,7 @@ function Log_Notes() {
             </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={() =>{ setState({ Notes: "",isUpdate: false});setOpenDialog(false)}} color="secondary">
+          <Button onClick={handleClear} color="secondary">
               Close
             </Button>
             {state.isUpdate ? (
@@ -389,7 +404,7 @@ function Log_Notes() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleUpdateLeadStatus}
+                  onClick={handleUpdateLogNotes}
                 >
                   Update
                 </Button>
@@ -399,7 +414,7 @@ function Log_Notes() {
                 <Button
                   color="primary"
                   variant="contained"
-                  onClick={handleCreateLeadStatus}
+                  onClick={handleCreateLogNotes}
                 >
                   Create
                 </Button>
@@ -425,7 +440,7 @@ function Log_Notes() {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleLeadStatusDelete}
+        onDelete={handleLogNotesDelete}
       />
       <Popup
         open={open}

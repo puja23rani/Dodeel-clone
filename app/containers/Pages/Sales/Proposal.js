@@ -464,7 +464,7 @@ useEffect(() => {
     }
   };
 
-  const handleLeadStatusDelete = async () => {
+  const handleProposalDelete = async () => {
     try {
       const data = { id: itemToDelete };
       const response = await fetch(
@@ -966,7 +966,7 @@ useEffect(() => {
       <AlertDialog
         open={deleteDialogOpen}
         onClose={handleCloseDialog}
-        onDelete={handleLeadStatusDelete}
+        onDelete={handleProposalDelete}
       />
       <Popup
         open={open}

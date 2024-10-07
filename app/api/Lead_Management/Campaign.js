@@ -304,9 +304,7 @@ function Campaign() {
 
   const handleCreateCampaign = async () => {
     if (!validate()) {
-      setMessage("Please fill all required fields");
-      setOpen(true);
-      setSeverity("warning");
+     
       return;
     }
     try {
@@ -410,6 +408,7 @@ function Campaign() {
     setDeleteDialogOpen(false);
   };
   const handleUpdateCampaign = async () => {
+    if (!validate()) return;
     try {
       const loginHeaders = new Headers();
       loginHeaders.append("Content-Type", "application/json");
